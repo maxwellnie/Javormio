@@ -111,4 +111,22 @@ public class LambdaWhere<E> extends Where<E> {
             throw new RuntimeException(e);
         }
     }
+    public static class User{
+        int user_id;
+
+        public int getUser_id() {
+            return user_id;
+        }
+
+        public void setUser_id(int user_id) {
+            this.user_id = user_id;
+        }
+    }
+
+    public static void main(String[] args) {
+        new LambdaWhere<User>()
+                .eq(User::getUser_id,1)
+                .ok();
+        // SELECT * FROM (SELECT user_id FROM tb_user WHERE user_id > 0) WHERE user_id = 1;
+    }
 }
