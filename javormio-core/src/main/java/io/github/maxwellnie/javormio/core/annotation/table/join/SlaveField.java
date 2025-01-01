@@ -13,5 +13,10 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface SlaveField {
+    /**
+     * 从表名
+     *
+     * @return String
+     */
     String slaveName();
 }

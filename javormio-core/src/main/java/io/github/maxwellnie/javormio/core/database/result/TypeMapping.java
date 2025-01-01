@@ -7,14 +7,33 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
+ * 类型映射，记录了Java对象与数据库列之间的映射关系
  * @author Maxwell Nie
  */
 public class TypeMapping {
+    /**
+     * 类型
+     */
     private final Class<?> type;
+    /**
+     * 属性
+     */
     private final MetaProperty metaProperty;
+    /**
+     * 类型处理器
+     */
     private final TypeHandler<?> typeHandler;
+    /**
+     * 列名
+     */
     private final String columnName;
+    /**
+     * 子映射
+     */
     private final Map<String, TypeMapping> children;
+    /**
+     * 哈希值
+     */
     private int hashCode;
 
     public TypeMapping(Class<?> type, MetaProperty metaProperty, TypeHandler<?> typeHandler, String columnName, Map<String, TypeMapping> children) {

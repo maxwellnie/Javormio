@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 标记为拦截器
+ * 标记此方法为拦截器
  *
  * @author Maxwell Nie
  */

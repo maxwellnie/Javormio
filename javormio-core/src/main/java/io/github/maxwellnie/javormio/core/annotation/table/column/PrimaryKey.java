@@ -16,9 +16,22 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface PrimaryKey {
+    /**
+     * 字段名
+     *
+     * @return String
+     */
     String value() default Constants.EMPTY_STRING;
-
+    /**
+     * 字段别名
+     *
+     * @return String
+     */
     String alias() default Constants.EMPTY_STRING;
-
+    /**
+     * 类型处理器
+     *
+     * @return Class<? extends TypeHandler>
+     */
     Class<? extends TypeHandler> typeHandler() default TypeHandler.class;
 }

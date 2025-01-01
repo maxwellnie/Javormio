@@ -13,6 +13,15 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ProxyDefine {
+    /**
+     * 被代理的接口
+     * @return Class<?>[]
+     */
     Class<?>[] interfaces();
+
+    /**
+     * 此代理类的优先级
+     * @return long
+     */
     long index();
 }

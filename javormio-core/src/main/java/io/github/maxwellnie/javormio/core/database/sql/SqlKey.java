@@ -3,11 +3,21 @@ package io.github.maxwellnie.javormio.core.database.sql;
 import java.util.Objects;
 
 /**
+ * 缓存SQL资源的key
  * @author Maxwell Nie
  */
 public class SqlKey {
+    /**
+     * 模板
+     */
     private final String template;
+    /**
+     * 关键字
+     */
     private final String keywords;
+    /**
+     * Sql资源的来源
+     */
     private final Type type;
 
     public SqlKey(String template, String keywords, Type type) {

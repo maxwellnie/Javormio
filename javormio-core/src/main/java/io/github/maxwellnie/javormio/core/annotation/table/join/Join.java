@@ -13,9 +13,22 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Join {
+    /**
+     * 从表名
+     *
+     * @return String
+     */
     String slaveName();
-
+    /**
+     * 主表字段名
+     *
+     * @return String
+     */
     String masterFieldName();
-
+    /**
+     * 从表字段名
+     *
+     * @return String
+     */
     String slaveFieldName();
 }

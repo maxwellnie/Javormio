@@ -15,9 +15,22 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Table {
+    /**
+     * 表名
+     *
+     * @return String
+     */
     String value() default Constants.EMPTY_STRING;
-
+    /**
+     * 别名
+     *
+     * @return String
+     */
     String alias() default Constants.EMPTY_STRING;
-
+    /**
+     * 默认数据源
+     *
+     * @return String
+     */
     String defaultDataSourceName() default Constants.EMPTY_STRING;
 }

@@ -19,11 +19,29 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Maxwell Nie
  */
 public class DefaultDataSource implements DynamicMultipleDataSource {
+    /**
+     * 当前数据源名称
+     */
     private final ThreadLocal<String> currentDataSourceName = new ThreadLocal<>();
+    /**
+     * 数据源集合
+     */
     private final Map<Object, DataSource> dataSourceMap = new ConcurrentHashMap<>();
+    /**
+     * 默认数据源名称
+     */
     private final String defaultDataSourceName;
+    /**
+     * 时钟
+     */
     private final SystemClock systemClock;
+    /**
+     * 当前事务对象
+     */
     private final ThreadLocal<TransactionObject> currentTransactionObject = new ThreadLocal<>();
+    /**
+     * 日志
+     */
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultDataSource.class);
     public DefaultDataSource(String defaultDataSourceName, DataSource defaultDataSource, SystemClock systemClock) {
         this.defaultDataSourceName = defaultDataSourceName;
@@ -52,7 +70,12 @@ public class DefaultDataSource implements DynamicMultipleDataSource {
         currentDataSourceName.remove();
         return true;
     }
-
+    /**
+     * 获取连接，并且获取当前线程的事务对象
+     *
+     * @return ConnectionResource
+     * @throws SQLException
+     */
     @Override
     public ConnectionResource getConnection() throws SQLException {
         String dataSourceName = this.currentDataSourceName.get();
@@ -64,14 +87,26 @@ public class DefaultDataSource implements DynamicMultipleDataSource {
             transactionObject = currentTransactionObject.get();
         return new ConnectionResource(dataSourceName, dataSource, dataSource.getConnection(), transactionObject);
     }
-
+    /**
+     * 获取连接，并且获取当前线程的事务对象
+     *
+     *  @param autoCommit
+     * @return ConnectionResource
+     * @throws SQLException
+     */
     @Override
     public ConnectionResource getConnection(boolean autoCommit) throws SQLException {
         ConnectionResource connectionResource = getConnection();
         connectionResource.setAutoCommit(autoCommit);
         return connectionResource;
     }
-
+    /**
+     * 获取连接，并且获取当前线程的事务对象
+     *
+     * @param timeout
+     * @return ConnectionResource
+     * @throws SQLException
+     */
     @Override
     public ConnectionResource getConnection(long timeout) throws SQLException {
         String dataSourceName = this.currentDataSourceName.get();
@@ -86,14 +121,20 @@ public class DefaultDataSource implements DynamicMultipleDataSource {
         currentTransactionObject.set(transactionObject);
         return new ConnectionResource(dataSourceName, dataSource, dataSource.getConnection(), transactionObject);
     }
-
+    /**
+     * 获取连接，并且获取当前线程的事务对象
+     *
+     * @param autoCommit
+     * @param timeout
+     * @return ConnectionResource
+     * @throws SQLException
+     */
     @Override
     public ConnectionResource getConnection(boolean autoCommit, long timeout) throws SQLException {
         ConnectionResource connectionResource = getConnection(timeout);
         connectionResource.setAutoCommit(autoCommit);
         return connectionResource;
     }
-
     @Override
     public Collection<DataSource> getDataSources() {
         return this.dataSourceMap.values();
