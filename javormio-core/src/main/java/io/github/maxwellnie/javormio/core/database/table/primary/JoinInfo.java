@@ -6,11 +6,21 @@ import io.github.maxwellnie.javormio.core.database.table.column.ColumnInfo;
 import java.util.Map;
 
 /**
+ * 表关联信息
  * @author Maxwell Nie
  */
 public class JoinInfo extends TableInfo {
+    /**
+     * 主表
+     */
     private final TableInfo masterTable;
+    /**
+     * 主表关联字段
+     */
     private final String masterKey;
+    /**
+     * 从表关联字段
+     */
     private final String slaveKey;
 
     public JoinInfo(Map<String, ColumnInfo> columnInfoMapping, Map<String, ColumnInfo> columnInfoInverseMapping

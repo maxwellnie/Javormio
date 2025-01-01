@@ -12,14 +12,42 @@ import java.util.Map;
  * @author Maxwell Nie
  */
 public class TableInfo {
+    /**
+     * 列信息映射
+     */
     private final Map<String, ColumnInfo> columnInfoMapping;
+    /**
+     * 列信息逆向映射
+     */
     private final Map<String, ColumnInfo> columnInfoInverseMapping;
+    /**
+     * 表名
+     */
     private final String tableName;
+    /**
+     * 映射类
+     *
+     */
     private final Class<?> mappingClass;
+    /**
+     * 主键
+     */
     private final String primaryKey;
+    /**
+     * 唯一键
+     */
     private final String[] uniqueKeys;
+    /**
+     * 索引键
+     */
     private final String[] indexKeys;
+    /**
+     * 主键字段名
+     */
     private final String primaryKeyFieldName;
+    /**
+     * 关联信息
+     */
     private final JoinInfo[] joinInfo;
 
     public TableInfo(Map<String, ColumnInfo> columnInfoMapping, Map<String, ColumnInfo> columnInfoInverseMapping

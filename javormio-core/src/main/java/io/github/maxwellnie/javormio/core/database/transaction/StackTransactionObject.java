@@ -6,14 +6,26 @@ import java.util.Map;
 import java.util.Stack;
 
 /**
- * 事务对象
+ * 事务对象（栈实现）
  *
  * @author Maxwell Nie
  */
 public class StackTransactionObject implements TransactionObject {
+    /**
+     * 原子事务栈
+     */
     Stack<AtomicTransaction> atomicTransactions = new Stack<>();
+    /**
+     * 过期时间
+     */
     private long expireTime;
+    /**
+     * 创建时间
+     */
     private long createTime;
+    /**
+     * 属性
+     */
     private Map<String, Object> properties = new LinkedHashMap<>();
     public StackTransactionObject(long expireTime, long createTime) {
         this.expireTime = expireTime;

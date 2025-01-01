@@ -9,9 +9,21 @@ import io.github.maxwellnie.javormio.core.java.type.TypeHandler;
  * @author Maxwell Nie
  */
 public class ColumnInfo {
+    /**
+     * 列名
+     */
     private String columnName;
+    /**
+     * 属性
+     */
     private MetaProperty metaProperty;
+    /**
+     * 表信息
+     */
     private TableInfo tableInfo;
+    /**
+     * 类型处理器
+     */
     private TypeHandler typeHandler;
 
     public String getColumnName() {
