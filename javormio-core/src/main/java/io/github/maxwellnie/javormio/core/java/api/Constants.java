@@ -11,4 +11,5 @@ public interface Constants {
     String CACHE_SQL_RESULT_KEY = "Object";
     String CACHE_GLOBAL_KEY = "Global";
     String EMPTY_STRING = "";
+    String SELECT_GENERATED_KEY = "SGK";
 }

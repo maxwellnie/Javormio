@@ -12,5 +12,7 @@ public class UpdateSqlMethod implements SqlMethod{
     @Override
     public Object invoke(Object[] args) {
         return null;
+        // SELECT * FROM tb_user WHERE id = ?
+        //String sql, Object[] params
     }
 }
