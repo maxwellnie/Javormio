@@ -5,6 +5,7 @@ import io.github.maxwellnie.javormio.core.database.result.TypeMapping;
 import io.github.maxwellnie.javormio.core.database.sql.ExecutableSql;
 import io.github.maxwellnie.javormio.core.database.sql.SqlParameter;
 import io.github.maxwellnie.javormio.core.database.sql.SqlType;
+import io.github.maxwellnie.javormio.core.java.api.Constants;
 
 import java.sql.*;
 import java.util.List;
@@ -21,7 +22,7 @@ public class UpdateSqlExecutor extends BaseSqlExecutor{
         ConnectionResource connectionResource = executorContext.getConnectionResource();
         ExecutableSql executableSql = executorContext.getExecutableSql();
         Map<String, Object> properties = executorContext.getProperties();
-        Consumer<ResultSet> consumer = (Consumer<ResultSet>) properties.get("SGK");
+        Consumer<ResultSet> consumer = (Consumer<ResultSet>) properties.get(Constants.SELECT_GENERATED_KEY);
         boolean selectGeneratedKeys = executableSql.getType().equals(SqlType.INSERT) && consumer!= null;
         Connection connection = connectionResource
                 .getConnection();
