@@ -29,7 +29,7 @@ public class DefaultProxyFactory implements ProxyFactory {
                 }
             }
             for (Method interfaceDeclaredMethod : targetSuperClass.getMethods()) {
-                if(proxyInfo.getMethodMatcher().matches(interfaceDeclaredMethod)){
+                if (proxyInfo.getMethodMatcher().matches(interfaceDeclaredMethod)) {
                     Integer hashCode = Objects.hash(interfaceDeclaredMethod.getName(), Arrays.hashCode(interfaceDeclaredMethod.getParameterTypes()));
                     List<ProxyInfo> proxyInfoList = proxyInfoHashMap.computeIfAbsent(hashCode, k -> new LinkedList<>());
                     proxyInfoList.add(proxyInfo);

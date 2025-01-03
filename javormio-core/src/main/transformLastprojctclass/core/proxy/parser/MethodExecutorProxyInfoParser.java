@@ -35,7 +35,7 @@ public class MethodExecutorProxyInfoParser implements ProxyInfoParser {
         MethodProxyInfo[] methodProxyInfos = new MethodProxyInfo[0];
         Class<?>[] interfaces = new Class[]{MethodExecutor.class};
         for (Method method : clazz.getDeclaredMethods()) {
-            if(method.isAnnotationPresent(MethodInterceptor.class)){
+            if (method.isAnnotationPresent(MethodInterceptor.class)) {
                 MethodProxyInfo methodProxyInfo = new SimpleMethodProxyInfo();
                 methodProxyInfo.setMethodName(method.getName());
                 methodProxyInfo.setParameterTypes(checkAndGetCorrectParameterTypes(method.getParameterTypes()));

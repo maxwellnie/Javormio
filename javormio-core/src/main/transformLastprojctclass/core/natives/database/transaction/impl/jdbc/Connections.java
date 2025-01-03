@@ -85,12 +85,12 @@ public class Connections {
             return dataSource;
         }
 
-        public Connection getConnection() {
-            return connection;
-        }
-
         public void setDataSource(DataSource dataSource) {
             this.dataSource = dataSource;
+        }
+
+        public Connection getConnection() {
+            return connection;
         }
 
         public void setConnection(Connection connection) {

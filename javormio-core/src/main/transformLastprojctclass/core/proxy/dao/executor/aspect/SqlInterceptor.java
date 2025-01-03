@@ -17,6 +17,7 @@ public abstract class SqlInterceptor extends EnhancedMethodHandler {
     public SqlInterceptor(long index, TargetMethodSignature signature) {
         super(index, signature);
     }
+
     /**
      * 构建sql
      *
@@ -25,7 +26,7 @@ public abstract class SqlInterceptor extends EnhancedMethodHandler {
      * @throws ExecutorException
      */
     @MethodInterceptor
-    public RowSql buildRowSql(SimpleInvocation simpleInvocation, MetaData metaData){
+    public RowSql buildRowSql(SimpleInvocation simpleInvocation, MetaData metaData) {
         RowSql rowSql = beforeBuildRowSql(metaData);
         if (rowSql != null)
             return rowSql;
@@ -37,6 +38,8 @@ public abstract class SqlInterceptor extends EnhancedMethodHandler {
             throw new ProxyExtendsException(e);
         }
     }
+
     public abstract RowSql beforeBuildRowSql(MetaData metaData);
+
     public abstract RowSql afterBuildRowSql(MetaData metaData, RowSql rowSql);
 }

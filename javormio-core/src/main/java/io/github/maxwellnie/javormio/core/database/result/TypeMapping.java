@@ -8,6 +8,7 @@ import java.util.Objects;
 
 /**
  * 类型映射，记录了Java对象与数据库列之间的映射关系
+ *
  * @author Maxwell Nie
  */
 public class TypeMapping {

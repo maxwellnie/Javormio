@@ -7,5 +7,6 @@ import com.maxwellnie.velox.sql.core.proxy.info.impl.ProxyInfo;
  */
 public interface ProxyInfoParser {
     ProxyInfo parse(Object obj);
+
     ProxyInfo parse(Class<?> clazz);
 }

@@ -20,7 +20,7 @@ public class MethodsHandler implements InvocationHandler {
     public MethodsHandler(MethodHandler methodHandler, Object target) {
         this.methodHandler = methodHandler;
         if (methodHandler.getMethodAspects() != null) {
-            if (methodHandler.getMethodAspects() == MethodHandler.MethodAspect.ANY_FLAG){
+            if (methodHandler.getMethodAspects() == MethodHandler.MethodAspect.ANY_FLAG) {
                 methodAspectMap = null;
                 return;
             }

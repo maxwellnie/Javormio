@@ -13,6 +13,7 @@ import java.util.Stack;
 /**
  * 当前线程所持有的Session
  * <p>修改底层为栈结构，以适用于多层嵌套的事务</p>
+ *
  * @author Maxwell Nie
  */
 public class CurrentSession {
@@ -34,21 +35,22 @@ public class CurrentSession {
      */
     public static void closeTop() {
         if (isOpenProxyTransaction()) {
-            if(SessionThreadLocal.get().pop() == null)
+            if (SessionThreadLocal.get().pop() == null)
                 throw new SessionException("Current session is null");
-            if(SessionThreadLocal.get().isEmpty())
+            if (SessionThreadLocal.get().isEmpty())
                 closeProxyTransaction();
         }
     }
 
     /**
      * 关闭全部Session
+     *
      * @param consumer
      */
-    public static void close(SessionProxyConsumer consumer){
+    public static void close(SessionProxyConsumer consumer) {
         if (isOpenProxyTransaction()) {
             Stack<SessionProxy> stack = getCurrentSessionStack();
-            while (!stack.isEmpty()){
+            while (!stack.isEmpty()) {
                 SessionProxy sessionProxy = stack.pop();
                 SessionFactory sessionFactory = sessionProxy.getSessionFactory();
                 if (sessionProxy != null && sessionProxy.getTarget() != null && sessionFactory != null)
@@ -59,6 +61,7 @@ public class CurrentSession {
             closeProxyTransaction();
         }
     }
+
     /**
      * 关闭事务代理
      */
@@ -92,9 +95,11 @@ public class CurrentSession {
     public static boolean isOpenProxyTransaction() {
         return enabledProxySpringTransaction.get() != null && enabledProxySpringTransaction.get();
     }
+
     public static boolean isNotTransactional() {
         return !isOpenProxyTransaction() || isSuspend();
     }
+
     /**
      * 代理事务
      *
@@ -112,13 +117,14 @@ public class CurrentSession {
         }
         return null;
     }
+
     /**
      * 获取当前线程的Session栈
      *
      * @return Stack<SessionProxy>
      */
-    static Stack<SessionProxy> getCurrentSessionStack(){
-        if (isOpenProxyTransaction()){
+    static Stack<SessionProxy> getCurrentSessionStack() {
+        if (isOpenProxyTransaction()) {
             Stack<SessionProxy> stack = SessionThreadLocal.get();
             if (stack != null)
                 return stack;
@@ -128,6 +134,7 @@ public class CurrentSession {
         }
         return null;
     }
+
     /**
      * 获取当前线程的Session
      *
@@ -139,21 +146,25 @@ public class CurrentSession {
         }
         return null;
     }
-    public static void suspend(){
+
+    public static void suspend() {
         suspendState.set(true);
     }
-    public static boolean isSuspend(){
+
+    public static boolean isSuspend() {
         return suspendState.get() != null && suspendState.get();
     }
-    public static void resume(){
-        if(suspendState.get() != null && enabledProxySpringTransaction.get())
+
+    public static void resume() {
+        if (suspendState.get() != null && enabledProxySpringTransaction.get())
             suspendState.set(Boolean.FALSE);
     }
+
     /**
      * Session代理对象消费者
      */
     @FunctionalInterface
-    public static interface SessionProxyConsumer{
+    public static interface SessionProxyConsumer {
         void accept(SessionProxy sessionProxy, SessionFactory sessionFactory);
     }
 }

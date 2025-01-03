@@ -196,7 +196,8 @@ public final class Context {
         TableInfo tableInfo = TableInfoManager.getTableInfo(clazz);
         parseMethodsReturnType(daoImplClazz, tableInfo);
     }
-    public void addDaoImplByBaseDao(Class<?> clazz, Class<?> entityClass){
+
+    public void addDaoImplByBaseDao(Class<?> clazz, Class<?> entityClass) {
         daoImplManager.registerDaoImplFactory(clazz, entityClass);
         try {
             ContextUtils.registerDaoImpl(daoImplClazz, clazz, new Object[]{entityClass, registerMappedManager(clazz)});
@@ -207,6 +208,7 @@ public final class Context {
         TableInfo tableInfo = TableInfoManager.getTableInfo(entityClass);
         parseMethodsReturnType(clazz, tableInfo);
     }
+
     private void parseMethodsReturnType(Class<?> daoImplClazz, TableInfo tableInfo) {
         for (Method method : daoImplClazz.getMethods()) {
             if (method.isAnnotationPresent(SQLMethod.class)) {
@@ -214,7 +216,7 @@ public final class Context {
                 if (SQLMethod.value() != null) {
                     tableInfo.registerReturnTypeMapping(daoImplClazz, MethodExecutorUtils.getMethodDeclaredName(method), returnTypeParser.parse(method.getReturnType(), tableInfo));
                 }
-            }else if(method.isAnnotationPresent(SQL.class)){
+            } else if (method.isAnnotationPresent(SQL.class)) {
                 SQL sql = method.getDeclaredAnnotation(SQL.class);
                 tableInfo.registerReturnTypeMapping(daoImplClazz, MethodExecutorUtils.getMethodDeclaredName(method), returnTypeParser.parse(method.getReturnType(), tableInfo));
             }
@@ -304,6 +306,7 @@ public final class Context {
         public MethodExecutor getRegisteredMapped(String name) {
             return methodMappedMap.get(name);
         }
+
         /**
          * 注册被映射方法的处理器
          *
@@ -341,6 +344,7 @@ public final class Context {
             } else
                 throw new RegisterDaoImplFailedException("The daoImpl mapped class is null");
         }
+
         public void registerDaoImplFactory(Class<?> clazz, Class<?> entityClass) {
             if ((clazz != null)) {
                 Cache cache = null;
@@ -356,6 +360,7 @@ public final class Context {
             } else
                 throw new RegisterDaoImplFailedException("The daoImpl mapped class is null");
         }
+
         private class RegisterDaoImplFailedException extends RuntimeException {
             public RegisterDaoImplFailedException(String message) {
                 super(message);

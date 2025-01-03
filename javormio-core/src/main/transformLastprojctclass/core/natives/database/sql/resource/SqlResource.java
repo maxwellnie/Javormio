@@ -7,6 +7,7 @@ import java.util.Objects;
 
 /**
  * sql模板
+ *
  * @author Maxwell Nie
  */
 public class SqlResource implements Resource<String> {

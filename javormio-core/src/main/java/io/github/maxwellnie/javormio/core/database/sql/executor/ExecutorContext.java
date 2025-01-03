@@ -45,14 +45,17 @@ public class ExecutorContext {
     public TypeMapping getTypeMapping() {
         return typeMapping;
     }
-    public Map<String, Object> putProperties(String key, Object value){
+
+    public Map<String, Object> putProperties(String key, Object value) {
         properties.put(key, value);
         return properties;
     }
-    public Map<String, Object> removeProperties(String key){
+
+    public Map<String, Object> removeProperties(String key) {
         properties.remove(key);
         return properties;
     }
+
     public Map<String, Object> getProperties() {
         return properties;
     }

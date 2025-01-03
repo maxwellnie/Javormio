@@ -30,12 +30,14 @@ public @interface SQL {
      * @return
      */
     boolean isCommon() default false;
+
     /**
      * SQL类型
      *
      * @return
      */
     SqlType sqlType();
+
     /**
      * 默认执行器
      */

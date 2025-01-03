@@ -32,6 +32,7 @@ import java.util.regex.Pattern;
 public class DefaultTemplateParser implements TemplateParser {
     /**
      * 这是一个非常简单的模板解析器，包括${0},#{0},${a},#{a},${a.b},#{a.b}这几种模式
+     *
      * @param template
      * @param method
      * @param tableInfo
@@ -60,9 +61,9 @@ public class DefaultTemplateParser implements TemplateParser {
             String index = isMatch(indexMatcher);
             if (StringUtils.isNotNullOrEmpty(index)) {
                 indexTypeParamHandle(index, indexKey, keyIndexes, linkedWays, sqlTemplateInfo, paramClasses, batch);
-            }else if(StringUtils.isNotNullOrEmpty((index=isMatch(nameMatcher)))) {
+            } else if (StringUtils.isNotNullOrEmpty((index = isMatch(nameMatcher)))) {
                 nameTypeParamHandle(index, indexKey, keyIndexes, linkedWays, sqlTemplateInfo, paramClasses, batch);
-            }else{
+            } else {
                 throw new TemplateException("The template has a error expression.");
             }
             nativeSql = nativeSql.replace(indexKey, "?");
@@ -70,8 +71,10 @@ public class DefaultTemplateParser implements TemplateParser {
         sqlTemplateInfo.setNaiveSql(nativeSql);
         return sqlTemplateInfo;
     }
+
     /**
      * 处理索引类型的参数
+     *
      * @param index
      * @param indexKey
      * @param keyIndexes
@@ -87,8 +90,10 @@ public class DefaultTemplateParser implements TemplateParser {
         linkedWays.add(linkedNode);
         findSqlParamWays(sqlTemplateInfo.getParameterTypeMapping(), paramTypes, linkedNode, keyIndex, batch);
     }
+
     /**
      * 处理名称类型的参数
+     *
      * @param index
      * @param indexKey
      * @param keyIndexes
@@ -104,24 +109,26 @@ public class DefaultTemplateParser implements TemplateParser {
         linkedWays.add(linkedNode);
         findSqlParamWays(sqlTemplateInfo.getParameterTypeMapping(), paramTypes, linkedNode, keyIndex, batch);
     }
+
     /**
      * 获取参数
+     *
      * @param paramTypes
      * @param batch
      * @return ParamTypeMapping
      */
     private void parseParamClasses(Method method, Map<String, ClassInfo> paramTypes, boolean batch) {
         int index = 0;
-        for (Parameter parameter : method.getParameters()){
+        for (Parameter parameter : method.getParameters()) {
             Class<?> type = parameter.getType();
             Type beanClass = type;
-            if (batch){
-                if(TypeUtils.isCollection((Class<?>) beanClass)){
+            if (batch) {
+                if (TypeUtils.isCollection((Class<?>) beanClass)) {
                     beanClass = parameter.getParameterizedType();
-                    if (beanClass instanceof ParameterizedType){
+                    if (beanClass instanceof ParameterizedType) {
                         beanClass = ((ParameterizedType) beanClass).getActualTypeArguments()[0];
                     }
-                } else if (TypeUtils.isArray((Class<?>) beanClass)){
+                } else if (TypeUtils.isArray((Class<?>) beanClass)) {
                     beanClass = parameter.getType().getComponentType();
                 } else
                     throw new TemplateException("The parameter type must be collection or array.");
@@ -129,11 +136,11 @@ public class DefaultTemplateParser implements TemplateParser {
             String name;
             String key;
             TypeConvertor<?> convertor = null;
-            if(parameter.isAnnotationPresent(Param.class)){
+            if (parameter.isAnnotationPresent(Param.class)) {
                 Param param = parameter.getAnnotation(Param.class);
                 name = param.value();
                 Class<? extends TypeConvertor> convertorClass = param.convertor();
-                if(!convertorClass.equals(TypeConvertor.class)) {
+                if (!convertorClass.equals(TypeConvertor.class)) {
                     try {
                         convertor = ReflectionUtils.newInstance(convertorClass);
                     } catch (NoSuchMethodException | InvocationTargetException | InstantiationException |
@@ -142,14 +149,16 @@ public class DefaultTemplateParser implements TemplateParser {
                     }
                 }
                 key = parameter.getName();
-            }else{
+            } else {
                 key = name = parameter.getName();
             }
             paramTypes.put(name, new ClassInfo((Class<?>) beanClass, type, convertor, key, index++));
         }
     }
+
     /**
      * 递归查找参数链路
+     *
      * @param rootTypeMapping
      * @param paramTypes
      * @param linkedNode
@@ -157,68 +166,72 @@ public class DefaultTemplateParser implements TemplateParser {
      * @param batch
      */
     private void findSqlParamWays(ParamTypeMapping rootTypeMapping, Map<String, ClassInfo> paramTypes, Node<ValueReader> linkedNode, KeyIndex keyIndex, boolean batch) {
-        if (keyIndex.indexType){
+        if (keyIndex.indexType) {
             int index = Integer.parseInt(keyIndex.key.substring(2, keyIndex.key.length() - 1));
-            Iterator<String> keys =  paramTypes.keySet().iterator();
+            Iterator<String> keys = paramTypes.keySet().iterator();
             String key = null;
             int i = -1;
-            for(;i < index && keys.hasNext();i++){
+            for (; i < index && keys.hasNext(); i++) {
                 key = keys.next();
             }
-            if(i == index){
+            if (i == index) {
                 if (rootTypeMapping.getInnerTypeMappings() == null)
                     return;
                 ParamTypeMapping sqlParamTypeMapping = rootTypeMapping.getInnerTypeMappings().get(String.valueOf(index));
-                if(sqlParamTypeMapping == null)
-                    throw new IllegalArgumentException("The template has a error expression.The key "+key+" isn't matching argument ["+index+"].");
-                if(sqlParamTypeMapping.isBasicType())
+                if (sqlParamTypeMapping == null)
+                    throw new IllegalArgumentException("The template has a error expression.The key " + key + " isn't matching argument [" + index + "].");
+                if (sqlParamTypeMapping.isBasicType())
                     sqlParamTypeMapping = rootTypeMapping;
                 linkedNode.setValue(new ValueReader((configuration -> {
                     try {
                         return new ValueReader.Value(configuration.autoRead(), false, false);
-                    }catch (Throwable e){
+                    } catch (Throwable e) {
                         throw new ValueReaderException(e);
                     }
                 }), sqlParamTypeMapping.getPropertyDefined(), i, keyIndex.key));
-            }else {
+            } else {
                 throw new TemplateException("The template has a error expression.It isn't matching consistent argument.");
             }
-        }else{
+        } else {
             String key = keyIndex.key;
             String[] ways = key.substring(2, key.length() - 1).split("\\.", -2);
-            if(ways.length == 0)
-                throw new TemplateException("The template has a error expression.The key "+key+" isn't matching argument.");
+            if (ways.length == 0)
+                throw new TemplateException("The template has a error expression.The key " + key + " isn't matching argument.");
             boolean found = false;
             sortWays(ways);
-            for (String paramKey:paramTypes.keySet()){
-                if(paramKey.equals(ways[0])){
+            for (String paramKey : paramTypes.keySet()) {
+                if (paramKey.equals(ways[0])) {
                     ways[0] = String.valueOf(paramTypes.get(paramKey).index);
                     found = true;
                     break;
                 }
             }
-            if(!found){
-                throw new TemplateException("Param name ["+ways[0]+"] not found.It may be a bug.");
+            if (!found) {
+                throw new TemplateException("Param name [" + ways[0] + "] not found.It may be a bug.");
             }
             findSqlParamsWaysByNameKey(linkedNode, ways, 0, rootTypeMapping, null, batch);
         }
     }
+
     /**
      * 排序链路关键字
+     *
      * @param ways
      */
     private void sortWays(String[] ways) {
-        for (int i = 0; i < ways.length - 1; i++){
-            for (int j = i; j < ways.length - 1; j++){
-                if(StringUtils.isNullOrEmpty(ways[j]) && j < ways.length - 1){
+        for (int i = 0; i < ways.length - 1; i++) {
+            for (int j = i; j < ways.length - 1; j++) {
+                if (StringUtils.isNullOrEmpty(ways[j]) && j < ways.length - 1) {
                     ways[j] = ways[j + 1];
                     ways[j + 1] = null;
                 }
             }
         }
     }
+
     /**
      * 递归查找参数链路
+     *
      * @param linkedNode
      * @param ways
      * @param index
@@ -226,12 +239,12 @@ public class DefaultTemplateParser implements TemplateParser {
      * @param paramType
      * @param batch
      */
-    private void findSqlParamsWaysByNameKey(Node<ValueReader> linkedNode, String[] ways, int index, ParamTypeMapping rootTypeMapping, Class<?> paramType, boolean batch){
-        if(index > ways.length - 1 || ways[index] == null)
+    private void findSqlParamsWaysByNameKey(Node<ValueReader> linkedNode, String[] ways, int index, ParamTypeMapping rootTypeMapping, Class<?> paramType, boolean batch) {
+        if (index > ways.length - 1 || ways[index] == null)
             return;
-        if(paramType != null){
+        if (paramType != null) {
             ParamTypeMapping sqlParamTypeMapping = getParamTypeMapping(paramType);
-            if(rootTypeMapping != null){
+            if (rootTypeMapping != null) {
                 Map<Object, ParamTypeMapping> paramTypeMappingMap = new LinkedHashMap<>();
                 paramTypeMappingMap.put("0", sqlParamTypeMapping);
                 rootTypeMapping.setInnerTypeMappings(paramTypeMappingMap);
@@ -241,47 +254,47 @@ public class DefaultTemplateParser implements TemplateParser {
         if (rootTypeMapping == null)
             return;
         Node<ValueReader> next;
-        if(index == 0)
+        if (index == 0)
             next = linkedNode;
         else
             next = new Node<>(null, linkedNode, null);
-        if(rootTypeMapping.isArray()){
+        if (rootTypeMapping.isArray()) {
             Class<?> componentType = rootTypeMapping.getType().getComponentType();
             next.setValue(new ValueReader((configuration -> {
                 try {
                     return new ValueReader.Value(configuration.autoRead(), false, false);
-                }catch (Throwable e){
+                } catch (Throwable e) {
                     throw new ValueReaderException(e);
                 }
             }), rootTypeMapping.getPropertyDefined(), Integer.parseInt(ways[index]), ways[index]));
             if (index != 0)
                 linkedNode.setNext(next);
             findSqlParamsWaysByNameKey(next, ways, index + 1, null, componentType, batch);
-        }else if (rootTypeMapping.isCollection()){
+        } else if (rootTypeMapping.isCollection()) {
             Object param = ways[index];
-            if(!TypeUtils.isMap(rootTypeMapping.getType()))
+            if (!TypeUtils.isMap(rootTypeMapping.getType()))
                 param = Integer.parseInt(ways[index]);
             next.setValue(new ValueReader((configuration -> {
-                if (configuration.getBean() == null){
+                if (configuration.getBean() == null) {
                     return getInnerValue(ways, index, configuration);
-                }else {
+                } else {
                     try {
                         return new ValueReader.Value(configuration.autoRead(), false, false);
-                    }catch (Throwable e){
+                    } catch (Throwable e) {
                         throw new ValueReaderException(e);
                     }
                 }
             }), rootTypeMapping.getPropertyDefined(), param, ways[index]));
             if (index != 0)
                 linkedNode.setNext(next);
-        }else {
+        } else {
             ParamTypeMapping sqlParamTypeMapping = rootTypeMapping.getInnerTypeMappings().get(ways[index]);
-            if(sqlParamTypeMapping == null)
-                throw new TemplateException("The template has a error expression.The key "+ways[index]+" isn't matching argument.");
+            if (sqlParamTypeMapping == null)
+                throw new TemplateException("The template has a error expression.The key " + ways[index] + " isn't matching argument.");
             next.setValue(new ValueReader((configuration -> {
                 try {
                     return new ValueReader.Value(configuration.autoRead(), false, false);
-                }catch (Throwable e){
+                } catch (Throwable e) {
                     throw new ValueReaderException(e);
                 }
             }), sqlParamTypeMapping.getPropertyDefined(), ways[index], ways[index]));
@@ -290,8 +303,10 @@ public class DefaultTemplateParser implements TemplateParser {
             findSqlParamsWaysByNameKey(next, ways, index + 1, sqlParamTypeMapping, null, false);
         }
     }
+
     /**
      * 获取值值读取器的值
+     *
      * @param ways
      * @param index
      * @param configuration
@@ -303,20 +318,22 @@ public class DefaultTemplateParser implements TemplateParser {
         findSqlParamsWaysByNameKey(childLinkedNode, ways, index + 1, childParamTypeMapping, configuration.getBean().getClass(), false);
         Object tempBean = configuration.autoRead();
         childParamTypeMapping = childParamTypeMapping.getChild("0");
-        if(childParamTypeMapping != null){
-            MetaProperty<ParamTypeMapping> metaProperty =  new MetaProperty<>(childParamTypeMapping, tempBean, null);
-            MetaProperty.Result<ParamTypeMapping, ValueReader> result =  metaProperty.searchByWay(childLinkedNode);
+        if (childParamTypeMapping != null) {
+            MetaProperty<ParamTypeMapping> metaProperty = new MetaProperty<>(childParamTypeMapping, tempBean, null);
+            MetaProperty.Result<ParamTypeMapping, ValueReader> result = metaProperty.searchByWay(childLinkedNode);
             return result.getNode().getValue().read(tempBean);
-        }else {
+        } else {
             try {
                 return new ValueReader.Value(configuration.autoRead(), true, false);
-            }catch (Throwable e){
+            } catch (Throwable e) {
                 throw new ValueReaderException(e);
             }
         }
     }
+
     /**
      * 获取参数类型映射
+     *
      * @param classMap
      * @param batch
      * @return ParamTypeMapping
@@ -328,32 +345,34 @@ public class DefaultTemplateParser implements TemplateParser {
         rootParamTypeMapping.setPropertyDefined(ArrayProperty.INSTANCE);
         rootParamTypeMapping.setBatchParam(batch);
         rootParamTypeMapping.setType(Object[].class);
-        for (String key:classMap.keySet()){
+        for (String key : classMap.keySet()) {
             ClassInfo classInfo = classMap.get(key);
-            if(classInfo == null)
-                throw new TemplateException("The template has a error expression.The key "+key+" isn't matching argument.");
+            if (classInfo == null)
+                throw new TemplateException("The template has a error expression.The key " + key + " isn't matching argument.");
             ParamTypeMapping child = getParamTypeMapping(classInfo, batch);
             child.setParentTypeMapping(rootParamTypeMapping);
             child.setArgumentIndex(classInfo.index);
             String indexStr = String.valueOf(classInfo.index);
             innerMap.put(indexStr, child);
-            if(batch)
+            if (batch)
                 rootParamTypeMapping.setBatchProperty(indexStr);
         }
         return rootParamTypeMapping;
     }
+
     /**
      * 获取参数类型映射
+     *
      * @param paramType
      * @param batch
      * @return ParamTypeMapping
      */
     private ParamTypeMapping getParamTypeMapping(ClassInfo paramType, boolean batch) {
-        if(TypeUtils.isBasic(paramType.originalClass)){
+        if (TypeUtils.isBasic(paramType.originalClass)) {
             ParamTypeMapping child = new ParamTypeMapping();
             child.setType(paramType.originalClass);
             TypeConvertor<?> typeConvertor = paramType.typeConvertor;
-            if(typeConvertor == null)
+            if (typeConvertor == null)
                 typeConvertor = TypeConvertorManager.getConvertor(paramType.originalClass);
             child.setTypeConvertor(typeConvertor);
             return child;
@@ -361,15 +380,15 @@ public class DefaultTemplateParser implements TemplateParser {
         ParamTypeMapping child = new ParamTypeMapping();
         child.setType(paramType.originalClass);
         setPropertyDefined(child);
-        if(child.isComplexType()){
+        if (child.isComplexType()) {
             Map<Object, ParamTypeMapping> innerMap = new LinkedHashMap<>();
             child.setInnerTypeMappings(innerMap);
-            for (Field field: ReflectionUtils.getAllFields(paramType.originalClass)){
+            for (Field field : ReflectionUtils.getAllFields(paramType.originalClass)) {
                 ParamTypeMapping inner = getParamTypeMapping(child, field.getType());
                 if (inner != null)
                     innerMap.put(field.getName(), inner);
             }
-        }else if(batch){
+        } else if (batch) {
             Map<Object, ParamTypeMapping> innerMap = new LinkedHashMap<>();
             child.setInnerTypeMappings(innerMap);
             ParamTypeMapping inner = getParamTypeMapping(child, paramType.beanClass);
@@ -379,19 +398,23 @@ public class DefaultTemplateParser implements TemplateParser {
         }
         return child;
     }
+
     /**
      * 获取参数类型映射
+     *
      * @param paramType
      * @return ParamTypeMapping
      */
     private ParamTypeMapping getParamTypeMapping(Class<?> paramType) {
         return getParamTypeMapping(new ClassInfo(paramType, null), false);
     }
+
     /**
      * 设置属性定义
+     *
      * @param paramTypeMapping
      */
-    private void setPropertyDefined(ParamTypeMapping paramTypeMapping){
+    private void setPropertyDefined(ParamTypeMapping paramTypeMapping) {
         Class<?> type = paramTypeMapping.getType();
         if (TypeUtils.isArray(type))
             paramTypeMapping.setPropertyDefined(ArrayProperty.INSTANCE);
@@ -404,47 +427,52 @@ public class DefaultTemplateParser implements TemplateParser {
                 paramTypeMapping.setPropertyDefined(SetProperty.INSTANCE);
             else
                 paramTypeMapping.setPropertyDefined(SetProperty.INSTANCE);
-        }else {
+        } else {
             paramTypeMapping.setComplexType(true);
             paramTypeMapping.setPropertyDefined(new BeanProperty(ReflectionUtils.getMetaFieldsMap(type)));
         }
     }
+
     /**
      * 获取参数类型映射
+     *
      * @param paramTypeMapping
      * @param clazz
      * @return ParamTypeMapping
      */
-    private ParamTypeMapping getParamTypeMapping(ParamTypeMapping paramTypeMapping, Class<?> clazz){
-        if(TypeUtils.isBasic(clazz))
+    private ParamTypeMapping getParamTypeMapping(ParamTypeMapping paramTypeMapping, Class<?> clazz) {
+        if (TypeUtils.isBasic(clazz))
             return null;
         ParamTypeMapping child = new ParamTypeMapping();
         child.setParentTypeMapping(paramTypeMapping);
         child.setType(clazz);
         setPropertyDefined(child);
-        if(child.isComplexType()){
+        if (child.isComplexType()) {
             Map<Object, ParamTypeMapping> innerMap = new LinkedHashMap<>();
             child.setInnerTypeMappings(innerMap);
-            for (Field field: ReflectionUtils.getAllFields(clazz)){
+            for (Field field : ReflectionUtils.getAllFields(clazz)) {
                 innerMap.put(field.getName(), getParamTypeMapping(clazz));
             }
         }
         return child;
     }
+
     /**
      * 匹配字符串
+     *
      * @param matcher
      * @return String
      */
-    private String isMatch(Matcher matcher){
-        if(matcher.find())
+    private String isMatch(Matcher matcher) {
+        if (matcher.find())
             return matcher.group();
         return null;
     }
+
     /**
      * 键索引
      */
-    static class KeyIndex{
+    static class KeyIndex {
         String key;
         String regex;
         boolean indexType;
@@ -455,10 +483,11 @@ public class DefaultTemplateParser implements TemplateParser {
             this.indexType = indexType;
         }
     }
+
     /**
      * 存储类信息
      */
-    static class ClassInfo{
+    static class ClassInfo {
         Class<?> originalClass;
         Class<?> beanClass;
         TypeConvertor<?> typeConvertor;

@@ -21,8 +21,9 @@ public class CountMethodHandler extends EnhancedMethodHandler {
     public CountMethodHandler() {
         super(999, new TargetMethodSignature("count", new Class[]{SqlDecorator.class}));
     }
+
     @MethodInterceptor
-    public RowSql buildRowSql(SimpleInvocation simpleInvocation, MetaData metaData) throws ExecutorException{
+    public RowSql buildRowSql(SimpleInvocation simpleInvocation, MetaData metaData) throws ExecutorException {
         SqlDecorator<?> sqlDecorator = metaData.getProperty("sqlDecorator");
         if (sqlDecorator != null) {
             sqlDecorator.setLimitFragment(null);
@@ -33,8 +34,9 @@ public class CountMethodHandler extends EnhancedMethodHandler {
             throw new ExecutorException(e);
         }
     }
+
     @MethodInterceptor
-    public StatementWrapper openStatement(SimpleInvocation simpleInvocation, RowSql rowSql, Session session, TableInfo tableInfo, Object[] args) throws ExecutorException{
+    public StatementWrapper openStatement(SimpleInvocation simpleInvocation, RowSql rowSql, Session session, TableInfo tableInfo, Object[] args) throws ExecutorException {
         String sql = rowSql.getNativeSql();
         int fromIndex = sql.indexOf("FROM");
         sql = sql.substring(fromIndex);

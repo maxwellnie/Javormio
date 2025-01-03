@@ -11,6 +11,7 @@ import java.util.Set;
  */
 public class SetProperty implements Property<Integer> {
     public static final SetProperty INSTANCE = new SetProperty();
+
     @Override
     public <T> T getValue(Object o, Integer index) {
         if (o == null)
@@ -25,6 +26,7 @@ public class SetProperty implements Property<Integer> {
 
     /**
      * 请注意，index参数无法对Set生效
+     *
      * @param o
      * @param index
      * @param value

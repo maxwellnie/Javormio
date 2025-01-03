@@ -6,9 +6,11 @@ import com.maxwellnie.velox.sql.core.utils.reflect.property.Property;
  * @author Maxwell Nie
  */
 public class SelfProperty implements Property<Object> {
+    public static final SelfProperty INSTANCE = new SelfProperty();
+
     SelfProperty() {
     }
-    public static final SelfProperty INSTANCE = new SelfProperty();
+
     @Override
     public Object getValue(Object o, Object o2) {
         return o;

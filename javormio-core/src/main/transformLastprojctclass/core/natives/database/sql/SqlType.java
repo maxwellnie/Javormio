@@ -17,9 +17,10 @@ public enum SqlType {
     OTHER,
     JDBC,
     TEMPLATE;
-    public SqlType toSqlRunnerType(){
+
+    public SqlType toSqlRunnerType() {
         SqlType newSqlType = this;
-        switch (this){
+        switch (this) {
             case UPDATE:
             case DELETE:
             case INSERT:
@@ -35,7 +36,7 @@ public enum SqlType {
                 newSqlType = SqlType.BATCH;
                 break;
             default:
-                throw new TypeNotSupportedException("Not supported SqlType =>["+this+"]");
+                throw new TypeNotSupportedException("Not supported SqlType =>[" + this + "]");
         }
         return newSqlType;
     }

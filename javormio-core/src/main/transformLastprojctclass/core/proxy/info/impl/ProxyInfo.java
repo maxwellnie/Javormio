@@ -11,6 +11,7 @@ public class ProxyInfo extends MetaStyleWrapper<Object> {
     private Class<?> clazz;
     private Object proxyObject;
     private Class<?>[] interfaces;
+
     public MethodProxyInfo[] getMethodProxyInfos() {
         return methodProxyInfos;
     }

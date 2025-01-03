@@ -49,6 +49,7 @@ public class SelectPageMethodHandler extends EnhancedMethodHandler {
         metaData.addProperty("sqlDecorator", args[1]);
         return metaData;
     }
+
     @MethodInterceptor
     public void check(SimpleInvocation simpleInvocation, TableInfo tableInfo, Session session, Object[] args) throws ExecutorException, InvocationTargetException, IllegalAccessException {
         simpleInvocation.proceed(tableInfo, session, args);
@@ -56,8 +57,9 @@ public class SelectPageMethodHandler extends EnhancedMethodHandler {
             throw new ExecutorException("args length must be contains Page and SqlDecorator parameter");
         }
     }
+
     @MethodInterceptor
-    public RowSql buildRowSql(SimpleInvocation simpleInvocation,MetaData metaData) throws ExecutorException {
+    public RowSql buildRowSql(SimpleInvocation simpleInvocation, MetaData metaData) throws ExecutorException {
         SqlDecorator<?> sqlDecorator = metaData.getProperty("sqlDecorator");
         if (sqlDecorator != null) {
             sqlDecorator.setLimitFragment(null);
@@ -65,6 +67,7 @@ public class SelectPageMethodHandler extends EnhancedMethodHandler {
         RowSqlFactory rowSqlFactory = new QueryRowSqlFactory();
         return rowSqlFactory.getRowSql(metaData);
     }
+
     @MethodInterceptor
     public StatementWrapper openStatement(SimpleInvocation simpleInvocation, RowSql rowSql, Session session, TableInfo tableInfo, Object[] args) throws ExecutorException, InvocationTargetException, IllegalAccessException {
         long count = 0;
@@ -119,8 +122,9 @@ public class SelectPageMethodHandler extends EnhancedMethodHandler {
         }
 
     }
+
     @MethodInterceptor
-    public Object runSql(SimpleInvocation simpleInvocation,StatementWrapper statementWrapper, RowSql rowSql) throws ExecutorException {
+    public Object runSql(SimpleInvocation simpleInvocation, StatementWrapper statementWrapper, RowSql rowSql) throws ExecutorException {
         SqlExecutor<?> sqlExecutor = SqlExecutor.get(rowSql.getSqlType());
         try {
             statementWrapper.addProperty("result", sqlExecutor.run(rowSql, statementWrapper));
@@ -129,6 +133,7 @@ public class SelectPageMethodHandler extends EnhancedMethodHandler {
             throw LogUtils.convertToAdaptLoggerException(e, rowSql.getNativeSql(), rowSql.getParamsList());
         }
     }
+
     @MethodInterceptor
     public SqlResult handleRunnerResult(SimpleInvocation simpleInvocation, Object result, TableInfo tableInfo, CacheKey cacheKey, ReturnTypeMapping returnTypeMapping) throws ExecutorException {
         Object entityObjects = Collections.EMPTY_LIST;

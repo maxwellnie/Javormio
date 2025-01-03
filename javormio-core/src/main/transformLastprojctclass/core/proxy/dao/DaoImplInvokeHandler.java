@@ -57,7 +57,6 @@ public class DaoImplInvokeHandler implements InvocationHandler {
     }
 
 
-
     public Cache<Object, Object> getCache() {
         return cache;
     }
@@ -105,7 +104,6 @@ public class DaoImplInvokeHandler implements InvocationHandler {
         } else
             throw new NotMappedMethodException("The method \"" + method.getReturnType() + " " + method.getName() + Arrays.toString(method.getParameterTypes()).replace("[", "(").replace("]", ")") + "\" did not find a MethodExecutor.");
     }
-
 
 
     @Override

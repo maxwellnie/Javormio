@@ -6,11 +6,13 @@ import java.io.Serializable;
 
 /**
  * 任务队列
+ *
  * @author Maxwell Nie
  */
 public interface TaskQueue extends Serializable {
     /**
      * 请求排队
+     *
      * @param group
      * @param cacheKey
      * @param task

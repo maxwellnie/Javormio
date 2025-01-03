@@ -12,15 +12,19 @@ public class ParamTypeMapping extends TypeMapping<ParamTypeMapping> {
     boolean batchParam;
     Object batchProperty;
     boolean isComplexType;
+
     public int getArgumentIndex() {
         return argumentIndex;
     }
+
     public void setArgumentIndex(int argumentIndex) {
         this.argumentIndex = argumentIndex;
     }
+
     public TypeConvertor<?> getTypeConvertor() {
         return typeConvertor;
     }
+
     public void setTypeConvertor(TypeConvertor<?> typeConvertor) {
         this.typeConvertor = typeConvertor;
     }
@@ -48,6 +52,7 @@ public class ParamTypeMapping extends TypeMapping<ParamTypeMapping> {
     public void setComplexType(boolean complexType) {
         isComplexType = complexType;
     }
+
     @Override
     public String toString() {
         return "ParamTypeMapping{" +

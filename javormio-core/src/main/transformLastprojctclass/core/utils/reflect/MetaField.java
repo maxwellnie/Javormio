@@ -15,6 +15,7 @@ public class MetaField {
     Method setter;
     boolean isCollection;
     boolean isArray;
+
     /**
      * 设置对象的属性值
      *

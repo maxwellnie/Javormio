@@ -36,11 +36,14 @@ import java.util.*;
  */
 public class SQLTemplateParser {
     private static final SQLTemplateParser instance = new SQLTemplateParser();
+
     SQLTemplateParser() {
     }
+
     public static SQLTemplateParser getInstance() {
         return instance;
     }
+
     /**
      * 解析SQL模板，制造MethodExecutor
      *
@@ -124,6 +127,7 @@ public class SQLTemplateParser {
 
     /**
      * 添加参数列表
+     *
      * @param metaData
      * @param sqlTemplateInfo
      * @param rowSql
@@ -136,12 +140,12 @@ public class SQLTemplateParser {
             Object[] args = metaData.getProperty("args");
             ParamTypeMapping rootTypeMapping = sqlTemplateInfo.getParameterTypeMapping();
             ParamTypeMapping batchParamTypeMapping = rootTypeMapping.getChild(rootTypeMapping.getBatchProperty());
-            if(batch && rootTypeMapping.isBatchParam()){
+            if (batch && rootTypeMapping.isBatchParam()) {
                 Object bean = args[0];
                 int length = -1;
-                if(batchParamTypeMapping.isArray())
+                if (batchParamTypeMapping.isArray())
                     length = Array.getLength(bean);
-                else if(batchParamTypeMapping.isCollection())
+                else if (batchParamTypeMapping.isCollection())
                     length = ((Collection<?>) bean).size();
                 else
                     length = 1;
@@ -153,15 +157,17 @@ public class SQLTemplateParser {
                     addParams(rowSql, batchParamTypeMapping.getChild(rootTypeMapping.getBatchProperty()), rowProperty, ways, params, typeConvertors, notSet);
                     notSet = true;
                 }
-            }else {
+            } else {
                 List<TypeConvertor<?>> typeConvertors = new LinkedList<>();
                 List<Object> params = new LinkedList<>();
                 addParams(rowSql, rootTypeMapping, args, ways, params, typeConvertors, false);
             }
         }
     }
+
     /**
      * 向参数列表添加参数
+     *
      * @param rowSql
      * @param rootTypeMapping
      * @param o
@@ -169,28 +175,28 @@ public class SQLTemplateParser {
      * @param params
      */
     private void addParams(RowSql rowSql, ParamTypeMapping rootTypeMapping, Object o, List<Node<ValueReader>> ways, List<Object> params, List<TypeConvertor<?>> typeConvertors, boolean notSet) {
-        MetaProperty<ParamTypeMapping> metaProperty =  new MetaProperty<>(rootTypeMapping, o, null);
+        MetaProperty<ParamTypeMapping> metaProperty = new MetaProperty<>(rootTypeMapping, o, null);
         for (Node<ValueReader> wayLinkedNode : ways) {
-            MetaProperty.Result<ParamTypeMapping, ValueReader> result =  metaProperty.searchByWay(wayLinkedNode);
+            MetaProperty.Result<ParamTypeMapping, ValueReader> result = metaProperty.searchByWay(wayLinkedNode);
             ValueReader.Value value = result.getNode().getValue().read(result.getBean());
-            if(value == ValueReader.Value.NULL)
+            if (value == ValueReader.Value.NULL)
                 throw new ValueReaderException("The value of the parameter cannot be null.Please check log.");
-            if (value != null){
+            if (value != null) {
                 Object param = value.getValue();
                 if (param == null)
                     params.add(null);
-                else if (value.isArray()){
-                    for (int i = 0; i < Array.getLength(value.getValue()); i++){
+                else if (value.isArray()) {
+                    for (int i = 0; i < Array.getLength(value.getValue()); i++) {
                         params.add(Array.get(value.getValue(), i));
                     }
-                }else if (value.isCollection()){
+                } else if (value.isCollection()) {
                     params.addAll((Collection<?>) value.getValue());
-                }else{
+                } else {
                     params.add(value.getValue());
                 }
-                if(result.getPropertyTypeMapping() == null)
+                if (result.getPropertyTypeMapping() == null)
                     throw new TemplateException("It may be a bug.TypeMapping must not be null.");
-                if (!notSet){
+                if (!notSet) {
                     TypeConvertor<?> typeConvertor = result.getBasicTypeMapping().getTypeConvertor();
                     if (typeConvertor == null)
                         typeConvertor = TypeConvertorManager.getConvertor(result.getBasicTypeMapping().getType());
@@ -198,7 +204,7 @@ public class SQLTemplateParser {
                 }
             }
         }
-        if(!notSet)
+        if (!notSet)
             rowSql.setTypeConvertors(typeConvertors);
         rowSql.getParamsList().add(params);
     }
@@ -214,7 +220,7 @@ public class SQLTemplateParser {
      * @return
      */
     MethodExecutor insertMethodExecutor(boolean batch, MethodExecutorBuilder.Builder builder, SQL sql, TableInfo tableInfo, Method method) {
-        MethodExecutor insertMethodExecutor =  new InsertMethodExecutor();
+        MethodExecutor insertMethodExecutor = new InsertMethodExecutor();
         TemplateEngine templateEngine = SingletonConfiguration.getInstance().getTemplateEngine();
         TemplateParser templateParser = templateEngine.getParser();
         SqlTemplateInfo sqlTemplateInfo = templateParser.parse(sql.value(), method, tableInfo);
@@ -246,7 +252,7 @@ public class SQLTemplateParser {
      * @return
      */
     MethodExecutor deleteMethodExecutor(boolean batch, MethodExecutorBuilder.Builder builder, SQL sql, TableInfo tableInfo, Method method) {
-        MethodExecutor deleteMethodExecutor =  new DeleteMethodExecutor();
+        MethodExecutor deleteMethodExecutor = new DeleteMethodExecutor();
         TemplateEngine templateEngine = SingletonConfiguration.getInstance().getTemplateEngine();
         TemplateParser templateParser = templateEngine.getParser();
         SqlTemplateInfo sqlTemplateInfo = templateParser.parse(sql.value(), method, tableInfo);
@@ -277,7 +283,7 @@ public class SQLTemplateParser {
      * @return
      */
     MethodExecutor updateMethodExecutor(MethodExecutorBuilder.Builder builder, SQL sql, TableInfo tableInfo, Method method) {
-        MethodExecutor updateMethodExecutor =  new UpdateMethodExecutor();
+        MethodExecutor updateMethodExecutor = new UpdateMethodExecutor();
         TemplateEngine templateEngine = SingletonConfiguration.getInstance().getTemplateEngine();
         TemplateParser templateParser = templateEngine.getParser();
         SqlTemplateInfo sqlTemplateInfo = templateParser.parse(sql.value(), method, tableInfo);

@@ -162,7 +162,7 @@ public class TableInfo {
     }
 
     public ReturnTypeMapping getReturnTypeMapping(Class<?> clazz, String key) {
-        if (returnTypeMappingMap.containsKey(clazz)){
+        if (returnTypeMappingMap.containsKey(clazz)) {
             return returnTypeMappingMap.get(clazz).get(key);
         }
         return null;

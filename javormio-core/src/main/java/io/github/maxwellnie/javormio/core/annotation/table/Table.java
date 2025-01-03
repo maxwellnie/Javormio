@@ -21,12 +21,14 @@ public @interface Table {
      * @return String
      */
     String value() default Constants.EMPTY_STRING;
+
     /**
      * 别名
      *
      * @return String
      */
     String alias() default Constants.EMPTY_STRING;
+
     /**
      * 默认数据源
      *

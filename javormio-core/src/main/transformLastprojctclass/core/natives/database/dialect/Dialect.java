@@ -20,18 +20,21 @@ public abstract class Dialect extends SqlInterceptor {
 
     @Override
     public RowSql beforeBuildRowSql(MetaData metaData) {
-        if(!SqlType.QUERY.equals(metaData.getProperty("sqlType")))
+        if (!SqlType.QUERY.equals(metaData.getProperty("sqlType")))
             return null;
         else
             return beforeBuild(metaData);
     }
+
     public abstract RowSql beforeBuild(MetaData metaData);
+
     @Override
     public RowSql afterBuildRowSql(MetaData metaData, RowSql rowSql) {
-        if(!SqlType.QUERY.equals(metaData.getProperty("sqlType")))
+        if (!SqlType.QUERY.equals(metaData.getProperty("sqlType")))
             return rowSql;
         else
             return afterBuild((QueryRowSql) rowSql);
     }
+
     public abstract QueryRowSql afterBuild(QueryRowSql rowSql);
 }

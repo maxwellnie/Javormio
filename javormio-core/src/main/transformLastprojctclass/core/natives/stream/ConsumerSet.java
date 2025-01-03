@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 
 /**
  * 消费者集合
+ *
  * @author Maxwell Nie
  */
 public class ConsumerSet<T> implements ActionSet<T, Consumer<T>> {

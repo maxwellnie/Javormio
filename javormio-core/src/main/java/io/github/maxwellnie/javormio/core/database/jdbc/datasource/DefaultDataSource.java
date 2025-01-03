@@ -20,6 +20,10 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class DefaultDataSource implements DynamicMultipleDataSource {
     /**
+     * 日志
+     */
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultDataSource.class);
+    /**
      * 当前数据源名称
      */
     private final ThreadLocal<String> currentDataSourceName = new ThreadLocal<>();
@@ -39,10 +43,7 @@ public class DefaultDataSource implements DynamicMultipleDataSource {
      * 当前事务对象
      */
     private final ThreadLocal<TransactionObject> currentTransactionObject = new ThreadLocal<>();
-    /**
-     * 日志
-     */
-    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultDataSource.class);
+
     public DefaultDataSource(String defaultDataSourceName, DataSource defaultDataSource, SystemClock systemClock) {
         this.defaultDataSourceName = defaultDataSourceName;
         register(defaultDataSourceName, defaultDataSource);
@@ -70,6 +71,7 @@ public class DefaultDataSource implements DynamicMultipleDataSource {
         currentDataSourceName.remove();
         return true;
     }
+
     /**
      * 获取连接，并且获取当前线程的事务对象
      *
@@ -87,10 +89,11 @@ public class DefaultDataSource implements DynamicMultipleDataSource {
             transactionObject = currentTransactionObject.get();
         return new ConnectionResource(dataSourceName, dataSource, dataSource.getConnection(), transactionObject);
     }
+
     /**
      * 获取连接，并且获取当前线程的事务对象
      *
-     *  @param autoCommit
+     * @param autoCommit
      * @return ConnectionResource
      * @throws SQLException
      */
@@ -100,6 +103,7 @@ public class DefaultDataSource implements DynamicMultipleDataSource {
         connectionResource.setAutoCommit(autoCommit);
         return connectionResource;
     }
+
     /**
      * 获取连接，并且获取当前线程的事务对象
      *
@@ -121,6 +125,7 @@ public class DefaultDataSource implements DynamicMultipleDataSource {
         currentTransactionObject.set(transactionObject);
         return new ConnectionResource(dataSourceName, dataSource, dataSource.getConnection(), transactionObject);
     }
+
     /**
      * 获取连接，并且获取当前线程的事务对象
      *
@@ -135,6 +140,7 @@ public class DefaultDataSource implements DynamicMultipleDataSource {
         connectionResource.setAutoCommit(autoCommit);
         return connectionResource;
     }
+
     @Override
     public Collection<DataSource> getDataSources() {
         return this.dataSourceMap.values();

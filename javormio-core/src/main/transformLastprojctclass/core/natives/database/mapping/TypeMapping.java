@@ -9,17 +9,19 @@ import java.util.Map;
 /**
  * @author Maxwell Nie
  */
-public abstract class TypeMapping<T extends TypeMapping<T>>{
+public abstract class TypeMapping<T extends TypeMapping<T>> {
     Class<?> type;
     T parentTypeMapping;
     Map<Object, T> innerTypeMappings;
     Property property;
     boolean isComplexType;
-    public Object setProperty(Object bean, Object param, Object value){
-        return property.setValue(bean,param,value);
+
+    public Object setProperty(Object bean, Object param, Object value) {
+        return property.setValue(bean, param, value);
     }
-    public Object getProperty(Object bean, Object param){
-        return property.getValue(bean,param);
+
+    public Object getProperty(Object bean, Object param) {
+        return property.getValue(bean, param);
     }
 
     public Class<?> getType() {
@@ -53,7 +55,8 @@ public abstract class TypeMapping<T extends TypeMapping<T>>{
     public void setPropertyDefined(Property property) {
         this.property = property;
     }
-    public T getChild(Object key){
+
+    public T getChild(Object key) {
         if (innerTypeMappings == null)
             return null;
         return innerTypeMappings.get(key);
@@ -62,6 +65,7 @@ public abstract class TypeMapping<T extends TypeMapping<T>>{
     public boolean isArray() {
         return type.isArray();
     }
+
     public boolean isCollection() {
         return Collection.class.isAssignableFrom(type);
     }
@@ -73,9 +77,11 @@ public abstract class TypeMapping<T extends TypeMapping<T>>{
     public void setComplexType(boolean complexType) {
         isComplexType = complexType;
     }
-    public boolean isBasicType(){
+
+    public boolean isBasicType() {
         return TypeUtils.isBasic(type);
     }
+
     @Override
     public String toString() {
         return "TypeMapping{" +

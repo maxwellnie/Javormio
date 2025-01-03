@@ -6,6 +6,7 @@ import java.util.function.Function;
 
 /**
  * 值读取器，这是一个函数型的读取器，可以读取任何类型的值，包括集合，数组等
+ *
  * @author Maxwell Nie
  */
 public class ValueReader {
@@ -32,8 +33,10 @@ public class ValueReader {
         this.param = param;
         this.key = key;
     }
+
     /**
      * 读取值
+     *
      * @param bean
      * @return Value
      */
@@ -56,6 +59,7 @@ public class ValueReader {
     public Object getKey() {
         return key;
     }
+
     /**
      * 配置类，用于配置读取器
      */
@@ -102,8 +106,9 @@ public class ValueReader {
         public void setBean(Object bean) {
             this.bean = bean;
         }
-        public Object autoRead(){
-            if(property == null)
+
+        public Object autoRead() {
+            if (property == null)
                 throw new ValueReaderException("property is null");
             if (bean == null)
                 throw new ValueReaderException("bean is null");
@@ -116,6 +121,10 @@ public class ValueReader {
      */
     public static class Value {
         /**
+         * 空值
+         */
+        public static final Value NULL = new Value(null, false, false);
+        /**
          * 值
          */
         private Object value;
@@ -127,10 +136,7 @@ public class ValueReader {
          * 是否是数组
          */
         private boolean isArray;
-        /**
-         * 空值
-         */
-        public static final Value NULL = new Value(null, false, false);
+
         public Value(Object value, boolean isCollection, boolean isArray) {
             this.value = value;
             this.isCollection = isCollection;

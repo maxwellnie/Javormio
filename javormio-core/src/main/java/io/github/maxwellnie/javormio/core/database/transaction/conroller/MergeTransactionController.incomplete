@@ -16,8 +16,8 @@ import java.util.Iterator;
  * @author Maxwell Nie
  */
 public class MergeTransactionController extends AbstractTransactionController {
-    boolean isClosed = false;
     private final SystemClock systemClock;
+    boolean isClosed = false;
 
     public MergeTransactionController(DynamicMultipleDataSource dataSource, SystemClock systemClock) {
         super(dataSource.getTransactionObject());
@@ -32,36 +32,36 @@ public class MergeTransactionController extends AbstractTransactionController {
     @Override
     public void commit() throws SQLException {
         CacheTransactional transactional = (CacheTransactional) transaction.getProperties().get("txCache");
-        try{
-           check();
-           boolean ableToFlush = transactional != null && transactional.isUpdated();
-           if (ableToFlush)
-               transactional.clear();
-           Collection<AtomicTransaction> atomicTransactions = transaction.getAtomicTransactions();
-           Iterator<AtomicTransaction> atomicTransactionIterator = atomicTransactions.iterator();
-           while (atomicTransactionIterator.hasNext()) {
-               atomicTransactionIterator.next().getConnection().commit();
-           }
-           if (ableToFlush)
-               transactional.commit();
-       }catch (Throwable e){
-           if (transactional != null)
-               transactional.rollback();
-       }finally {
-           transaction.clear();
-       }
+        try {
+            check();
+            boolean ableToFlush = transactional != null && transactional.isUpdated();
+            if (ableToFlush)
+                transactional.clear();
+            Collection<AtomicTransaction> atomicTransactions = transaction.getAtomicTransactions();
+            Iterator<AtomicTransaction> atomicTransactionIterator = atomicTransactions.iterator();
+            while (atomicTransactionIterator.hasNext()) {
+                atomicTransactionIterator.next().getConnection().commit();
+            }
+            if (ableToFlush)
+                transactional.commit();
+        } catch (Throwable e) {
+            if (transactional != null)
+                transactional.rollback();
+        } finally {
+            transaction.clear();
+        }
     }
 
     @Override
     public void rollback() throws SQLException {
-        try{
+        try {
             check();
             Collection<AtomicTransaction> atomicTransactions = transaction.getAtomicTransactions();
             Iterator<AtomicTransaction> atomicTransactionIterator = atomicTransactions.iterator();
             while (atomicTransactionIterator.hasNext()) {
                 atomicTransactionIterator.next().getConnection().rollback();
             }
-        }finally {
+        } finally {
             CacheTransactional transactional = (CacheTransactional) transaction.getProperties().get("txCache");
             if (transactional != null)
                 transactional.rollback();
@@ -89,13 +89,14 @@ public class MergeTransactionController extends AbstractTransactionController {
         }
     }
 
-    private void check() throws SQLException{
+    private void check() throws SQLException {
         if (isClosed())
             throw new SQLException("Transaction is closed");
         long expectedTime = transaction.createTime() + transaction.expireTime() * 1000;
         if (expectedTime < systemClock.now())
             throw new SQLException("Transaction is expired");
     }
+
     @Override
     public boolean isClosed() throws SQLException {
         return isClosed;

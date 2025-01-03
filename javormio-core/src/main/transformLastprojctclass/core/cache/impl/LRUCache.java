@@ -19,15 +19,13 @@ public class LRUCache implements Cache<Object, Object> {
     private static final Lock READ_LOCK = ThreadLock.readLock("velox.sql.cache.LRUCache");
     private static final Lock WRITE_LOCK = ThreadLock.writeLock("velox.sql.cache.LRUCache");
     private int capacity = 100;
-    private final Map<Object, Object> data = new LinkedHashMap<Object, Object>(capacity, 0.75f, true) {
+    public LRUCache() {
+    }    private final Map<Object, Object> data = new LinkedHashMap<Object, Object>(capacity, 0.75f, true) {
         @Override
         protected boolean removeEldestEntry(Map.Entry<Object, Object> eldest) {
             return size() > LRUCache.this.getCapacity();
         }
     };
-
-    public LRUCache() {
-    }
 
     public LRUCache(int capacity) {
         this.capacity = capacity;
@@ -117,4 +115,6 @@ public class LRUCache implements Cache<Object, Object> {
                 "data=" + data +
                 '}';
     }
+
+
 }

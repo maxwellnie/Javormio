@@ -29,7 +29,8 @@ public abstract class ReflectionUtils {
             "org.springframework.cglib.proxy.Factory",
             "javassist.util.proxy.ProxyObject",
             "org.springframework.context.annotation.ConfigurationClassEnhancer$EnhancedConfiguration"
-            );
+    );
+
     /**
      * 获取一个Class对象的全部属性（包括父类的属性）。
      *
@@ -74,13 +75,16 @@ public abstract class ReflectionUtils {
         }
         return allFields;
     }
-    private static <T> T proxy(T target, Object proxyDef){
+
+    private static <T> T proxy(T target, Object proxyDef) {
         return (T) PROXY_OBJECT_FACTORY.produce(target, PROXY_INFO_PARSER.parse(proxyDef));
     }
-    private static <T> T proxy(T target, Class<?> proxyDef){
+
+    private static <T> T proxy(T target, Class<?> proxyDef) {
         return (T) PROXY_OBJECT_FACTORY.produce(target, PROXY_INFO_PARSER.parse(proxyDef));
     }
-    public static boolean isProxy(Class<?> clazz){
+
+    public static boolean isProxy(Class<?> clazz) {
         if (clazz != null) {
             for (Class<?> cls : clazz.getInterfaces()) {
                 if (PROXY_CLASS_PREFIX.contains(cls.getName())) {
@@ -90,23 +94,24 @@ public abstract class ReflectionUtils {
         }
         return false;
     }
-    public static<T> Class<T> scanAndReturnChildOfTargetType(Class<?> clazz, Class<T> targetType){
+
+    public static <T> Class<T> scanAndReturnChildOfTargetType(Class<?> clazz, Class<T> targetType) {
         if (isProxy(clazz))
             clazz = clazz.getSuperclass();
         Class<?> superClass = clazz;
         Class<?> child = null;
         all:
         while (superClass != null && !superClass.equals(Object.class)) {
-            if(superClass.equals(targetType))
+            if (superClass.equals(targetType))
                 break;
             Class<?>[] interfaces = superClass.getInterfaces();
-            for (Class<?> anInterface : interfaces){
-                if(anInterface.equals(targetType)){
+            for (Class<?> anInterface : interfaces) {
+                if (anInterface.equals(targetType)) {
                     child = superClass;
                     break all;
-                } else{
+                } else {
                     Class<?> deepResult = scanAndReturnChildOfTargetType(anInterface, targetType);
-                    if(deepResult != null){
+                    if (deepResult != null) {
                         child = deepResult;
                         break all;
                     }
@@ -391,6 +396,7 @@ public abstract class ReflectionUtils {
             return metaField;
         }
     }
+
     /**
      * 获取一个字段的元数据对象。
      *

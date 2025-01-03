@@ -9,11 +9,12 @@ import java.util.Map;
  */
 public class MapProperty implements Property<Object> {
     public static final MapProperty INSTANCE = new MapProperty();
+
     @Override
     public <T> T getValue(Object o, Object o2) {
         if (o == null)
             return null;
-        return (T) ((Map)o).get(o2);
+        return (T) ((Map) o).get(o2);
     }
 
     @Override

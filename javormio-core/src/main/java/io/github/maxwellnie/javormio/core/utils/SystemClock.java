@@ -33,21 +33,24 @@ public class SystemClock {
     public static SystemClock getClock() {
         return new SystemClock(1);
     }
+
     /**
      * 获取带时钟偏差（获取时间的间隔高于1ms）的时钟,对于性能需求极高的场景请使用这个“误差钟”
+     *
      * @param period 时钟周期
      * @return SystemClock
      */
-    public static SystemClock getDeviationClock(int period){
+    public static SystemClock getDeviationClock(int period) {
         return new SystemClock(period);
     }
+
     public long now() {
         return NOW.get();
     }
 
     private void scheduleClock() {
         ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor(
-                r ->{
+                r -> {
                     Thread t = new Thread(r, "SystemClock");
                     t.setDaemon(true);
                     return t;

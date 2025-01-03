@@ -5,6 +5,7 @@ import io.github.maxwellnie.javormio.core.java.api.Resource;
 
 /**
  * sql资源
+ *
  * @author Maxwell Nie
  */
 public class SqlResource implements Resource {

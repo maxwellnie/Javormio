@@ -12,4 +12,5 @@ public interface Constants {
     String CACHE_GLOBAL_KEY = "Global";
     String EMPTY_STRING = "";
     String SELECT_GENERATED_KEY = "SGK";
+    String RESULT_SET_CONVERTOR = "RSC";
 }

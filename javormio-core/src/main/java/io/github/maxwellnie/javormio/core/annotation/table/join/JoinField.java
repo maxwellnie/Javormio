@@ -19,6 +19,7 @@ public @interface JoinField {
      * @return String
      */
     String slaveName();
+
     /**
      * 主表字段名
      *

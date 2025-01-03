@@ -27,6 +27,7 @@ public class StackTransactionObject implements TransactionObject {
      * 属性
      */
     private Map<String, Object> properties = new LinkedHashMap<>();
+
     public StackTransactionObject(long expireTime, long createTime) {
         this.expireTime = expireTime;
         this.createTime = createTime;
@@ -34,6 +35,7 @@ public class StackTransactionObject implements TransactionObject {
 
     public StackTransactionObject() {
     }
+
     public void appendAtomicTransaction(AtomicTransaction atomicTransaction) {
         this.atomicTransactions.push(atomicTransaction);
     }

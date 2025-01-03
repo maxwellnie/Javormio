@@ -220,6 +220,7 @@ public class SqlServerDialect extends Dialect {
             return "";
         }
     }
+
     @Override
     public RowSql beforeBuild(MetaData metaData) {
         return null;

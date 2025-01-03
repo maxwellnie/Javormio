@@ -26,16 +26,17 @@ public class CachePlugin {
 
     @Interceptor
     public Object execute(InvocationLine invocationLine, InvokerContext invokerContext,
-                             ExecutableSql executableSql, TableInfo tableInfo, ConnectionResource connectionResource, TypeMapping typeMapping)
+                          ExecutableSql executableSql, TableInfo tableInfo, ConnectionResource connectionResource, TypeMapping typeMapping)
             throws MethodInvocationException {
         Object result = cache.get(new SqlHashCacheKey(executableSql.getNamespace(),
                 connectionResource.getDataSourceName(), executableSql.getSqlList(), executableSql.getParametersList()));
-        if(result != null){
+        if (result != null) {
             return result;
-        }else{
+        } else {
             return invocationLine.proceed(invokerContext);
         }
     }
+
     @Interceptor
     public Object execute(InvocationLine invocationLine, InvokerContext invokerContext)
             throws MethodInvocationException {
@@ -43,9 +44,9 @@ public class CachePlugin {
         ConnectionResource connectionResource = (ConnectionResource) invokerContext.getArgs()[1];
         Object result = cache.get(new SqlHashCacheKey(executableSql.getNamespace(),
                 connectionResource.getDataSourceName(), executableSql.getSqlList(), executableSql.getParametersList()));
-        if(result != null){
+        if (result != null) {
             return result;
-        }else{
+        } else {
             return invocationLine.proceed(invokerContext);
         }
     }

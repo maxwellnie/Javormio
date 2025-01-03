@@ -3,7 +3,7 @@ package com.maxwellnie.velox.sql.core.natives.database.sql.row;
 /**
  * @author Maxwell Nie
  */
-public class QueryRowSql extends RowSql{
+public class QueryRowSql extends RowSql {
     private boolean paging;
     private long start;
     private long offset;

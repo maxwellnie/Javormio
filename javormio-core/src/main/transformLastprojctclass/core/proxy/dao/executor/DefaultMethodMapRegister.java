@@ -64,11 +64,11 @@ public class DefaultMethodMapRegister implements MethodMapRegister {
                         throw new RegisterMethodException("The executor " + SQLMethod.value() + " of method " + method + "  cannot be instantiated.", e);
                     }
                 }
-            }else if(method.isAnnotationPresent(SQL.class)){
+            } else if (method.isAnnotationPresent(SQL.class)) {
                 SQL sql = method.getDeclaredAnnotation(SQL.class);
                 Class<?> executor = sql.executor();
                 MethodExecutor methodExecutor;
-                if(executor != null && executor != QuickCustomMethodExecutor.class){
+                if (executor != null && executor != QuickCustomMethodExecutor.class) {
                     try {
                         methodExecutor = (MethodExecutor) ReflectionUtils.newInstance(executor);
                     } catch (NoSuchMethodException | InvocationTargetException | InstantiationException |
@@ -76,11 +76,11 @@ public class DefaultMethodMapRegister implements MethodMapRegister {
                         throw new DaoRegisterException(e);
                     }
                     methodMappedManager.registeredMapped(MethodExecutorUtils.getMethodDeclaredName(method), methodExecutor);
-                }else {
+                } else {
                     Class<?> entityClass = (Class<?>) args[0];
                     TableInfo tableInfo = TableInfoManager.getTableInfo(entityClass);
                     methodExecutor = SQLTemplateParser.getInstance().parse(method, daoDefinedClass, tableInfo);
-                    methodMappedManager.registeredMapped(((QuickCustomMethodExecutor)methodExecutor).getName(), methodExecutor);
+                    methodMappedManager.registeredMapped(((QuickCustomMethodExecutor) methodExecutor).getName(), methodExecutor);
                 }
             }
         }

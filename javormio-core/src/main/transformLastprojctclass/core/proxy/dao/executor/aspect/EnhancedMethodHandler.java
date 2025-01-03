@@ -5,9 +5,9 @@ import com.maxwellnie.velox.sql.core.natives.exception.MethodNotSupportException
 /**
  * @author Maxwell Nie
  */
-public class EnhancedMethodHandler extends AbstractMethodHandler{
+public class EnhancedMethodHandler extends AbstractMethodHandler {
     public EnhancedMethodHandler(long index, TargetMethodSignature signature) {
-        super(index,null, signature);
+        super(index, null, signature);
     }
 
     @Override

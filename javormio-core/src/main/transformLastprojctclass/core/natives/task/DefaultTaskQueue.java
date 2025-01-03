@@ -13,6 +13,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
  * 事务操作任务的队列
+ *
  * @author Maxwell Nie
  */
 public class DefaultTaskQueue implements TaskQueue {

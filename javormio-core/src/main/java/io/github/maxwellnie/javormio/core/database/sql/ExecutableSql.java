@@ -4,6 +4,7 @@ import java.util.List;
 
 /**
  * 可直接打开报表提交到数据库的SQL对象
+ *
  * @author Maxwell Nie
  */
 public class ExecutableSql {
@@ -31,15 +32,15 @@ public class ExecutableSql {
         this.type = type;
     }
 
+    public ExecutableSql() {
+    }
+
     public String getNamespace() {
         return namespace;
     }
 
     public void setNamespace(String namespace) {
         this.namespace = namespace;
-    }
-
-    public ExecutableSql() {
     }
 
     public String[] getSqlList() {

@@ -22,6 +22,7 @@ public class LastSqlMethodHandler extends EnhancedMethodHandler {
     public LastSqlMethodHandler() {
         super(1, TargetMethodSignature.ANY);
     }
+
     @MethodInterceptor
     public StatementWrapper openStatement(SimpleInvocation simpleInvocation, RowSql rowSql, Session session, TableInfo tableInfo, Object[] args) throws ExecutorException {
         try {

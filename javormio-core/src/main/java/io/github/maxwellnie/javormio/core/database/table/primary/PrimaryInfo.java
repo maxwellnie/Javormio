@@ -4,6 +4,7 @@ import io.github.maxwellnie.javormio.core.database.table.column.ColumnInfo;
 
 /**
  * 主键信息
+ *
  * @author Maxwell Nie
  */
 public class PrimaryInfo extends ColumnInfo {

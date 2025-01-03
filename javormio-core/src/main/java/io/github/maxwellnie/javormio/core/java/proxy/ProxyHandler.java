@@ -5,12 +5,14 @@ import io.github.maxwellnie.javormio.core.java.reflect.MetaMethod;
 
 /**
  * The handler of the proxy's method.
+ *
  * @author Maxwell Nie
  */
 public interface ProxyHandler {
     /**
      * Trigger the method.
-     * @param method The method.
+     *
+     * @param method  The method.
      * @param context The context of the method.
      * @return The result of the method.
      * @throws MethodInvocationException The exception of the method.

@@ -6,6 +6,7 @@ import java.util.Objects;
 
 /**
  * SQL参数，即SQL中所嵌入的值或Java对象
+ *
  * @author Maxwell Nie
  */
 public class SqlParameter {

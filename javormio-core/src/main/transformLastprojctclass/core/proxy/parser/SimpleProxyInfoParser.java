@@ -14,12 +14,13 @@ import java.lang.reflect.Method;
 /**
  * @author Maxwell Nie
  */
-public class SimpleProxyInfoParser implements ProxyInfoParser{
+public class SimpleProxyInfoParser implements ProxyInfoParser {
     @Override
     public ProxyInfo parse(Class<?> clazz) {
         try {
             return parse(ReflectionUtils.newInstance(clazz));
-        }catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e){
+        } catch (NoSuchMethodException | InvocationTargetException | InstantiationException |
+                 IllegalAccessException e) {
             throw new ProxyExtendsException(e);
         }
     }
@@ -31,13 +32,13 @@ public class SimpleProxyInfoParser implements ProxyInfoParser{
         Class<?> clazz = proxyObject.getClass();
         ProxyDefined proxyDefined = clazz.getDeclaredAnnotation(ProxyDefined.class);
         ProxyInfo proxyInfo = new ProxyInfo();
-        if(proxyDefined == null)
+        if (proxyDefined == null)
             return null;
-        else{
+        else {
             MethodProxyInfo[] methodProxyInfos = new MethodProxyInfo[0];
             Class<?>[] interfaces = proxyDefined.interfaces();
-            for (Method method : clazz.getDeclaredMethods()){
-                if(method.isAnnotationPresent(MethodInterceptor.class)) {
+            for (Method method : clazz.getDeclaredMethods()) {
+                if (method.isAnnotationPresent(MethodInterceptor.class)) {
                     MethodProxyInfo methodProxyInfo = new SimpleMethodProxyInfo();
                     methodProxyInfo.setMethodName(method.getName());
                     methodProxyInfo.setParameterTypes(method.getParameterTypes());

@@ -4,6 +4,7 @@ import java.util.Objects;
 
 /**
  * 缓存SQL资源的key
+ *
  * @author Maxwell Nie
  */
 public class SqlKey {

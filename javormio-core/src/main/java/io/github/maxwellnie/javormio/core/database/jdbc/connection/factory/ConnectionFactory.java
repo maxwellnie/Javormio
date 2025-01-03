@@ -8,6 +8,7 @@ import java.sql.SQLException;
 
 /**
  * 数据库连接工厂
+ *
  * @author Maxwell Nie
  */
 public interface ConnectionFactory extends AutoCloseable, Resource, Factory<ConnectionResource> {

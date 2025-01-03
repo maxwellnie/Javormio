@@ -53,6 +53,49 @@ public abstract class TableInfoManager {
         return TABLE_INFO_CACHE.keySet();
     }
 
+    private static TypeConvertor<?> getPrimaryTypeConvertor(Field f, PrimaryKey primaryKey) {
+        TypeConvertor<?> convertor = null;
+        try {
+            if (!primaryKey.convertor().equals(DefaultConvertor.class)) {
+                if (primaryKey.convertor().equals(JsonConvertor.class)) {
+                    JsonSupporter supporter = SingletonConfiguration.getInstance().getJsonSupporter();
+                    if (supporter == null)
+                        throw new EntityObjectException("The JsonSupporter must not be null.");
+                    convertor = new JsonConvertor<>(supporter, f.getType());
+                } else {
+                    convertor = ReflectionUtils.newInstance(primaryKey.convertor());
+                }
+            } else
+                convertor = TypeConvertorManager.getConvertor(f.getType());
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
+                 InvocationTargetException e) {
+            logger.error(e.getMessage() + "\t\n" + e.getCause());
+        }
+        return convertor;
+    }
+
+    private static TypeConvertor<?> getColumnTypeConvertor(Field f, Column column) {
+        TypeConvertor<?> convertor = null;
+        try {
+            if (!column.convertor().equals(DefaultConvertor.class)) {
+                if (column.convertor().equals(JsonConvertor.class)) {
+                    JsonSupporter supporter = SingletonConfiguration.getInstance().getJsonSupporter();
+                    if (supporter == null)
+                        throw new EntityObjectException("The JsonSupporter must not be null.");
+                    convertor = new JsonConvertor<>(supporter, f.getType());
+                } else {
+                    convertor = ReflectionUtils.newInstance(column.convertor());
+                }
+            } else {
+                convertor = TypeConvertorManager.getConvertor(f.getType());
+            }
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
+                 InvocationTargetException e) {
+            logger.error(e.getMessage() + "\t\n" + e.getCause());
+        }
+        return convertor;
+    }
+
     /**
      * 获取clazz对应表信息
      *
@@ -236,49 +279,6 @@ public abstract class TableInfoManager {
         }
         ColumnInfo columnInfo = new ColumnInfo(columnName, ReflectionUtils.getMetaField(tableInfo.getMappedClazz(), f), convertor);
         tableInfo.putColumnInfo(f.getName(), columnInfo);
-    }
-
-    private static TypeConvertor<?> getPrimaryTypeConvertor(Field f, PrimaryKey primaryKey) {
-        TypeConvertor<?> convertor = null;
-        try {
-            if (!primaryKey.convertor().equals(DefaultConvertor.class)) {
-                if (primaryKey.convertor().equals(JsonConvertor.class)) {
-                    JsonSupporter supporter = SingletonConfiguration.getInstance().getJsonSupporter();
-                    if(supporter == null)
-                        throw new EntityObjectException("The JsonSupporter must not be null.");
-                    convertor = new JsonConvertor<>(supporter, f.getType());
-                } else {
-                    convertor = ReflectionUtils.newInstance(primaryKey.convertor());
-                }
-            } else
-                convertor = TypeConvertorManager.getConvertor(f.getType());
-        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
-                 InvocationTargetException e) {
-            logger.error(e.getMessage() + "\t\n" + e.getCause());
-        }
-        return convertor;
-    }
-
-    private static TypeConvertor<?> getColumnTypeConvertor(Field f, Column column) {
-        TypeConvertor<?> convertor = null;
-        try {
-            if (!column.convertor().equals(DefaultConvertor.class)) {
-                if (column.convertor().equals(JsonConvertor.class)) {
-                    JsonSupporter supporter = SingletonConfiguration.getInstance().getJsonSupporter();
-                    if(supporter == null)
-                        throw new EntityObjectException("The JsonSupporter must not be null.");
-                    convertor = new JsonConvertor<>(supporter, f.getType());
-                } else {
-                    convertor = ReflectionUtils.newInstance(column.convertor());
-                }
-            } else {
-                convertor = TypeConvertorManager.getConvertor(f.getType());
-            }
-        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
-                 InvocationTargetException e) {
-            logger.error(e.getMessage() + "\t\n" + e.getCause());
-        }
-        return convertor;
     }
 
     /**

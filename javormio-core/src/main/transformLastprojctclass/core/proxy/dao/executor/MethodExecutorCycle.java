@@ -36,6 +36,7 @@ public class MethodExecutorCycle extends EnhancedMethodHandler {
     public MethodExecutorCycle() {
         super(MethodHandler.SPRING_SUPPORT_INDEX - 1L, TargetMethodSignature.ANY);
     }
+
     @MethodInterceptor
     public Object execute(SimpleInvocation simpleInvocation, TableInfo tableInfo, Session session, Cache cache, String daoImplHashCode, ReturnTypeMapping returnTypeMapping, Object[] args) throws ExecutorException {
         MethodExecutor executor = (MethodExecutor) simpleInvocation.getTarget();
@@ -53,7 +54,7 @@ public class MethodExecutorCycle extends EnhancedMethodHandler {
             // 绑定元数据
             statementWrapper.getMetaData().addFromMetaData(metaData);
             logger.debug("SQL ### : " + rowSql.getNativeSql());
-            if(rowSql.getParamsList().size() > 10)
+            if (rowSql.getParamsList().size() > 10)
                 logger.debug("PARAM # : [" + rowSql.getParamsList().size() + "] row params");
             else
                 logger.debug("PARAM # : " + rowSql.getParamsList());
@@ -97,7 +98,7 @@ public class MethodExecutorCycle extends EnhancedMethodHandler {
                             }
                         }
                     });
-                    if(error.get() != null)
+                    if (error.get() != null)
                         throw new ExecutorException(error.get());
                     Object value = result.get();
                     if (value == Empty.EMPTY)
@@ -128,7 +129,7 @@ public class MethodExecutorCycle extends EnhancedMethodHandler {
         }
     }
 
-    private Object handleResult(MethodExecutor executor, Logger logger, TableInfo tableInfo, Session context, Cache cache, ReturnTypeMapping returnTypeMapping, long startTime, StatementWrapper statementWrapper, AtomicReference<Object> result) throws ExecutorException{
+    private Object handleResult(MethodExecutor executor, Logger logger, TableInfo tableInfo, Session context, Cache cache, ReturnTypeMapping returnTypeMapping, long startTime, StatementWrapper statementWrapper, AtomicReference<Object> result) throws ExecutorException {
         if (result.get() != null) {
             SqlResult sqlResult = executor.handleRunnerResult(result.get(), tableInfo, MetaWrapperUtils.of(statementWrapper, "cacheKey"), returnTypeMapping);
             logger.debug("SQL EXECUTED | TIME: " + (SystemClock.now() - startTime) + "ms");

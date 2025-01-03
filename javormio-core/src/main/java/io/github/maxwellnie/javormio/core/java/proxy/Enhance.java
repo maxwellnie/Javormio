@@ -7,6 +7,6 @@ import java.lang.reflect.Method;
 /**
  * @author Maxwell Nie
  */
-public interface Enhance extends MethodExecutor{
+public interface Enhance extends MethodExecutor {
     Matcher<Method> getMatcher();
 }
