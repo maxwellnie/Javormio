@@ -11,6 +11,7 @@ import java.util.List;
  */
 public class ListProperty implements Property<Integer> {
     public static final ListProperty INSTANCE = new ListProperty();
+
     @Override
     public <T> T getValue(Object o, Integer integer) {
         if (o == null)

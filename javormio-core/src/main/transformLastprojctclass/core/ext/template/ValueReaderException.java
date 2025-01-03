@@ -3,7 +3,7 @@ package com.maxwellnie.velox.sql.core.ext.template;
 /**
  * @author Maxwell Nie
  */
-public class ValueReaderException extends RuntimeException{
+public class ValueReaderException extends RuntimeException {
 
     public ValueReaderException() {
     }

@@ -11,6 +11,7 @@ import java.lang.reflect.Method;
 public interface TemplateParser {
     /**
      * 解析模板
+     *
      * @param template
      * @param method
      * @param tableInfo

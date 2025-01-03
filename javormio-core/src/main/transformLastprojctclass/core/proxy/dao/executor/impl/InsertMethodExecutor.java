@@ -59,9 +59,9 @@ public class InsertMethodExecutor extends BaseMethodExecutor {
     @Override
     public void check(TableInfo tableInfo, Session session, Object[] args) throws ExecutorException {
         super.check(tableInfo, session, args);
-        if(args[0] == null)
+        if (args[0] == null)
             throw new ExecutorException("insert object is null");
-        if(args[0] instanceof Collection && ((Collection)args[0]).isEmpty())
+        if (args[0] instanceof Collection && ((Collection) args[0]).isEmpty())
             throw new ExecutorException("insert object is empty");
     }
 

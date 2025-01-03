@@ -4,17 +4,27 @@ import java.lang.reflect.Method;
 
 /**
  * 代理方法信息
+ *
  * @author Maxwell Nie
  */
 public interface MethodProxyInfo {
-    void setMethodName(String methodName);
     String getMethodName();
-    void setParameterTypes(Class<?>[] parameterTypes);
+
+    void setMethodName(String methodName);
+
     Class<?>[] getParameterTypes();
-    void setReturnType(Class<?> returnType);
+
+    void setParameterTypes(Class<?>[] parameterTypes);
+
     Class<?> getReturnType();
-    void setProxyMethod(Method method);
+
+    void setReturnType(Class<?> returnType);
+
     Method getProxyMethod();
-    void setProxyObject(Object proxyObject);
+
+    void setProxyMethod(Method method);
+
     Object getProxyObject();
+
+    void setProxyObject(Object proxyObject);
 }

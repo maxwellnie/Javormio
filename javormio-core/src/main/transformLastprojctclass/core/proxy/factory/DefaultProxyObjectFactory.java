@@ -15,7 +15,7 @@ import java.util.Map;
 public class DefaultProxyObjectFactory implements ProxyObjectFactory<Object> {
     @Override
     public Object produce(Object target, ProxyInfo proxyInfo) {
-        Class<?> [] interfaceClasses = proxyInfo.getInterfaces();
+        Class<?>[] interfaceClasses = proxyInfo.getInterfaces();
         MethodProxyInfo[] methodProxyInfos = proxyInfo.getMethodProxyInfos();
         if (interfaceClasses == null)
             throw new ProxyExtendsException("interfaceClass is null");
@@ -32,9 +32,10 @@ public class DefaultProxyObjectFactory implements ProxyObjectFactory<Object> {
                 interfaceClasses,
                 new SimpleProxy(proxyInfoMap, target));
     }
-    private void checkInterfaces(Class<?>[] interfaceClasses) throws ProxyExtendsException{
-        for (Class<?> interfaceClass : interfaceClasses){
-            if(interfaceClass == null)
+
+    private void checkInterfaces(Class<?>[] interfaceClasses) throws ProxyExtendsException {
+        for (Class<?> interfaceClass : interfaceClasses) {
+            if (interfaceClass == null)
                 throw new ProxyExtendsException("interfaceClass is null");
             if (!interfaceClass.isInterface())
                 throw new ProxyExtendsException(interfaceClass.getName() + " is not interface");

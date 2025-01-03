@@ -26,7 +26,6 @@ public class TableInfo {
     private final String tableName;
     /**
      * 映射类
-     *
      */
     private final Class<?> mappingClass;
     /**

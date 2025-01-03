@@ -14,20 +14,20 @@ import java.util.Arrays;
  * @author Maxwell Nie
  */
 public class MethodExecutorUtils {
-    public static MethodExecutor getDefaultMethodExecutor(SqlType sqlType){
-        switch (sqlType){
+    public static MethodExecutor getDefaultMethodExecutor(SqlType sqlType) {
+        switch (sqlType) {
             case QUERY:
                 return new QueryMethodExecutor();
             case INSERT:
-                case BATCH_INSERT:
+            case BATCH_INSERT:
                 return new InsertMethodExecutor();
             case DELETE:
-                case BATCH_DELETE:
+            case BATCH_DELETE:
                 return new DeleteMethodExecutor();
             case UPDATE:
                 return new UpdateMethodExecutor();
             default:
-                throw new RuntimeException("Not supported SqlType =>["+sqlType+"]");
+                throw new RuntimeException("Not supported SqlType =>[" + sqlType + "]");
         }
     }
 

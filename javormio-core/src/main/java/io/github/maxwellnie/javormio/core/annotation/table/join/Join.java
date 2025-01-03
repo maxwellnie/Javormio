@@ -19,12 +19,14 @@ public @interface Join {
      * @return String
      */
     String slaveName();
+
     /**
      * 主表字段名
      *
      * @return String
      */
     String masterFieldName();
+
     /**
      * 从表字段名
      *

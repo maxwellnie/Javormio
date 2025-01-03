@@ -16,5 +16,6 @@ public interface MethodMapRegister {
      * @throws RegisterMethodException 注册失败
      */
     void registerEntityDefinedDaoImpl(Class<?> clazz, Object[] args);
+
     void registerDaoImpl(Class<?> daoImpl, Class<?> daoDefinedClass, Object[] args);
 }

@@ -21,7 +21,7 @@ public class CollectionUtils {
         return iterator.next();
     }
 
-    public static <K,T> T first(Map<K,T> collection) {
+    public static <K, T> T first(Map<K, T> collection) {
         if (collection == null)
             return null;
         Iterator<T> iterator = collection.values().iterator();
@@ -30,18 +30,20 @@ public class CollectionUtils {
         }
         return iterator.next();
     }
-    public static <K,T> T get(Map<K,T> collection, int index) {
+
+    public static <K, T> T get(Map<K, T> collection, int index) {
         if (collection == null)
             return null;
         Iterator<T> iterator = collection.values().iterator();
         int i = 0;
-        while (!iterator.hasNext() && i <= index){
+        while (!iterator.hasNext() && i <= index) {
             T v = iterator.next();
             if (i++ == index)
                 return v;
         }
         return null;
     }
+
     public static boolean isCollection(Object object) {
         return object != null && Collection.class.isAssignableFrom(object.getClass());
     }

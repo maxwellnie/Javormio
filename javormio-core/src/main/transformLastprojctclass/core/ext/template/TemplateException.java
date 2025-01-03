@@ -3,7 +3,7 @@ package com.maxwellnie.velox.sql.core.ext.template;
 /**
  * @author Maxwell Nie
  */
-public class TemplateException extends RuntimeException{
+public class TemplateException extends RuntimeException {
     public TemplateException() {
     }
 

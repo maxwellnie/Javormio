@@ -42,7 +42,7 @@ public class ContextUtils {
      * @throws RegisterMethodException
      */
     public static void registerDaoImpl(Class<?> daoClass, Class daoDefinedClass, Object[] args) throws ClassTypeException, RegisterMethodException {
-        assert daoClass != null && daoDefinedClass != null: "DaoImplInterface and DaoDefinedClass must not be null!";
+        assert daoClass != null && daoDefinedClass != null : "DaoImplInterface and DaoDefinedClass must not be null!";
         if (daoClass.isAnnotationPresent(BasicDaoDeclared.class)) {
             BasicDaoDeclared basicDaoDeclared = daoClass.getDeclaredAnnotation(BasicDaoDeclared.class);
             if (basicDaoDeclared.value() != null) {

@@ -28,6 +28,7 @@ public class SystemClock {
         this.NOW = new AtomicLong(System.currentTimeMillis());
         scheduleClock();
     }
+
     public static SystemClock getClock() {
         return INSTANCE;
     }

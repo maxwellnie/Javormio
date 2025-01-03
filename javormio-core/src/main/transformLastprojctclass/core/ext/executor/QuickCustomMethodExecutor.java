@@ -25,6 +25,7 @@ public class QuickCustomMethodExecutor extends BaseMethodExecutor {
     private Class<?>[] paramsType;
     private Consumer<Object[]> check;
     private Function<MetaData, RowSql> buildRowSql;
+
     public QuickCustomMethodExecutor(String name, Class<?>[] paramsType, MethodExecutor targetMethodExecutor, String sql) {
         super(LoggerFactory.getLogger(QuickCustomMethodExecutor.class.getName() + " => [" + name + "]"));
         this.targetMethodExecutor = targetMethodExecutor;
@@ -32,6 +33,7 @@ public class QuickCustomMethodExecutor extends BaseMethodExecutor {
         this.name = name;
         this.paramsType = paramsType;
     }
+
     public QuickCustomMethodExecutor(String name) {
         super(LoggerFactory.getLogger(QuickCustomMethodExecutor.class.getName() + " => [" + name + "]"));
         this.name = name;
@@ -40,15 +42,15 @@ public class QuickCustomMethodExecutor extends BaseMethodExecutor {
     @Override
     public void check(TableInfo tableInfo, Session session, Object[] args) throws ExecutorException {
         super.check(tableInfo, session, args);
-        if(args == null){
-            if(paramsType != null && paramsType.length != 0)
+        if (args == null) {
+            if (paramsType != null && paramsType.length != 0)
                 throw new ExecutorException("The number of parameters does not match the number of parameters required by the method");
             else
                 return;
         }
         if (args.length != paramsType.length)
             throw new ExecutorException("The number of parameters does not match the number of parameters required by the method");
-        if(check != null)
+        if (check != null)
             check.accept(args);
     }
 
@@ -62,12 +64,13 @@ public class QuickCustomMethodExecutor extends BaseMethodExecutor {
 
     @Override
     public RowSql buildRowSql(MetaData metaData) throws ExecutorException {
-        if (buildRowSql != null){
+        if (buildRowSql != null) {
             metaData.addProperty("sqlTemplate", sql);
             return buildRowSql.apply(metaData);
         }
         return targetMethodExecutor.buildRowSql(metaData);
     }
+
     @Override
     public SqlResult handleRunnerResult(Object result, TableInfo tableInfo, CacheKey cacheKey, ReturnTypeMapping returnTypeMapping) throws ExecutorException {
         return targetMethodExecutor.handleRunnerResult(result, tableInfo, cacheKey, returnTypeMapping);
@@ -77,12 +80,20 @@ public class QuickCustomMethodExecutor extends BaseMethodExecutor {
         return sql;
     }
 
+    public void setSql(String sql) {
+        this.sql = sql;
+    }
+
     public String getName() {
         return name;
     }
 
     public Class<?>[] getParamsType() {
         return paramsType;
+    }
+
+    public void setParamsType(Class<?>[] paramsType) {
+        this.paramsType = paramsType;
     }
 
     public Consumer<Object[]> getCheck() {
@@ -103,14 +114,5 @@ public class QuickCustomMethodExecutor extends BaseMethodExecutor {
 
     public void setTargetMethodExecutor(MethodExecutor targetMethodExecutor) {
         this.targetMethodExecutor = targetMethodExecutor;
-    }
-
-
-    public void setSql(String sql) {
-        this.sql = sql;
-    }
-
-    public void setParamsType(Class<?>[] paramsType) {
-        this.paramsType = paramsType;
     }
 }

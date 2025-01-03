@@ -34,13 +34,16 @@ public interface BaseDao<T> {
 
     @SQLMethod(QueryMethodExecutor.class)
     List<T> select(SqlDecorator<T> sqlDecorator);
-    default T selectOne(SqlDecorator<T> sqlDecorator){
+
+    default T selectOne(SqlDecorator<T> sqlDecorator) {
         List<T> list = select(sqlDecorator);
         return Optional.ofNullable(list).map(ts -> ts.size() > 0 ? ts.get(0) : null).orElse(null);
     }
-    default List<T> selectAll(){
+
+    default List<T> selectAll() {
         return select(null);
     }
+
     @SQLMethod(QueryMethodExecutor.class)
     long count(SqlDecorator<T> sqlDecorator);
 

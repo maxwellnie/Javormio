@@ -59,6 +59,7 @@ public interface DynamicMultipleDataSource extends Registry<Object, DataSource> 
      * @throws SQLException
      */
     ConnectionResource getConnection(boolean autoCommit) throws SQLException;
+
     /**
      * 获取连接
      *
@@ -67,6 +68,7 @@ public interface DynamicMultipleDataSource extends Registry<Object, DataSource> 
      * @throws SQLException
      */
     ConnectionResource getConnection(long timeout) throws SQLException;
+
     /**
      * 获取连接
      *
@@ -76,6 +78,7 @@ public interface DynamicMultipleDataSource extends Registry<Object, DataSource> 
      * @throws SQLException
      */
     ConnectionResource getConnection(boolean autoCommit, long timeout) throws SQLException;
+
     /**
      * 获取所有的数据源
      *
@@ -92,6 +95,7 @@ public interface DynamicMultipleDataSource extends Registry<Object, DataSource> 
 
     /**
      * 获取当前线程事务对象
+     *
      * @param timeout
      * @return TransactionObject
      */

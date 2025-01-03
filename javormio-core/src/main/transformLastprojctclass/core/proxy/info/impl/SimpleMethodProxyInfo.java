@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 
 /**
  * 方法的代理信息
+ *
  * @author Maxwell Nie
  */
 public class SimpleMethodProxyInfo implements MethodProxyInfo {
@@ -24,6 +25,7 @@ public class SimpleMethodProxyInfo implements MethodProxyInfo {
     public void setProxyObject(Object proxyObject) {
         this.proxyObject = proxyObject;
     }
+
     @Override
     public Method getProxyMethod() {
         return proxyMethod;

@@ -6,6 +6,7 @@ import io.github.maxwellnie.javormio.core.java.type.TypeHandler;
 
 /**
  * 列信息
+ *
  * @author Maxwell Nie
  */
 public class ColumnInfo {

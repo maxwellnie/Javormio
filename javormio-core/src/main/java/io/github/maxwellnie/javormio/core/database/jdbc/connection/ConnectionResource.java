@@ -41,6 +41,7 @@ public class ConnectionResource implements Resource, AutoCloseable {
         this.connection = connection;
         this.transactionObject = transactionObject;
     }
+
     /**
      * 获取数据源名称
      *
@@ -49,6 +50,7 @@ public class ConnectionResource implements Resource, AutoCloseable {
     public String getDataSourceName() {
         return dataSourceName;
     }
+
     /**
      * 添加事务
      *
@@ -65,6 +67,7 @@ public class ConnectionResource implements Resource, AutoCloseable {
         this.transactionObject.appendAtomicTransaction(tx);
         return tx;
     }
+
     /**
      * 是否关闭
      *
@@ -73,6 +76,7 @@ public class ConnectionResource implements Resource, AutoCloseable {
     public boolean isClosed() {
         return isClosed;
     }
+
     /**
      * 获取连接
      *
@@ -81,6 +85,7 @@ public class ConnectionResource implements Resource, AutoCloseable {
     public Connection getConnection() {
         return connection;
     }
+
     /**
      * 获取事务对象
      *
@@ -89,6 +94,7 @@ public class ConnectionResource implements Resource, AutoCloseable {
     public TransactionObject getTransactionDesc() {
         return transactionObject;
     }
+
     /**
      * 设置自动提交
      *
@@ -98,6 +104,7 @@ public class ConnectionResource implements Resource, AutoCloseable {
     public void setAutoCommit(boolean autoCommit) throws SQLException {
         this.connection.setAutoCommit(autoCommit);
     }
+
     /**
      * 获取自动提交
      *
@@ -107,6 +114,7 @@ public class ConnectionResource implements Resource, AutoCloseable {
     public boolean autoCommit() throws SQLException {
         return this.connection.getAutoCommit();
     }
+
     /**
      * 获取数据源
      *
@@ -115,6 +123,7 @@ public class ConnectionResource implements Resource, AutoCloseable {
     public DataSource getDataSource() {
         return dataSource;
     }
+
     /**
      * 关闭
      *

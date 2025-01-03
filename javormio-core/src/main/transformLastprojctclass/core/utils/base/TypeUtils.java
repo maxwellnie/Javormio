@@ -24,7 +24,8 @@ public class TypeUtils {
     public static boolean isSet(Class<?> clazz) {
         return java.util.Set.class.isAssignableFrom(clazz);
     }
-    public static boolean isBasic(Class<?> clazz){
+
+    public static boolean isBasic(Class<?> clazz) {
         String name = clazz.getName();
         return clazz.isPrimitive()
                 || clazz.isEnum()
@@ -33,9 +34,11 @@ public class TypeUtils {
                 || name.startsWith("java.math")
                 || String.class.isAssignableFrom(clazz);
     }
-    public static boolean likeBean(Class<?> clazz){
+
+    public static boolean likeBean(Class<?> clazz) {
         return !isBasic(clazz) && !isArray(clazz) && !isCollection(clazz);
     }
+
     public static boolean isList(Class<?> clazz) {
         return java.util.List.class.isAssignableFrom(clazz);
     }

@@ -7,8 +7,10 @@ import com.maxwellnie.velox.sql.core.utils.framework.MethodExecutorUtils;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Map;
+
 /**
  * 代理对象
+ *
  * @author Maxwell Nie
  */
 public class SimpleProxy implements InvocationHandler {

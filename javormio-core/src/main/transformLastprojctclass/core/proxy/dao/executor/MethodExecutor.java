@@ -31,7 +31,7 @@ public interface MethodExecutor {
      * @param args
      * @return 操作结果
      */
-    Object execute(TableInfo tableInfo, Session session, Cache<Object, Object> cache, String daoImplHashCode, ReturnTypeMapping returnTypeMapping, Object[] args)throws ExecutorException;
+    Object execute(TableInfo tableInfo, Session session, Cache<Object, Object> cache, String daoImplHashCode, ReturnTypeMapping returnTypeMapping, Object[] args) throws ExecutorException;
 
     /**
      * 检查参数

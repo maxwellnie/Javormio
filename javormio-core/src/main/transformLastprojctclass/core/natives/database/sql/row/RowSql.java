@@ -18,6 +18,7 @@ public class RowSql {
     private List<TypeConvertor<?>> typeConvertors = Collections.synchronizedList(new LinkedList<>());
     private SqlType sqlType;
     private SqlDecorator<?> sqlDecorator;
+
     public RowSql() {
     }
 

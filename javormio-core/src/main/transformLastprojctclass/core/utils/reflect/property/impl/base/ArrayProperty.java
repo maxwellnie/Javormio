@@ -22,15 +22,15 @@ public class ArrayProperty implements Property<Integer> {
         if (o == null)
             throw new NullPointerException("The target object is null.");
         int length = Array.getLength(o);
-        if(integer < length){
+        if (integer < length) {
             Array.set(o, integer, value);
             return o;
-        } else if (integer == length + 1){
+        } else if (integer == length + 1) {
             Object o1 = Array.newInstance(o.getClass().getComponentType(), length + 1);
             System.arraycopy(o, 0, o1, 0, Array.getLength(o));
             Array.set(o1, integer, value);
             return o1;
-        }else
+        } else
             throw new ArrayIndexOutOfBoundsException("The index is out of bounds.");
     }
 }

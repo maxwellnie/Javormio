@@ -8,8 +8,9 @@ import java.lang.annotation.Target;
 /**
  * 用于绑定SqlMethod所映射的方法参数<br/>
  * <code>
- *     public void updateById(@Parameter(name = "id") int id);
+ * public void updateById(@Parameter(name = "id") int id);
  * </code>
+ *
  * @author Maxwell Nie
  */
 @Target(ElementType.PARAMETER)
@@ -17,6 +18,7 @@ import java.lang.annotation.Target;
 public @interface Parameter {
     /**
      * 参数名
+     *
      * @return String
      */
     String name();

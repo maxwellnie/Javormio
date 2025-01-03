@@ -47,28 +47,33 @@ public interface TransactionObject {
      * @return AtomicTransaction
      */
     AtomicTransaction popAtomicTransaction();
+
     /**
      * Get the expire time
      *
      * @return long
      */
     long expireTime();
+
     /**
      * Get the create time
      *
      * @return long
      */
     long createTime();
+
     /**
      * Get the properties
      *
      * @return Map<String, Object>
      */
     Map<String, Object> getProperties();
+
     /**
      * Clear all atomic transactions
      */
     void clearAtomicTransactions();
+
     /**
      * Clear all
      */
@@ -84,6 +89,7 @@ public interface TransactionObject {
             this.dataSource = dataSource;
             this.hashCacheKey = hashCacheKey;
         }
+
         public Connection getConnection() {
             return connection;
         }

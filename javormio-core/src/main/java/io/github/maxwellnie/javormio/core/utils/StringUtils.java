@@ -36,7 +36,7 @@ public class StringUtils {
                 if (chars1[i] == chars2[i])
                     equals = true;
         } else
-            for (int j = 0; j < chars2.length; j++);
+            for (int j = 0; j < chars2.length; j++) ;
         return equals;
     }
 

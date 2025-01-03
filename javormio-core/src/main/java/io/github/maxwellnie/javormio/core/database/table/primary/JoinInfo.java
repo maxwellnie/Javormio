@@ -7,6 +7,7 @@ import java.util.Map;
 
 /**
  * 表关联信息
+ *
  * @author Maxwell Nie
  */
 public class JoinInfo extends TableInfo {

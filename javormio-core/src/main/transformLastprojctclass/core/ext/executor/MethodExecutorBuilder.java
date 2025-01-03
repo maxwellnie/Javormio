@@ -12,36 +12,44 @@ import java.util.function.Function;
  */
 public class MethodExecutorBuilder {
     private QuickCustomMethodExecutor quickCustomMethodExecutor;
-    public Builder init(String name){
+
+    public Builder init(String name) {
         quickCustomMethodExecutor = new QuickCustomMethodExecutor(name);
         return new Builder();
     }
+
+    public MethodExecutor build() {
+        return quickCustomMethodExecutor;
+    }
+
     public class Builder {
-        public Builder targetMethodExecutor(MethodExecutor targetMethodExecutor){
+        public Builder targetMethodExecutor(MethodExecutor targetMethodExecutor) {
             quickCustomMethodExecutor.setTargetMethodExecutor(targetMethodExecutor);
             return this;
         }
-        public Builder sql(String sql){
+
+        public Builder sql(String sql) {
             quickCustomMethodExecutor.setSql(sql);
             return this;
         }
-        public Builder paramsType(Class<?>[] paramsType){
+
+        public Builder paramsType(Class<?>[] paramsType) {
             quickCustomMethodExecutor.setParamsType(paramsType);
             return this;
         }
-        public Builder check(Consumer<Object[]> check){
+
+        public Builder check(Consumer<Object[]> check) {
             quickCustomMethodExecutor.setCheck(check);
             return this;
         }
-        public Builder buildRowSql(Function<MetaData, RowSql> buildRowSql){
+
+        public Builder buildRowSql(Function<MetaData, RowSql> buildRowSql) {
             quickCustomMethodExecutor.setBuildRowSql(buildRowSql);
             return this;
         }
-        public MethodExecutorBuilder ok(){
+
+        public MethodExecutorBuilder ok() {
             return MethodExecutorBuilder.this;
         }
-    }
-    public MethodExecutor build(){
-        return quickCustomMethodExecutor;
     }
 }

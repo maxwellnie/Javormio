@@ -23,7 +23,7 @@ public class BeanProperty implements Property<Object> {
             throw new NullPointerException("\"Object o\" or \"MetaField m\" is null.");
         try {
             MetaField metaField = metaFields.get(param);
-            if(metaField == null)
+            if (metaField == null)
                 throw new NullPointerException("MetaField is null");
             else
                 return (T) (metaField.get(o));
@@ -35,7 +35,7 @@ public class BeanProperty implements Property<Object> {
     @Override
     public Object setValue(Object o, Object param, Object value) {
         MetaField metaField = metaFields.get(param);
-        if(metaField == null)
+        if (metaField == null)
             throw new NullPointerException("MetaField is null");
         try {
             metaField.set(o, value);

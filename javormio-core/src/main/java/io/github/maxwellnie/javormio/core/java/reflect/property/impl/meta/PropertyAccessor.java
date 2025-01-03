@@ -17,6 +17,7 @@ public class PropertyAccessor {
         this.bean = bean;
         this.param = param;
     }
+
     public MetaProperty getMetaProperty() {
         return metaProperty;
     }
@@ -212,6 +213,7 @@ public class PropertyAccessor {
             }
             return sb.append("]").toString();
         }
+
         String print() {
             return print(1500);
         }

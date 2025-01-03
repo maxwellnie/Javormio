@@ -1,10 +1,10 @@
 package io.github.maxwellnie.javormio.core.database.sql.executor;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
  * SQL执行器
+ *
  * @author Maxwell Nie
  */
 public interface SqlExecutor {

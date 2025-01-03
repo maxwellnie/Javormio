@@ -19,7 +19,7 @@ import java.util.Map;
 public class MethodExecutorProxyObjectFactory implements ProxyObjectFactory<MethodExecutor> {
     @Override
     public MethodExecutor produce(Object target, ProxyInfo proxyInfo) {
-        Class<?> [] interfaceClasses = proxyInfo.getInterfaces();
+        Class<?>[] interfaceClasses = proxyInfo.getInterfaces();
         MethodProxyInfo[] methodProxyInfos = proxyInfo.getMethodProxyInfos();
         if (interfaceClasses == null)
             throw new ProxyExtendsException("interfaceClass is null");
@@ -35,7 +35,8 @@ public class MethodExecutorProxyObjectFactory implements ProxyObjectFactory<Meth
                 interfaceClasses,
                 new MethodExecutorProxy(proxyInfoMap, target));
     }
-    public static class MethodExecutorProxy extends SimpleProxy{
+
+    public static class MethodExecutorProxy extends SimpleProxy {
 
         public MethodExecutorProxy(Map<String, MethodProxyInfo> proxyInfoMap, Object target) {
             super(proxyInfoMap, target);
@@ -52,9 +53,9 @@ public class MethodExecutorProxyObjectFactory implements ProxyObjectFactory<Meth
 
                 MethodProxyInfo methodProxyInfo = proxyInfoMap.get(methodProxyKey);
                 SimpleInvocation invocation = new SimpleInvocation(target, proxy, args, method);
-                if(args == null || args.length == 0)
+                if (args == null || args.length == 0)
                     args = new Object[]{invocation};
-                else{
+                else {
                     Object[] newArgs = new Object[args.length + 1];
                     System.arraycopy(args, 0, newArgs, 1, args.length);
                     newArgs[0] = invocation;

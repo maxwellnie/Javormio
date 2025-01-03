@@ -4,6 +4,7 @@ import java.sql.Connection;
 
 /**
  * 已废弃
+ *
  * @author Maxwell Nie
  */
 @Deprecated
