@@ -20,16 +20,15 @@ public class UpdateSqlExecutor extends BaseSqlExecutor{
     @Override
     public Object run(ExecutorContext executorContext) throws SQLException {
         //获取连接资源、可执行sql、属性
-        ConnectionResource connectionResource = executorContext.getConnectionResource();
-        ExecutableSql executableSql = executorContext.getExecutableSql();
-        Map<String, Object> properties = executorContext.getProperties();
+        ConnectionResource connectionResource = executorContext.getConnectionResource();//连接
+        ExecutableSql executableSql = executorContext.getExecutableSql();//sql
+        Map<String, Object> properties = executorContext.getProperties();//其他参数
         //获取处理查询生成主键的消费者对象
         Consumer<ResultSet> consumer = (Consumer<ResultSet>) properties.get(Constants.SELECT_GENERATED_KEY);
         //是否需要查询生成的主键
         boolean selectGeneratedKeys = executableSql.getType().equals(SqlType.INSERT) && consumer!= null;
         //获取连接对象
-        Connection connection = connectionResource
-                .getConnection();
+        Connection connection = connectionResource.getConnection();
         /*
         打开报表：分两种情况
         1. 如果sql类型是insert，并且需要查询生成的主键，那么就打开报表，并且设置返回生成的主键
@@ -50,8 +49,7 @@ public class UpdateSqlExecutor extends BaseSqlExecutor{
                 //遍历参数
                 for (SqlParameter sqlParameter : sqlParameters){
                     //获取参数的类型处理器，使用类型处理器设置报表的参数
-                    sqlParameter.getTypeHandler()
-                            .setValue(preparedStatement, index++, sqlParameter.getValue());
+                    sqlParameter.getTypeHandler().setValue(preparedStatement, index++, sqlParameter.getValue());
                 }
             }
             //该ExecutableSql对数据库表产生的影响
