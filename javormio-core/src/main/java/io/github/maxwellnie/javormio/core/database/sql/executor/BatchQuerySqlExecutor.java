@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 批量查询语句执行器
  * @author Maxwell Nie
  */
 public class BatchQuerySqlExecutor extends BaseSqlExecutor{

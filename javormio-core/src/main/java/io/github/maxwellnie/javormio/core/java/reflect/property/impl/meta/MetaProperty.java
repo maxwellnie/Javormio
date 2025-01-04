@@ -12,10 +12,10 @@ import java.util.Map;
  * @author Maxwell Nie
  */
 public class MetaProperty {
-    private Class<?> type;
-    private Property<Object> property;
-    private Map<String, MetaProperty> metaProperties;
-    private PropertyType propertyType;
+    private final Class<?> type;
+    private final Property<Object> property;
+    private final Map<String, MetaProperty> metaProperties;
+    private final PropertyType propertyType;
 
 
     public MetaProperty(Class<?> type, Property<Object> property, Map<String, MetaProperty> metaProperties) {

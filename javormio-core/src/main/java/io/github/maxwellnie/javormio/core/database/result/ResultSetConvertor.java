@@ -5,14 +5,21 @@ import java.util.List;
 
 /**
  * 将ResultSet转换为Java实体对象
- *
  * @author Maxwell Nie
  */
-public class ResultSetConvertor {
-    public Object convert(ResultSet resultSet, TypeMapping typeMapping) {
-        return null;
-    }
-    public Object convert(List<ResultSet> resultSet, TypeMapping typeMapping) {
-        return null;
-    }
+public interface ResultSetConvertor {
+    /**
+     * 将ResultSet转换为Java实体对象
+     * @param resultSet
+     * @param typeMapping
+     * @return Object
+     */
+    Object convert(ResultSet resultSet, TypeMapping typeMapping);
+    /**
+     * 将ResultSet列表转换为Java实体对象
+     * @param resultSet
+     * @param typeMapping
+     * @return Object
+     */
+    Object convert(List<ResultSet> resultSet, TypeMapping typeMapping);
 }
