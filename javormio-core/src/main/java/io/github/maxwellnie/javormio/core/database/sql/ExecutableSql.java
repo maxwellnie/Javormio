@@ -23,9 +23,9 @@ public class ExecutableSql {
     /**
      * 类型
      */
-    private SqlType type;
+    private int type;
 
-    public ExecutableSql(String namespace, String[] sqlList, List<SqlParameter[]> parametersList, SqlType type) {
+    public ExecutableSql(String namespace, String[] sqlList, List<SqlParameter[]> parametersList, int type) {
         this.namespace = namespace;
         this.sqlList = sqlList;
         this.parametersList = parametersList;
@@ -59,11 +59,11 @@ public class ExecutableSql {
         this.parametersList = parametersList;
     }
 
-    public SqlType getType() {
+    public int getType() {
         return type;
     }
 
-    public void setType(SqlType type) {
+    public void setType(int type) {
         this.type = type;
     }
 }

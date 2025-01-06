@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import static io.github.maxwellnie.javormio.core.database.sql.SqlType.isInsert;
+
 /**
  * 更新语句执行器（单行）
  *
@@ -26,7 +28,7 @@ public class UpdateSqlExecutor extends BaseSqlExecutor {
         //获取处理查询生成主键的消费者对象
         Consumer<ResultSet> consumer = (Consumer<ResultSet>) properties.get(Constants.SELECT_GENERATED_KEY);
         //是否需要查询生成的主键
-        boolean selectGeneratedKeys = executableSql.getType().equals(SqlType.INSERT) && consumer != null;
+        boolean selectGeneratedKeys = isInsert(executableSql.getType()) && consumer != null;
         //获取连接对象
         Connection connection = connectionResource.getConnection();
         /*
