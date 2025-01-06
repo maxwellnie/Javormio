@@ -9,14 +9,14 @@ import java.util.List;
  */
 public interface ResultSetConvertor {
     /**
-     * ResultSet转换为Java实体对象
+     * 将ResultSet转换为Java实体对象
      * @param resultSet
      * @param typeMapping
      * @return Object
      */
     Object convert(ResultSet resultSet, TypeMapping typeMapping);
     /**
-     * ResultSet列表转换为Java实体对象
+     * 将ResultSet列表转换为Java实体对象
      * @param resultSet
      * @param typeMapping
      * @return Object
