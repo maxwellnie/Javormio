@@ -17,11 +17,10 @@ import static io.github.maxwellnie.javormio.core.database.sql.SqlType.isInsert;
 import static io.github.maxwellnie.javormio.core.database.sql.SqlType.isMayChange;
 
 /**
+ * 批处理语句执行器
  * @author yurongqi
  */
 public class BatchSqlExecutor extends BaseSqlExecutor {
-
-
     @Override
     public Object run(ExecutorContext executorContext) throws SQLException {
         //获取连接资源、可执行sql、属性
