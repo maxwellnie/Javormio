@@ -82,9 +82,15 @@ public class BatchSqlExecutor extends BaseSqlExecutor {
      * @throws SQLException
      */
     private void handleGeneratedKeysOfInsert(int[] updateCounts, Consumer<ResultSet> consumer, PreparedStatement preparedStatement) throws SQLException {
-
+        boolean failed = false;
         for (int flag : updateCounts) {
-            if (flag != Statement.EXECUTE_FAILED) {
+            if (flag == Statement.EXECUTE_FAILED) {
+                failed = true;
+                break;
+            }
+        }
+        if (!failed){
+            for (int i = 0; i < updateCounts.length; i++) {
                 consumer.accept(preparedStatement.getGeneratedKeys());
             }
         }
@@ -104,9 +110,7 @@ public class BatchSqlExecutor extends BaseSqlExecutor {
         //收集产生的结果集
         LinkedList<ResultSet> list = new LinkedList<>();
         for (int flag : updateCounts) {
-            if (flag == -2) {
-                list.add(preparedStatement.getResultSet());
-            }
+            list.add(preparedStatement.getResultSet());
         }
         //转换结果集到Java对象
         return resultSetConvertor.convert(list, typeMapping);
