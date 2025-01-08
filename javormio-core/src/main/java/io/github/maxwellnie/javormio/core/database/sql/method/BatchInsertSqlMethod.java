@@ -11,12 +11,12 @@ public class BatchInsertSqlMethod extends BaseSqlMethod {
     }
 
     @Override
-    public Object invokeExactly(Object... args) {
+    public Object invokeExactly(int methodFeatureCode, Object... args) throws Throwable{
         return null;
     }
 
     @Override
-    public Object invoke(Object[] args) {
+    public Object invoke(int methodFeatureCode, Object[] args) throws Throwable{
         return null;
     }
 }

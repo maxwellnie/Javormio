@@ -11,12 +11,12 @@ public class UpdateSqlMethod extends BaseSqlMethod {
     }
 
     @Override
-    public Object invokeExactly(Object... args) {
+    public Object invokeExactly(int methodFeatureCode, Object... args) {
         return null;
     }
 
     @Override
-    public Object invoke(Object[] args) {
+    public Object invoke(int methodFeatureCode, Object[] args) {
         return null;
         // SELECT * FROM tb_user WHERE id = ?
         //String sql, Object[] params
