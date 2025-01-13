@@ -21,6 +21,11 @@ public class MethodFeature {
         this.methodFeatureCode = method.hashCode();;
     }
 
+    public MethodFeature(Method method, int methodFeatureCode) {
+        this.methodFeatureCode = methodFeatureCode;
+        this.method = method;
+    }
+
     public int getMethodFeatureCode() {
         return methodFeatureCode;
     }

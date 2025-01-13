@@ -35,7 +35,7 @@ public class BatchSqlExecutor extends BaseSqlExecutor {
         boolean mayChange = isMayChange(executableSql.getType());
         //消费者----批量更新参数
         Consumer<ResultSet> consumer = (Consumer<ResultSet>) properties.get(Constants.SELECT_GENERATED_KEY);
-        //是否需要查询生成的主键----批量更新参数
+        //是否需要查询生成的主键----批量添加参数
         boolean selectGeneratedKeys = mayChange && isInsert(executableSql.getType()) && consumer != null;
         //获取连接对象
         Connection connection = connectionResource.getConnection();
@@ -82,18 +82,8 @@ public class BatchSqlExecutor extends BaseSqlExecutor {
      * @throws SQLException
      */
     private void handleGeneratedKeysOfInsert(int[] updateCounts, Consumer<ResultSet> consumer, PreparedStatement preparedStatement) throws SQLException {
-        boolean failed = false;
-        for (int flag : updateCounts) {
-            if (flag == Statement.EXECUTE_FAILED) {
-                failed = true;
-                break;
-            }
-        }
-        if (!failed){
-            for (int i = 0; i < updateCounts.length; i++) {
-                consumer.accept(preparedStatement.getGeneratedKeys());
-            }
-        }
+        for (int ignored : updateCounts)
+            consumer.accept(preparedStatement.getGeneratedKeys());
     }
 
     /**
@@ -109,7 +99,7 @@ public class BatchSqlExecutor extends BaseSqlExecutor {
     private Object handleResultSetOfQuery(int[] updateCounts, PreparedStatement preparedStatement, ResultSetConvertor resultSetConvertor, TypeMapping typeMapping) throws SQLException {
         //收集产生的结果集
         LinkedList<ResultSet> list = new LinkedList<>();
-        for (int flag : updateCounts) {
+        for (int ignored : updateCounts) {
             list.add(preparedStatement.getResultSet());
         }
         //转换结果集到Java对象

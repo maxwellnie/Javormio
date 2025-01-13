@@ -3,6 +3,7 @@ package io.github.maxwellnie.javormio.core.database.result;
 import io.github.maxwellnie.javormio.core.java.reflect.property.impl.meta.MetaProperty;
 import io.github.maxwellnie.javormio.core.java.type.TypeHandler;
 
+import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.Objects;
 
@@ -36,15 +37,24 @@ public class TypeMapping {
      * 哈希值
      */
     private int hashCode = -1;
+    /**
+     * 多表关联标志位
+     */
     private final boolean multipleTableJoined;
 
-    public TypeMapping(Class<?> type, MetaProperty metaProperty, TypeHandler<?> typeHandler, String columnName, Map<String, TypeMapping> children, boolean multipleTableJoined) {
+    /**
+     * 复杂对象标志位
+     */
+    private final boolean isComplex;
+
+    public TypeMapping(Class<?> type, MetaProperty metaProperty, TypeHandler<?> typeHandler, String columnName, Map<String, TypeMapping> children, boolean multipleTableJoined, boolean isComplex) {
         this.type = type;
         this.metaProperty = metaProperty;
         this.typeHandler = typeHandler;
         this.columnName = columnName;
         this.children = children;
         this.multipleTableJoined = multipleTableJoined;
+        this.isComplex = isComplex;
     }
 
     public Class<?> getType() {
@@ -79,10 +89,12 @@ public class TypeMapping {
         return that.hashCode == hashCode();
     }
 
+    public boolean isComplex() {
+        return isComplex;
+    }
+
     @Override
     public int hashCode() {
-        if (hashCode != -1)
-            return hashCode;
-        return hashCode = Objects.hash(type, metaProperty, typeHandler, columnName, children);
+        return Objects.hash(type, metaProperty, typeHandler, columnName, children, hashCode, multipleTableJoined, isComplex);
     }
 }
