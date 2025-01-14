@@ -38,18 +38,13 @@ public class TypeMapping {
      * 哈希值
      */
     private int hashCode = -1;
-    /**
-     * 多表关联标志位
-     */
-    private final boolean multipleTableJoined;
 
-    public TypeMapping(Reflection<?> reflection, MetaProperty metaProperty, TypeHandler<?> typeHandler, String columnName, Map<String, TypeMapping> children, boolean multipleTableJoined) {
+    public TypeMapping(Reflection<?> reflection, MetaProperty metaProperty, TypeHandler<?> typeHandler, String columnName, Map<String, TypeMapping> children) {
         this.reflection = reflection;
         this.metaProperty = metaProperty;
         this.typeHandler = typeHandler;
         this.columnName = columnName;
         this.children = children;
-        this.multipleTableJoined = multipleTableJoined;
     }
 
     public Class<?> getType() {
@@ -72,9 +67,6 @@ public class TypeMapping {
         return children;
     }
 
-    public boolean isMultipleTableJoined() {
-        return multipleTableJoined;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -94,6 +86,6 @@ public class TypeMapping {
 
     @Override
     public int hashCode() {
-        return Objects.hash(reflection, metaProperty, typeHandler, columnName, children, hashCode, multipleTableJoined);
+        return Objects.hash(reflection, metaProperty, typeHandler, columnName, children, hashCode);
     }
 }

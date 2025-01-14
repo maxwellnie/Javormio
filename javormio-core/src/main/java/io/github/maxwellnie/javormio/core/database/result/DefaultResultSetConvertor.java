@@ -7,12 +7,6 @@ import java.util.List;
  * @author Maxwell Nie
  */
 public class DefaultResultSetConvertor implements ResultSetConvertor{
-    @Override
-    public Object convert(ResultSet resultSet, TypeMapping typeMapping) {
-        if(typeMapping.isMultipleTableJoined())
-            return multipleTableConvert(resultSet, typeMapping);
-        return simpleConvert(resultSet, typeMapping);
-    }
     private Object simpleConvert(ResultSet resultSet, TypeMapping typeMapping) {
         return null;
     }
@@ -20,7 +14,14 @@ public class DefaultResultSetConvertor implements ResultSetConvertor{
         return null;
     }
     @Override
-    public Object convert(List<ResultSet> resultSet, TypeMapping typeMapping) {
+    public Object convert(ResultSet resultSet, TypeMapping typeMapping, boolean multipleTable) {
+        if(multipleTable)
+            return multipleTableConvert(resultSet, typeMapping);
+        return simpleConvert(resultSet, typeMapping);
+    }
+
+    @Override
+    public Object convert(List<ResultSet> resultSet, TypeMapping typeMapping, boolean multipleTable) {
         return null;
     }
 }
