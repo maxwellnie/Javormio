@@ -1,5 +1,6 @@
 package io.github.maxwellnie.javormio.core.database.result;
 
+import io.github.maxwellnie.javormio.core.java.reflect.Reflection;
 import io.github.maxwellnie.javormio.core.java.reflect.property.impl.meta.MetaProperty;
 import io.github.maxwellnie.javormio.core.java.type.TypeHandler;
 
@@ -14,9 +15,9 @@ import java.util.Objects;
  */
 public class TypeMapping {
     /**
-     * 类型
+     * 反射对象
      */
-    private final Class<?> type;
+    private final Reflection<?> reflection;
     /**
      * 属性
      */
@@ -42,23 +43,17 @@ public class TypeMapping {
      */
     private final boolean multipleTableJoined;
 
-    /**
-     * 复杂对象标志位
-     */
-    private final boolean isComplex;
-
-    public TypeMapping(Class<?> type, MetaProperty metaProperty, TypeHandler<?> typeHandler, String columnName, Map<String, TypeMapping> children, boolean multipleTableJoined, boolean isComplex) {
-        this.type = type;
+    public TypeMapping(Reflection<?> reflection, MetaProperty metaProperty, TypeHandler<?> typeHandler, String columnName, Map<String, TypeMapping> children, boolean multipleTableJoined) {
+        this.reflection = reflection;
         this.metaProperty = metaProperty;
         this.typeHandler = typeHandler;
         this.columnName = columnName;
         this.children = children;
         this.multipleTableJoined = multipleTableJoined;
-        this.isComplex = isComplex;
     }
 
     public Class<?> getType() {
-        return type;
+        return reflection.getDeclaringClass();
     }
 
     public MetaProperty getMetaProperty() {
@@ -90,11 +85,15 @@ public class TypeMapping {
     }
 
     public boolean isComplex() {
-        return isComplex;
+        return children != null && !children.isEmpty();
+    }
+
+    public Reflection<?> getReflection() {
+        return reflection;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(type, metaProperty, typeHandler, columnName, children, hashCode, multipleTableJoined, isComplex);
+        return Objects.hash(reflection, metaProperty, typeHandler, columnName, children, hashCode, multipleTableJoined);
     }
 }
