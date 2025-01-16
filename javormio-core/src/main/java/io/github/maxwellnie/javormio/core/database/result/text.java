@@ -41,6 +41,7 @@ public class text implements ResultSetConvertor{
     public Object simpleConvert(ResultSet resultSet, TypeMapping TypeMapping)
     {
         Class<?> mappingType = TypeMapping.getType();
+        return null;
     }
 
 
