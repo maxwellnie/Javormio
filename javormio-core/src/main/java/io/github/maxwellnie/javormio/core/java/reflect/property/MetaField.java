@@ -16,19 +16,24 @@ public class MetaField {
     Field field;
     MethodInvoker getter;
     MethodInvoker setter;
-    boolean isCollection;
-    boolean isArray;
-    boolean isMap;
-    boolean isComplexType;
+    int typeMask;
+    public static final int IS_COLLECTION = 1;
+    public static final int IS_ARRAY = 2;
+    public static final int IS_MAP = 3;
+    public static final int IS_COMPLEX = 4;
 
     public MetaField(Field field, MethodInvoker getter, MethodInvoker setter) {
         this.field = field;
         this.getter = getter;
         this.setter = setter;
-        this.isCollection = TypeUtils.isCollection(field.getType());
-        this.isArray = field.getType().isArray();
-        this.isMap = TypeUtils.isMap(field.getType());
-        this.isComplexType = TypeUtils.isComplexType(field.getType());
+        if(TypeUtils.isCollection(field.getType()))
+            this.typeMask &= 1;
+        if (TypeUtils.isArray(field.getType()))
+            this.typeMask &= 2;
+        if (TypeUtils.isMap(field.getType()))
+            this.typeMask &= 3;
+        if (TypeUtils.isComplexType(field.getType()))
+            this.typeMask &= 4;
     }
 
     /**
@@ -69,7 +74,7 @@ public class MetaField {
      * @return
      */
     public boolean isCollection() {
-        return isCollection;
+        return (this.typeMask & IS_COLLECTION) != 0;
     }
 
     /**
@@ -100,6 +105,13 @@ public class MetaField {
     }
 
     public boolean isArray() {
-        return isArray;
+        return (this.typeMask & IS_ARRAY) != 0;
+    }
+
+    public boolean isMap() {
+        return (this.typeMask & IS_MAP) != 0;
+    }
+    public boolean isComplex() {
+        return (this.typeMask & IS_COMPLEX) != 0;
     }
 }

@@ -75,11 +75,9 @@ public class TypeMapping {
         TypeMapping that = (TypeMapping) o;
         return that.hashCode == hashCode();
     }
-
     public boolean isComplex() {
         return children != null && !children.isEmpty();
     }
-
     public Reflection<?> getReflection() {
         return reflection;
     }
