@@ -34,6 +34,26 @@ public class ReflectionUtils {
         return (Reflection<T>) reflection;
     }
     /**
+     * 获取对象工厂<br/>
+     * <p>支持了集合、map、实体类</p>
+     * @param clazz
+     * @param <T>
+     * @return ObjectFactory
+     * @throws NoSuchMethodException
+     */
+    public static <T> ObjectFactory<T> getObjectFactory(Class<?> clazz) throws NoSuchMethodException {
+        ObjectFactory<?> objectFactory = OBJECT_FACTORY_MAP.get(clazz);
+        if (objectFactory == null) {
+            synchronized (OBJECT_FACTORY_MAP) {
+                if ((objectFactory = OBJECT_FACTORY_MAP.get(clazz)) == null) {
+                    objectFactory = createObjectFactory(clazz);
+                    OBJECT_FACTORY_MAP.put(clazz, objectFactory);
+                }
+            }
+        }
+        return (ObjectFactory<T>) objectFactory;
+    }
+    /**
      * 创建对象工厂
      * @param clazz
      * @param <T>
@@ -122,16 +142,7 @@ public class ReflectionUtils {
 
         @Override
         public ObjectFactory<T> getObjectFactory() throws NoSuchMethodException {
-            ObjectFactory<?> objectFactory = OBJECT_FACTORY_MAP.get(this.declaringClass);
-            if (objectFactory == null) {
-                synchronized (OBJECT_FACTORY_MAP) {
-                    if ((objectFactory = OBJECT_FACTORY_MAP.get(this.declaringClass)) == null) {
-                        objectFactory = createObjectFactory(this.declaringClass);
-                        OBJECT_FACTORY_MAP.put(this.declaringClass, objectFactory);
-                    }
-                }
-            }
-            return (ObjectFactory<T>) objectFactory;
+            return ReflectionUtils.getObjectFactory(this.declaringClass);
         }
 
         @Override
