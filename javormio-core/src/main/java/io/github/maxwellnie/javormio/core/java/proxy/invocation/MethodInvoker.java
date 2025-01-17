@@ -53,4 +53,23 @@ public interface MethodInvoker {
     default Object invoke(Object target) throws MethodInvocationException {
         throw new MethodInvocationException("The invoke(Object) is not supported.");
     }
+    /**
+     * execute the method.
+     *
+     * @return Object
+     * @throws MethodInvocationException
+     */
+    default Object invoke() throws MethodInvocationException {
+        throw new MethodInvocationException("The invoke() is not supported.");
+    }
+    /**
+     * execute the method.
+     *
+     * @param args The arguments
+     * @return Object
+     * @throws MethodInvocationException
+     */
+    default Object invoke(Object[] args) throws MethodInvocationException {
+        throw new MethodInvocationException("The invoke(LObject) is not supported.");
+    }
 }
