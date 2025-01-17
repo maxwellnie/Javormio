@@ -20,12 +20,12 @@ public class IntegerTypeHandler implements TypeHandler<Integer> {
                 try {
                     t = Integer.parseInt((String) t);
                 } catch (NumberFormatException e) {
-                    throw new IllegalArgumentException("The type of the parameter is not Digit String.");
+                    throw new SQLException("The type of the parameter is not Digit String.");
                 }
             } else if (t instanceof Number) {
                 t = ((Number) t).intValue();
             } else
-                throw new IllegalArgumentException("The type of the parameter is not Number and Digit String.");
+                throw new SQLException("The type of the parameter is not Number and Digit String.");
             preparedStatement.setInt(index, (Integer) t);
         } else
             preparedStatement.setNull(index, java.sql.Types.INTEGER);

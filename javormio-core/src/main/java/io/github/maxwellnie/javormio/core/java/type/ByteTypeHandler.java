@@ -21,12 +21,12 @@ public class ByteTypeHandler implements TypeHandler<Byte> {
                 try {
                     t = Byte.parseByte((String) t);
                 } catch (NumberFormatException e) {
-                    throw new IllegalArgumentException("The type of the parameter is not Digit String.");
+                    throw new SQLException("The type of the parameter is not Digit String.");
                 }
             } else if (t instanceof Number) {
                 t = ((Number) t).byteValue();
             } else
-                throw new IllegalArgumentException("The type of the parameter is not Number or Digit String.");
+                throw new SQLException("The type of the parameter is not Number or Digit String.");
             preparedStatement.setByte(index, (Byte) t);
         } else
             preparedStatement.setNull(index, Types.TINYINT);
