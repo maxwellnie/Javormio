@@ -91,11 +91,11 @@ public class ReflectionUtils {
         /**
          * 字段缓存
          */
-        final Map<String, MetaField> META_FIELD_MAP = new ConcurrentHashMap<>();
+        final Map<String, MetaField> metaFieldMap = new ConcurrentHashMap<>();
         /**
          * 方法缓存
          */
-        final Map<Integer, Method> METHOD_MAP = new ConcurrentHashMap<>();
+        final Map<Integer, Method> methodMap = new ConcurrentHashMap<>();
 
         public CachedReflection(Class<?> declaringClass) {
             this.declaringClass = declaringClass;
@@ -107,10 +107,10 @@ public class ReflectionUtils {
 
         @Override
         public MetaField getMetaField(String name) throws NoSuchMethodException, NoSuchFieldException{
-            MetaField metaField = META_FIELD_MAP.get(name);
+            MetaField metaField = metaFieldMap.get(name);
             if (metaField == null){
-                synchronized (META_FIELD_MAP) {
-                    if ((metaField = META_FIELD_MAP.get(name)) == null){
+                synchronized (metaFieldMap) {
+                    if ((metaField = metaFieldMap.get(name)) == null){
                         Field field = this.declaringClass.getField(name);
                         metaField = new MetaField(field ,
                                 getInvoker("set" + name.substring(0, 1).toUpperCase() + name.substring(1),
@@ -118,7 +118,7 @@ public class ReflectionUtils {
                                 getInvoker("get" + name.substring(0, 1).toUpperCase() + name.substring(1),
                                         new Class<?>[0])
                         );
-                        META_FIELD_MAP.put(name, metaField);
+                        metaFieldMap.put(name, metaField);
                     }
                 }
             }
@@ -128,12 +128,12 @@ public class ReflectionUtils {
         @Override
         public Method getMethod(String name, Class<?>[] parameterTypes) throws NoSuchMethodException {
             int methodKey = Objects.hash(name.hashCode(), Arrays.hashCode(parameterTypes));
-            Method method = METHOD_MAP.get(methodKey);
+            Method method = methodMap.get(methodKey);
             if (method == null) {
-                synchronized (METHOD_MAP) {
-                    if((method = METHOD_MAP.get(methodKey)) == null){
+                synchronized (methodMap) {
+                    if((method = methodMap.get(methodKey)) == null){
                         method = this.declaringClass.getMethod(name, parameterTypes);
-                        METHOD_MAP.put(methodKey, method);
+                        methodMap.put(methodKey, method);
                     }
                 }
             }
