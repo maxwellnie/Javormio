@@ -4,8 +4,7 @@ import io.github.maxwellnie.javormio.core.java.reflect.Reflection;
 import io.github.maxwellnie.javormio.core.java.reflect.property.impl.meta.MetaProperty;
 import io.github.maxwellnie.javormio.core.java.type.TypeHandler;
 
-import java.lang.reflect.Field;
-import java.util.Map;
+import java.util.LinkedHashMap;
 import java.util.Objects;
 
 /**
@@ -33,18 +32,27 @@ public class TypeMapping {
     /**
      * 子映射
      */
-    private final Map<String, TypeMapping> children;
+    private final LinkedHashMap<String, TypeMapping> children;
+    /**
+     * 是否是实体
+     */
+    private final boolean isEntity;
     /**
      * 哈希值
      */
     private int hashCode = -1;
 
-    public TypeMapping(Reflection<?> reflection, MetaProperty metaProperty, TypeHandler<?> typeHandler, String columnName, Map<String, TypeMapping> children) {
+    public TypeMapping(Reflection<?> reflection, MetaProperty metaProperty, TypeHandler<?> typeHandler, String columnName, LinkedHashMap<String, TypeMapping> children, boolean isEntity) {
         this.reflection = reflection;
         this.metaProperty = metaProperty;
         this.typeHandler = typeHandler;
         this.columnName = columnName;
         this.children = children;
+        this.isEntity = isEntity;
+    }
+
+    public boolean isEntity() {
+        return isEntity;
     }
 
     public Class<?> getType() {
@@ -63,7 +71,7 @@ public class TypeMapping {
         return columnName;
     }
 
-    public Map<String, TypeMapping> getChildren() {
+    public LinkedHashMap<String, TypeMapping> getChildren() {
         return children;
     }
 
@@ -75,9 +83,11 @@ public class TypeMapping {
         TypeMapping that = (TypeMapping) o;
         return that.hashCode == hashCode();
     }
+
     public boolean isComplex() {
         return children != null && !children.isEmpty();
     }
+
     public Reflection<?> getReflection() {
         return reflection;
     }
