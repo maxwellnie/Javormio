@@ -35,7 +35,9 @@ public class ResultSetConvertorByNie implements ResultSetConvertor{
                                         .next();
                 }
                 int rowIndex = 0;
-                while (!resultSet.isClosed() && resultSet.next()){
+                if (resultSet.isClosed())
+                    throw new ConvertException("resultSet is closed.");
+                while (!resultSet.next()){
                     Object instance = entityObjectFactory.produce();
                     int columnIndex = 1;
                     for (Map.Entry<String, TypeMapping> child : typeMapping.getChildren().entrySet()){
