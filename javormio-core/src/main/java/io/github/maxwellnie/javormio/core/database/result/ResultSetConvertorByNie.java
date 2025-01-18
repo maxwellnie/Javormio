@@ -37,7 +37,7 @@ public class ResultSetConvertorByNie implements ResultSetConvertor{
                 int rowIndex = 0;
                 if (resultSet.isClosed())
                     throw new ConvertException("resultSet is closed.");
-                while (!resultSet.next()){
+                while (resultSet.next()){
                     Object instance = entityObjectFactory.produce();
                     int columnIndex = 1;
                     for (Map.Entry<String, TypeMapping> child : typeMapping.getChildren().entrySet()){
@@ -69,7 +69,6 @@ public class ResultSetConvertorByNie implements ResultSetConvertor{
             } catch (SQLException | NoSuchMethodException | ReflectionException e) {
                 throw new ConvertException(e);
             }
-
         }
     }
     private Object multipleTableConvert(ResultSet resultSet, TypeMapping typeMapping) {
