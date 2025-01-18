@@ -20,8 +20,6 @@ import java.util.Stack;
  */
 public class ResultSetConvertorByNie implements ResultSetConvertor {
     private Object simpleConvert(ResultSet resultSet, TypeMapping typeMapping) throws ConvertException {
-
-
         try {
             Reflection<?> reflection = ReflectionUtils.getReflection(typeMapping.getType());
             ObjectFactory<?> entityObjectFactory = reflection.getObjectFactory();
@@ -46,9 +44,14 @@ public class ResultSetConvertorByNie implements ResultSetConvertor {
                 for (Map.Entry<String, TypeMapping> child : typeMapping.getChildren().entrySet()) {
                     String fieldName = child.getKey();
                     TypeMapping childTypeMapping = child.getValue();
-                    Object columnValue = childTypeMapping.getTypeHandler().getValue(resultSet, columnIndex);
+                    Object columnValue = childTypeMapping
+                            .getTypeHandler()
+                                .getValue(resultSet, columnIndex);
                     if (columnValue != null)
-                        childTypeMapping.getMetaProperty().getProperty().setValue(instance, fieldName, columnValue);
+                        childTypeMapping
+                                .getMetaProperty()
+                                    .getProperty()
+                                        .setValue(instance, fieldName, columnValue);
                     columnIndex++;
                 }
                 if (parent != null && !isEntity) {
@@ -65,7 +68,7 @@ public class ResultSetConvertorByNie implements ResultSetConvertor {
                             throw new ConvertException("The type [" + metaProperty.getType() + "] is not support.");
                     }
                 } else {
-                    parent = instance;
+                    return instance;
                 }
                 rowIndex++;
             }
