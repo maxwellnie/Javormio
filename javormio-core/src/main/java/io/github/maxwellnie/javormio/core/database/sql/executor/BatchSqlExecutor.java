@@ -1,6 +1,7 @@
 package io.github.maxwellnie.javormio.core.database.sql.executor;
 
 import io.github.maxwellnie.javormio.core.database.jdbc.connection.ConnectionResource;
+import io.github.maxwellnie.javormio.core.database.result.ConvertException;
 import io.github.maxwellnie.javormio.core.database.result.ResultSetConvertor;
 import io.github.maxwellnie.javormio.core.database.result.TypeMapping;
 import io.github.maxwellnie.javormio.core.database.sql.ExecutableSql;
@@ -22,7 +23,7 @@ import static io.github.maxwellnie.javormio.core.database.sql.SqlType.isMayChang
  */
 public class BatchSqlExecutor extends BaseSqlExecutor {
     @Override
-    public Object run(ExecutorContext executorContext) throws SQLException {
+    public Object run(ExecutorContext executorContext) throws SQLException, ConvertException {
         //获取连接资源、可执行sql、属性
         ConnectionResource connectionResource = executorContext.getConnectionResource();
         ExecutableSql executableSql = executorContext.getExecutableSql();
@@ -68,7 +69,8 @@ public class BatchSqlExecutor extends BaseSqlExecutor {
                     handleGeneratedKeysOfInsert(updateCounts, consumer, preparedStatement);
                 return updateCounts;
             } else {
-                return handleResultSetOfQuery(updateCounts, preparedStatement, resultSetConvertor, typeMapping);
+                boolean multipleTable = (boolean) properties.get(Constants.MULTIPLE_TABLE);
+                return handleResultSetOfQuery(updateCounts, preparedStatement, resultSetConvertor, typeMapping, multipleTable);
             }
         }
     }
@@ -93,17 +95,18 @@ public class BatchSqlExecutor extends BaseSqlExecutor {
      * @param preparedStatement  预处理报表
      * @param resultSetConvertor 结果集转换器
      * @param typeMapping        类型映射
+     * @param multipleTable       是否是多表查询
      * @return Object
      * @throws SQLException
      */
-    private Object handleResultSetOfQuery(int[] updateCounts, PreparedStatement preparedStatement, ResultSetConvertor resultSetConvertor, TypeMapping typeMapping) throws SQLException {
+    private Object handleResultSetOfQuery(int[] updateCounts, PreparedStatement preparedStatement, ResultSetConvertor resultSetConvertor, TypeMapping typeMapping, boolean multipleTable) throws SQLException, ConvertException {
         //收集产生的结果集
         LinkedList<ResultSet> list = new LinkedList<>();
         for (int ignored : updateCounts) {
             list.add(preparedStatement.getResultSet());
         }
         //转换结果集到Java对象
-        return resultSetConvertor.convert(list, typeMapping);
+        return resultSetConvertor.convert(list, typeMapping, multipleTable);
     }
 
 }

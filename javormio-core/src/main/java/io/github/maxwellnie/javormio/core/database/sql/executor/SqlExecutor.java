@@ -1,5 +1,7 @@
 package io.github.maxwellnie.javormio.core.database.sql.executor;
 
+import io.github.maxwellnie.javormio.core.database.result.ConvertException;
+
 import java.sql.SQLException;
 
 /**
@@ -15,5 +17,5 @@ public interface SqlExecutor {
      * @return 执行结果
      * @throws SQLException
      */
-    Object run(ExecutorContext executorContext) throws SQLException;
+    Object run(ExecutorContext executorContext) throws SQLException, ConvertException;
 }

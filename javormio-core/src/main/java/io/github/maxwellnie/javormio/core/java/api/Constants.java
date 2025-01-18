@@ -13,4 +13,5 @@ public interface Constants {
     String EMPTY_STRING = "";
     String SELECT_GENERATED_KEY = "SGK";
     String RESULT_SET_CONVERTOR = "RSC";
+    String MULTIPLE_TABLE = "MT";
 }

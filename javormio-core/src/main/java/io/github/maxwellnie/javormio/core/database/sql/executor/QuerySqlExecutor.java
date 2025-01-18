@@ -1,6 +1,7 @@
 package io.github.maxwellnie.javormio.core.database.sql.executor;
 
 import io.github.maxwellnie.javormio.core.database.jdbc.connection.ConnectionResource;
+import io.github.maxwellnie.javormio.core.database.result.ConvertException;
 import io.github.maxwellnie.javormio.core.database.result.ResultSetConvertor;
 import io.github.maxwellnie.javormio.core.database.result.TypeMapping;
 import io.github.maxwellnie.javormio.core.database.sql.ExecutableSql;
@@ -20,7 +21,7 @@ import java.util.Map;
  */
 public class QuerySqlExecutor extends BaseSqlExecutor {
     @Override
-    public Object run(ExecutorContext executorContext) throws SQLException {
+    public Object run(ExecutorContext executorContext) throws SQLException, ConvertException {
         ConnectionResource connectionResource = executorContext.getConnectionResource();
         ExecutableSql executableSql = executorContext.getExecutableSql();
         Map<String, Object> properties = executorContext.getProperties();
@@ -31,6 +32,7 @@ public class QuerySqlExecutor extends BaseSqlExecutor {
         //获取连接对象
         Connection connection = connectionResource
                 .getConnection();
+        boolean multipleTable = (boolean) properties.get(Constants.MULTIPLE_TABLE);
         //打开报表
         try (PreparedStatement preparedStatement = connection.prepareStatement(executableSql.getSqlList()[0])) {
             //获取参数列表
@@ -50,7 +52,7 @@ public class QuerySqlExecutor extends BaseSqlExecutor {
                             .setValue(preparedStatement, index++, sqlParameter.getValue());
                 }
             }
-            return resultSetConvertor.convert(preparedStatement.executeQuery(), typeMapping);
+            return resultSetConvertor.convert(preparedStatement.executeQuery(), typeMapping, multipleTable);
         }
     }
 }
