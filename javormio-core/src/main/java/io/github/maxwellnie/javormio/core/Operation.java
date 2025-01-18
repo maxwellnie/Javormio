@@ -3,6 +3,6 @@ package io.github.maxwellnie.javormio.core;
 /**
  * @author Maxwell Nie
  */
-public interface DataAPI<T> {
+public interface Operation<T> {
     T getEntity(String sql, Object... args);
 }

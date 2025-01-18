@@ -1,7 +1,5 @@
 package io.github.maxwellnie.javormio.core.database.sql.method;
 
-import io.github.maxwellnie.javormio.core.DataAPIContext;
-
 /**
  * 可对数据库进行操作的方法
  *

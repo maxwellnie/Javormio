@@ -1,13 +1,13 @@
 package io.github.maxwellnie.javormio.core.database.sql.method;
 
-import io.github.maxwellnie.javormio.core.DataAPIContext;
+import io.github.maxwellnie.javormio.core.OperationContext;
 
 /**
  * @author Maxwell Nie
  */
 public class UpdateSqlMethod extends BaseSqlMethod {
-    public UpdateSqlMethod(DataAPIContext dataAPIContext) {
-        super(dataAPIContext);
+    public UpdateSqlMethod(OperationContext operationContext) {
+        super(operationContext);
     }
 
     @Override

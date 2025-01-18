@@ -10,7 +10,7 @@ import io.github.maxwellnie.javormio.core.java.type.TypeHandler;
 /**
  * @author Maxwell Nie
  */
-public class DataAPIContext {
+public class OperationContext {
     public SqlMethod getSqlMethod(Class<?> daoImplClazz, String methodName, Class<?>[] parameterTypes) {
         return null;
     }

@@ -49,6 +49,7 @@ public class ResultSetConvertorByNie implements ResultSetConvertor {
                     Object columnValue = childTypeMapping.getTypeHandler().getValue(resultSet, columnIndex);
                     if (columnValue != null)
                         childTypeMapping.getMetaProperty().getProperty().setValue(instance, fieldName, columnValue);
+                    columnIndex++;
                 }
                 if (parent != null && !isEntity) {
                     switch (metaProperty.getPropertyType()) {

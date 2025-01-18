@@ -1,15 +1,15 @@
 package io.github.maxwellnie.javormio.core.database.sql.method;
 
-import io.github.maxwellnie.javormio.core.DataAPIContext;
+import io.github.maxwellnie.javormio.core.OperationContext;
 
 /**
  * @author Maxwell Nie
  */
 public abstract class BaseSqlMethod implements SqlMethod{
-    protected DataAPIContext dataAPIContext;
+    protected OperationContext operationContext;
 
-    public BaseSqlMethod(DataAPIContext dataAPIContext) {
-        this.dataAPIContext = dataAPIContext;
+    public BaseSqlMethod(OperationContext operationContext) {
+        this.operationContext = operationContext;
     }
 
 }

@@ -1,6 +1,6 @@
 package io.github.maxwellnie.javormio.core.database.sql.method;
 
-import io.github.maxwellnie.javormio.core.DataAPIContext;
+import io.github.maxwellnie.javormio.core.OperationContext;
 import io.github.maxwellnie.javormio.core.database.sql.ExecutableSql;
 import io.github.maxwellnie.javormio.core.database.sql.SqlParameter;
 import io.github.maxwellnie.javormio.core.database.sql.SqlType;
@@ -15,8 +15,8 @@ import java.util.List;
  * @author Maxwell Nie
  */
 public class QuerySqlMethod extends BaseSqlMethod {
-    public QuerySqlMethod(DataAPIContext dataAPIContext) {
-        super(dataAPIContext);
+    public QuerySqlMethod(OperationContext operationContext) {
+        super(operationContext);
     }
 
     @Override
@@ -25,7 +25,7 @@ public class QuerySqlMethod extends BaseSqlMethod {
     }
     protected Object query(int methodFeatureCode, String sql, List<Object> params) throws SQLException {
         //1. 获取执行器
-        SqlExecutor sqlExecutor = dataAPIContext.getSqlExecutor(QuerySqlExecutor.class);
+        SqlExecutor sqlExecutor = operationContext.getSqlExecutor(QuerySqlExecutor.class);
         //2. 构建可执行sql
         ExecutableSql executableSql = new ExecutableSql();
         //2.1 设置sql
@@ -33,16 +33,16 @@ public class QuerySqlMethod extends BaseSqlMethod {
         //2.2 设置参数
         SqlParameter[] sqlParameters = new SqlParameter[params.size()];
         for (int i = 0; i < params.size(); i++){
-            sqlParameters[i] = new SqlParameter(params.get(i), dataAPIContext.getTypeHandler(params.get(i)));
+            sqlParameters[i] = new SqlParameter(params.get(i), operationContext.getTypeHandler(params.get(i)));
         }
         executableSql.getParametersList().add(sqlParameters);
         //2.3 设置sql类型
         executableSql.setType(SqlType.SELECT);
         //3. 构建执行上下文
         ExecutorContext executorContext = new ExecutorContext(
-                dataAPIContext.getConnectionResource(), executableSql,
+                operationContext.getConnectionResource(), executableSql,
                 //获取类型映射
-                dataAPIContext
+                operationContext
                         .getDaoMethodFeature(methodFeatureCode)
                         .typeMapping);
         //4. 执行
