@@ -49,8 +49,6 @@ public class ResultSetConvertorByNie implements ResultSetConvertor{
                     }
                     if (parent != null && !isEntity){
                         switch (metaProperty.getPropertyType()){
-                            case BASIC:
-                                throw new ConvertException("The type ["+metaProperty.getType()+"] is not support.");
                             case ARRAY:
                             case LIST:
                             case MAP:
@@ -59,6 +57,8 @@ public class ResultSetConvertorByNie implements ResultSetConvertor{
                             case SET:
                                 parent = metaProperty.getProperty().setValue(parent, null, instance);
                                 break;
+                            default:
+                                    throw new ConvertException("The type ["+metaProperty.getType()+"] is not support.");
                         }
                     }else {
                         parent = instance;
