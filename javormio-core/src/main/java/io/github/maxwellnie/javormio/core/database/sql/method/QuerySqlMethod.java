@@ -1,6 +1,7 @@
 package io.github.maxwellnie.javormio.core.database.sql.method;
 
 import io.github.maxwellnie.javormio.core.OperationContext;
+import io.github.maxwellnie.javormio.core.database.result.ConvertException;
 import io.github.maxwellnie.javormio.core.database.sql.ExecutableSql;
 import io.github.maxwellnie.javormio.core.database.sql.SqlParameter;
 import io.github.maxwellnie.javormio.core.database.sql.SqlType;
@@ -23,7 +24,7 @@ public class QuerySqlMethod extends BaseSqlMethod {
     public Object invokeExactly(int methodFeatureCode, Object... args) throws Throwable{
         return query(methodFeatureCode, (String) args[0], (List<Object>) args[1]);
     }
-    protected Object query(int methodFeatureCode, String sql, List<Object> params) throws SQLException {
+    protected Object query(int methodFeatureCode, String sql, List<Object> params) throws SQLException, ConvertException {
         //1. 获取执行器
         SqlExecutor sqlExecutor = operationContext.getSqlExecutor(QuerySqlExecutor.class);
         //2. 构建可执行sql
