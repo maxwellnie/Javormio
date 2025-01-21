@@ -63,11 +63,11 @@ public class ResultSetCOnvertorByQise implements ResultSetConvertor{
             int columnIndex = 0;
             ObjectFactory<?> objectFactory = reflection.getObjectFactory();
             for (TypeMapping index : premetaList){
-                if(!typeMapping.isEntity()){
+                if(!typeMapping.isEntity()){//跳出递归
                     data = setValue(resultSet, index, objectFactory, columnIndex, metaProperty);
                     columnIndex++;
                 }else{
-                    simpleConvert(resultSet,index);
+                    simpleConvert(resultSet,index);//实体类递归
                 }
 
                 }
