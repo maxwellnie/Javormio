@@ -18,12 +18,10 @@ import java.util.Map;
  * 将ResultSet转换为Java实体对象
  */
 public class ResultSetCOnvertorByQise implements ResultSetConvertor{
-    ArrayList<TypeMapping> premetaList = new ArrayList<>();
     ArrayList<TypeMapping> lastmetaList = new ArrayList<>();
     @lombok.SneakyThrows
     @Override
     public Object convert(ResultSet resultSet, TypeMapping typeMapping, boolean multipleTable) {
-
         if (multipleTable){
 
         }else{
@@ -49,13 +47,12 @@ public class ResultSetCOnvertorByQise implements ResultSetConvertor{
      */
     @lombok.SneakyThrows
     public Object simpleConvert(ResultSet resultSet, TypeMapping typeMapping){
+        ArrayList<TypeMapping> premetaList = new ArrayList<>();
         Reflection<?> reflection = ReflectionUtils.getReflection(typeMapping.getType());
         MetaProperty metaProperty = typeMapping.getMetaProperty();
         Object data = null;
-//        int columCount = 0; //列数
         for (Map.Entry<String, TypeMapping> child : typeMapping.getChildren().entrySet()){
             premetaList.add(child.getValue());
- //           columCount++;
         }
         if (resultSet.isClosed())
             throw new ConvertException("resultSet is closed.");
