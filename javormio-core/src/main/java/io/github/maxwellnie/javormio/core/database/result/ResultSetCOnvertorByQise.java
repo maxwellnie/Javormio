@@ -67,7 +67,7 @@ public class ResultSetCOnvertorByQise implements ResultSetConvertor{
                     simpleConvert(resultSet,index);//实体类递归
                 }
 
-                }
+            }
         }
         return data;
     }

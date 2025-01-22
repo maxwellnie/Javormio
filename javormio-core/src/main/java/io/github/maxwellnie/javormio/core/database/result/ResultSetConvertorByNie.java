@@ -77,13 +77,22 @@ public class ResultSetConvertorByNie implements ResultSetConvertor {
             throw new ConvertException(e);
         }
     }
-
+    /**
+     * 多表查询
+     * <p>算法思想：动态规划</p>
+     * <p>首先我们将结果集的列看成是一个N维向量，在读取一行数据时将列数据暂时缓存。
+     * 接着，计算主表列HASH值并缓存（向量分量值）直到该行全部计算完毕，然后对上一行主表列数据HASH值作对比（计算向量是否相同，也可以是叉乘）；
+     * 若相同则合并子表对象，若不同则创建新的主表实体对象并将子表对象赋值到主表实体对象上。</p>
+     * @param resultSet
+     * @param typeMapping
+     * @return Object
+     */
     private Object multipleTableConvert(ResultSet resultSet, TypeMapping typeMapping) {
         Map<TypeMapping, Object> incomplete = new LinkedHashMap<>();
         Stack<TypeMapping> typeMappingStack = new Stack<>();
+
         return null;
     }
-
     @Override
     public Object convert(ResultSet resultSet, TypeMapping typeMapping, boolean multipleTable) throws ConvertException {
         if (resultSet == null || typeMapping == null)
