@@ -28,7 +28,11 @@ public class ResultSetCOnvertorByQise implements ResultSetConvertor{
         if (multipleTable){
 
         }else{
+            if(resultSet.getRow()<=100){
                 return simpleConvert(resultSet, typeMapping);
+            } else{
+
+            }
         }
         return null;
     }
@@ -63,9 +67,9 @@ public class ResultSetCOnvertorByQise implements ResultSetConvertor{
         while (resultSet.next()) {
             int columnIndex = 0;
             ObjectFactory<?> objectFactory = reflection.getObjectFactory();
-//            Object rowData = setRowValue(resultSet, typeMapping, objectFactory, columnIndex);
-//            parent = metaProperty.getProperty().setValue(parent, null, rowData);
-            RecursiveTask<Object> task = new RecursiveTask<Object>() {
+            Object rowData = setRowValue(resultSet, typeMapping, objectFactory, columnIndex);
+            parent = metaProperty.getProperty().setValue(parent, null, rowData);
+/*            RecursiveTask<Object> task = new RecursiveTask<Object>() {
                 @Override
                 protected Object compute() {
                     int columInde = 0;
@@ -73,14 +77,14 @@ public class ResultSetCOnvertorByQise implements ResultSetConvertor{
                 }
             };
             tasks.add(task);
-            forkJoinPool.execute(task);
+            forkJoinPool.execute(task);*/
             columnIndex++;
         }
-        List<Object> results = tasks.stream()
+/*        List<Object> results = tasks.stream()
                 .map(RecursiveTask::join)
                 .collect(Collectors.toList());
-            return  results;
-//        return parent;
+            return  results;*/
+        return parent;
     }
     /**
      * 将ResultSet中的值设置到对象中,将resultSet中的单一数据赋值给单一对象属性，
@@ -115,7 +119,7 @@ public class ResultSetCOnvertorByQise implements ResultSetConvertor{
             premetaList.add(child.getValue());
         }
         for (TypeMapping index : premetaList){
-            if(!typeMapping.isEntity()){//跳出递归
+            if(!index.isEntity()){//跳出递归
                 data = setSingleValue(resultSet, index, objectFactory, columnIndex);
             }else{
                 setRowValue(resultSet,index,objectFactory,columnIndex);//实体类递归
