@@ -1,4 +1,5 @@
 package io.github.maxwellnie.javormio.core.database.result;
+import io.github.maxwellnie.javormio.core.database.result.method.method;
 import io.github.maxwellnie.javormio.core.java.reflect.ObjectFactory;
 import io.github.maxwellnie.javormio.core.java.reflect.Reflection;
 import io.github.maxwellnie.javormio.core.java.reflect.property.impl.meta.MetaProperty;
@@ -15,7 +16,7 @@ import java.util.Map;
  * 将ResultSet转换为Java实体对象
  */
 public class ResultSetCOnvertorByQise implements ResultSetConvertor{
-    ArrayList<Reflection<?>> typeMappingsReflectionList = new ArrayList<>();
+//    ArrayList<Reflection<?>> typeMappingsReflectionList = new ArrayList<>();
     method m = new method();
     @lombok.SneakyThrows
     @Override
@@ -51,41 +52,22 @@ public class ResultSetCOnvertorByQise implements ResultSetConvertor{
      */
 
     public Object simpleConvert(ResultSet resultSet, TypeMapping typeMapping) throws ConvertException{
-//        ForkJoinPool forkJoinPool = new ForkJoinPool();
-//        List<RecursiveTask<Object>> tasks = new ArrayList<>();
+        int rowIndex = 0;
         Object parent = null;
         MetaProperty metaProperty = null;
-
-        Reflection<?> reflection = m.reflectionLIst(typeMapping);
-//        Reflection<?> reflection = typeMapping.getReflection();
-//        Reflection<?> reflection = ReflectionUtils.getReflection(typeMapping.getType());
+        Reflection<?> reflection = m.getReflection(typeMapping);
         try{
             if (resultSet.isClosed())
                 throw new ConvertException("resultSet is closed.");
             while (resultSet.next()) {
-                int rowIndex = 0;
                 ObjectFactory<?> objectFactory = reflection.getObjectFactory();
                 Object rowData = setRowValue(resultSet, typeMapping, objectFactory, rowIndex);
                 parent = metaProperty.getProperty().setValue(parent, null, rowData);
-/*            RecursiveTask<Object> task = new RecursiveTask<Object>() {
-                @Override
-                protected Object compute() {
-                    int columInde = 0;
-                    return setRowValue(resultSet, typeMapping, objectFactory, columInde);
-                }
-            };
-            tasks.add(task);
-            forkJoinPool.execute(task);*/
                 rowIndex++;
             }
         }catch (Throwable e){
             throw new ConvertException("Convert error.", e);
         }
-
-/*        List<Object> results = tasks.stream()
-                .map(RecursiveTask::join)
-                .collect(Collectors.toList());
-            return  results;*/
         return parent;
     }
     /**
@@ -125,7 +107,7 @@ public class ResultSetCOnvertorByQise implements ResultSetConvertor{
                 data = setSingleValue(resultSet, index, objectFactory, rowIndex);
             }else{
                 try {
-                    Reflection<?> reflection = m.reflectionLIst(index);
+                    Reflection<?> reflection = m.getReflection(index);
                     ObjectFactory<?> objectFactory1 = null;
                     objectFactory1 = reflection.getObjectFactory();//新创建的对象
                     setRowValue(resultSet, index, objectFactory1, rowIndex);//实体类递归
@@ -138,148 +120,4 @@ public class ResultSetCOnvertorByQise implements ResultSetConvertor{
         }
         return data;
     }
-
-/*    *//**
-     * 根据类型映射获取对应的反射对象
-     * 此方法旨在维护一个类型映射到反射对象的缓存，以提高类型查询的效率
-     * 首先尝试从列表中查找是否已经存在该类型的反射对象，如果存在则直接返回
-     * 如果不存在，则创建新的反射对象，并将其添加到列表中以供后续查询
-     *
-     * @param typeMapping 类型映射，用于标识和获取反射对象
-     * @return 返回一个反射对象，该对象对应于给定的类型映射
-     *//*
-    public Reflection<?> reflectionLIst(TypeMapping typeMapping){
-        // 检查给定的类型映射是否已经存在于列表中
-        int flag = typeMappingsReflectionList.indexOf(typeMapping);
-        if(flag != -1){
-            // 如果存在，则直接返回对应的反射对象
-            return typeMappingsReflectionList.get(flag);
-        }else{
-            // 如果不存在，则根据类型映射创建一个新的反射对象
-            Reflection<?> reflection = typeMapping.getReflection();
-            // 将新创建的反射对象添加到列表中，以供后续查询
-            typeMappingsReflectionList.add(reflection);
-            // 返回新创建的反射对象
-            return reflection;
-        }
-    }*/
-
-/*
-    @lombok.SneakyThrows
-    public Object simpleConvert(ResultSet resultSet, TypeMapping typeMapping) {
-        ForkJoinPool forkJoinPool = new ForkJoinPool();
-        List<RecursiveTask<Object>> tasks = new ArrayList<>();
-        Reflection<?> reflection = ReflectionUtils.getReflection(typeMapping.getType());
-        if (resultSet.isClosed())
-            throw new ConvertException("resultSet is closed.");
-
-        // 单线程读取 ResultSet 的每一行数据
-        while (resultSet.next()) {
-            int columnIndex = 0;
-            ObjectFactory<?> objectFactory = reflection.getObjectFactory();
-            Object rowData = setRowValue(resultSet, typeMapping, objectFactory, columnIndex);
-            columnIndex++;
-
-            // 将每一行数据传递给 ForkJoinPool 进行并行处理
-            RecursiveTask<Object> task = new RecursiveTask<Object>() {
-                @Override
-                protected Object compute() {
-                    // 这里可以进行更复杂的对象转换逻辑
-                    return rowData;
-                }
-            };
-            tasks.add(task);
-            forkJoinPool.execute(task);
-        }
-
-        // 等待所有任务完成并收集结果
-        List<Object> results = tasks.stream()
-                .map(RecursiveTask::join)
-                .collect(Collectors.toList());
-
-        // 根据具体需求返回结果，这里假设返回一个包含所有结果的列表
-        return results;
-    }
-    @lombok.SneakyThrows
-    public Object simpleConvert(ResultSet resultSet, TypeMapping typeMapping) {
-        ForkJoinPool forkJoinPool = new ForkJoinPool();
-        List<RecursiveTask<Object>> tasks = new ArrayList<>();
-        Reflection<?> reflection = ReflectionUtils.getReflection(typeMapping.getType());
-        if (resultSet.isClosed())
-            throw new ConvertException("resultSet is closed.");
-
-        // 分页处理，假设每页 100 条记录
-        int pageSize = 100;
-        List<Object> allResults = new ArrayList<>();
-
-        while (resultSet.next()) {
-            List<Object> pageResults = new ArrayList<>();
-            for (int i = 0; i < pageSize && resultSet.next(); i++) {
-                int columnIndex = 0;
-                ObjectFactory<?> objectFactory = reflection.getObjectFactory();
-                Object rowData = setRowValue(resultSet, typeMapping, objectFactory, columnIndex);
-                columnIndex++;
-                pageResults.add(rowData);
-            }
-
-            // 将每一页的数据传递给 ForkJoinPool 进行并行处理
-            RecursiveTask<Object> task = new RecursiveTask<Object>() {
-                @Override
-                protected Object compute() {
-                    // 这里可以进行更复杂的对象转换逻辑
-                    return pageResults;
-                }
-            };
-            tasks.add(task);
-            forkJoinPool.execute(task);
-        }
-
-        // 等待所有任务完成并收集结果
-        List<Object> results = tasks.stream()
-                .map(RecursiveTask::join)
-                .flatMap(List::stream)
-                .collect(Collectors.toList());
-
-        // 根据具体需求返回结果，这里假设返回一个包含所有结果的列表
-        return results;
-    }*/
-/*@lombok.SneakyThrows
-public Object simpleConvert(ResultSet resultSet, TypeMapping typeMapping) {
-    ForkJoinPool forkJoinPool = new ForkJoinPool();
-    List<RecursiveTask<Object>> tasks = new ArrayList<>();
-    Reflection<?> reflection = ReflectionUtils.getReflection(typeMapping.getType());
-    if (resultSet.isClosed())
-        throw new ConvertException("resultSet is closed.");
-
-    // 单线程读取 ResultSet 的每一行数据
-    List<Object> allRowData = new ArrayList<>();
-    while (resultSet.next()) {
-        int columnIndex = 0;
-        ObjectFactory<?> objectFactory = reflection.getObjectFactory();
-        Object rowData = setRowValue(resultSet, typeMapping, objectFactory, columnIndex);
-        columnIndex++;
-        allRowData.add(rowData);
-    }
-
-    // 将每一行数据传递给 ForkJoinPool 进行并行处理
-    for (Object rowData : allRowData) {
-        RecursiveTask<Object> task = new RecursiveTask<Object>() {
-            @Override
-            protected Object compute() {
-                // 这里可以进行更复杂的对象转换逻辑
-                return rowData;
-            }
-        };
-        tasks.add(task);
-        forkJoinPool.execute(task);
-    }
-
-    // 等待所有任务完成并收集结果
-    List<Object> results = tasks.stream()
-            .map(RecursiveTask::join)
-            .collect(Collectors.toList());
-
-    // 根据具体需求返回结果，这里假设返回一个包含所有结果的列表
-    return results;
-}*/
 }
