@@ -4,6 +4,7 @@ import io.github.maxwellnie.javormio.core.database.result.TypeMapping;
 import io.github.maxwellnie.javormio.core.java.reflect.Reflection;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 /**
@@ -11,7 +12,7 @@ import java.util.ArrayList;
  * @author yurongqi
  */
 public class method implements methodReflection{
-    ArrayList<Reflection<?>> typeMappingsReflectionList = new ArrayList<>();
+    private final HashMap<TypeMapping, Reflection<?>> reflectionCache = new HashMap<>();
 
     /**
      * 根据类型映射获取对应的反射对象
@@ -24,23 +25,11 @@ public class method implements methodReflection{
      */
     @Override
     public Reflection<?> getReflection(TypeMapping typeMapping){
-        // 检查给定的类型映射是否已经存在于列表中
-        int flag = typeMappingsReflectionList.indexOf(typeMapping);
-        if(flag != -1){
-            // 如果存在，则直接返回对应的反射对象
-            return typeMappingsReflectionList.get(flag);
-        }else{
-            // 如果不存在，则根据类型映射创建一个新的反射对象
-            Reflection<?> reflection = typeMapping.getReflection();
-            // 将新创建的反射对象添加到列表中，以供后续查询
-            typeMappingsReflectionList.add(reflection);
-            // 返回新创建的反射对象
-            return reflection;
-        }
+        return reflectionCache.computeIfAbsent(typeMapping, tm -> tm.getReflection());
     }
 
     @Override
     public void setNullReflection() {
-        typeMappingsReflectionList.clear();
+        reflectionCache.clear();
     }
 }
