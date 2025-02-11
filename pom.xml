@@ -10,6 +10,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>javormio-core</module>
+        <module>JavormioTester</module>
     </modules>
 
     <properties>

@@ -5,6 +5,7 @@ import io.github.maxwellnie.javormio.core.database.jdbc.datasource.DynamicMultip
 import io.github.maxwellnie.javormio.core.database.sql.executor.SqlExecutor;
 import io.github.maxwellnie.javormio.core.database.sql.method.DaoMethodFeature;
 import io.github.maxwellnie.javormio.core.database.sql.method.SqlMethod;
+import io.github.maxwellnie.javormio.core.database.table.TableInfo;
 import io.github.maxwellnie.javormio.core.java.type.TypeHandler;
 
 /**
@@ -33,6 +34,9 @@ public class OperationContext {
         return null;
     }
     public DaoMethodFeature getDaoMethodFeature(Class<?> daoImplClazz, String methodName, Class<?>[] parameterTypes) {
+        return null;
+    }
+    public TableInfo getTableInfo(Class<?> clazz) {
         return null;
     }
     public DaoMethodFeature getDaoMethodFeature(int methodFeatureCode) {
