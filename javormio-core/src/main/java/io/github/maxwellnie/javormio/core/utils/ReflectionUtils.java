@@ -9,6 +9,7 @@ import io.github.maxwellnie.javormio.core.java.reflect.property.MetaField;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -141,12 +142,15 @@ public class ReflectionUtils {
         }
 
         private MetaField buildMetaField(String name, Field field) throws NoSuchMethodException {
-            return new MetaField(field,
-                    getInvoker("set" + name.substring(0, 1).toUpperCase() + name.substring(1),
-                            new Class<?>[]{field.getType()}),
-                    getInvoker("get" + name.substring(0, 1).toUpperCase() + name.substring(1),
-                            new Class<?>[0])
-            );
+            MethodInvoker getter = null, setter = null;
+            try {
+                getter = getInvoker("get" + name.substring(0, 1).toUpperCase() + name.substring(1), new Class<?>[]{field.getType()});
+                if(!Modifier.isFinal(field.getModifiers()))
+                    setter = getInvoker("set" + name.substring(0, 1).toUpperCase() + name.substring(1), new Class<?>[0]);
+            } catch (NoSuchMethodException e) {
+                //undo
+            }
+            return new MetaField(field, setter, getter);
         }
 
         public Field getField(String name, boolean deepSearch) throws NoSuchFieldException {
