@@ -106,6 +106,9 @@ public class ReflectionUtils {
          * 所有字段缓存
          */
         final Map<String, MetaField> allMetaFieldMap = new ConcurrentHashMap<>();
+        /**
+         * 锁
+         */
         boolean lock = false;
         /**
          * 方法缓存
@@ -170,7 +173,7 @@ public class ReflectionUtils {
                         while (currentClass != null && currentClass != Object.class) {
                             Field[] fields = currentClass.getDeclaredFields();
                             for (Field f : fields)
-                                allMetaFieldMap.put(f.getName(), buildMetaField(f.getName(), f));
+                                allMetaFieldMap.putIfAbsent(f.getName(), buildMetaField(f.getName(), f));
                             currentClass = currentClass.getSuperclass();
                         }
                         lock = false;
