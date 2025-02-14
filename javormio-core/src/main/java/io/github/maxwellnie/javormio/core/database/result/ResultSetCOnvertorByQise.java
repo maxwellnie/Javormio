@@ -85,7 +85,7 @@ public class ResultSetCOnvertorByQise implements ResultSetConvertor{
         Object columnValue = typeMapping.getTypeHandler().getValue(resultSet, columnIndex);
         if (columnValue == null)
             return null;
-        Object singleData = typeMapping.getMetaProperty().getProperty().setValue(objectFactory, columnName, columnValue);
+        Object singleData = typeMapping.getProperty().setValue(objectFactory, columnName, columnValue);
         return singleData;
     }
     /**
