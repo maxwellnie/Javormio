@@ -5,6 +5,7 @@ import io.github.maxwellnie.javormio.core.java.reflect.property.impl.meta.MetaPr
 import io.github.maxwellnie.javormio.core.java.type.TypeHandler;
 
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -32,7 +33,7 @@ public class TypeMapping {
     /**
      * 子映射
      */
-    private final LinkedHashMap<String, TypeMapping> children;
+    private final Map<String, TypeMapping> children;
     /**
      * 是否是实体
      */
@@ -42,7 +43,7 @@ public class TypeMapping {
      */
     private int hashCode = -1;
 
-    public TypeMapping(Reflection<?> reflection, MetaProperty metaProperty, TypeHandler<?> typeHandler, String columnName, LinkedHashMap<String, TypeMapping> children, boolean isEntity) {
+    public TypeMapping(Reflection<?> reflection, MetaProperty metaProperty, TypeHandler<?> typeHandler, String columnName, Map<String, TypeMapping> children, boolean isEntity) {
         this.reflection = reflection;
         this.metaProperty = metaProperty;
         this.typeHandler = typeHandler;
@@ -71,7 +72,7 @@ public class TypeMapping {
         return columnName;
     }
 
-    public LinkedHashMap<String, TypeMapping> getChildren() {
+    public Map<String, TypeMapping> getChildren() {
         return children;
     }
 

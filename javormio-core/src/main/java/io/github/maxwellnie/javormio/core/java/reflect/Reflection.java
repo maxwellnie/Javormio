@@ -33,19 +33,17 @@ public interface Reflection<T> {
 
     /**
      * 寻找此类（包含父类）的全部字段，并返回一个关于字段名和字段对象的哈希映射
-     * @param clazz
      * @return Map<String, MetaField>
      * @throws NoSuchMethodException
      * @throws NoSuchFieldException
      */
-    Map<String, MetaField> linedFindAllFieldsMap(Class<?> clazz) throws NoSuchMethodException, NoSuchFieldException;
+    Map<String, MetaField> linedFindAllFieldsMap() throws NoSuchMethodException, NoSuchFieldException;
     /**
      * 寻找此类（包含父类）的全部字段
-     * @param clazz
      * @return Collection<Field>
      */
-    default Collection<MetaField> linedFindAllFields(Class<?> clazz) throws NoSuchFieldException, NoSuchMethodException {
-        Map<String, MetaField> fieldMap = linedFindAllFieldsMap(clazz);
+    default Collection<MetaField> linedFindAllFields() throws NoSuchFieldException, NoSuchMethodException {
+        Map<String, MetaField> fieldMap = linedFindAllFieldsMap();
         return fieldMap.values();
     }
     /**

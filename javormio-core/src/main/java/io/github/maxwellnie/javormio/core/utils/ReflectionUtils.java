@@ -6,6 +6,7 @@ import io.github.maxwellnie.javormio.core.java.reflect.DefaultObjectFactory;
 import io.github.maxwellnie.javormio.core.java.reflect.ObjectFactory;
 import io.github.maxwellnie.javormio.core.java.reflect.Reflection;
 import io.github.maxwellnie.javormio.core.java.reflect.property.MetaField;
+import io.github.maxwellnie.javormio.core.java.type.map.AbstractImmutableMap;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -104,17 +105,21 @@ public class ReflectionUtils {
          */
         final Map<String, MetaField> metaFieldMap = new ConcurrentHashMap<>();
         /**
-         * 所有字段缓存
+         * 缓存锁
          */
-        final Map<String, MetaField> allMetaFieldMap = new ConcurrentHashMap<>();
-        /**
-         * 锁
-         */
-        boolean lock = false;
+        final Object lock = new Object();
         /**
          * 方法缓存
          */
         final Map<Integer, Method> methodMap = new ConcurrentHashMap<>();
+        /**
+         * 所有字段缓存
+         */
+        Map<String, MetaField> allMetaFieldMap = new ConcurrentHashMap<>();
+        /**
+         * 资源占用标志位
+         */
+        boolean occupied = false;
 
         public CachedReflection(Class<?> declaringClass) {
             this.declaringClass = declaringClass;
@@ -141,54 +146,65 @@ public class ReflectionUtils {
             return metaField;
         }
 
-        private MetaField buildMetaField(String name, Field field) throws NoSuchMethodException {
+        private MetaField buildMetaField(String name, Field field) {
             MethodInvoker getter = null, setter = null;
             try {
-                getter = getInvoker("get" + name.substring(0, 1).toUpperCase() + name.substring(1), new Class<?>[]{field.getType()});
-                if(!Modifier.isFinal(field.getModifiers()))
-                    setter = getInvoker("set" + name.substring(0, 1).toUpperCase() + name.substring(1), new Class<?>[0]);
+                getter = getInvoker("get" + name.substring(0, 1).toUpperCase() + name.substring(1), new Class<?>[0]);
             } catch (NoSuchMethodException e) {
-                //undo
+                // ignore
+            }
+            try {
+                setter = getInvoker("set" + name.substring(0, 1).toUpperCase() + name.substring(1), new Class<?>[]{field.getType()});
+            } catch (NoSuchMethodException e) {
+                // ignore
             }
             return new MetaField(field, setter, getter);
         }
 
         public Field getField(String name, boolean deepSearch) throws NoSuchFieldException {
-            Field field = null;
             if (deepSearch) {
                 Class<?> currentClass = this.declaringClass;
                 while (currentClass != null && currentClass != Object.class) {
-                    field = currentClass.getDeclaredField(name);
-                    currentClass = currentClass.getSuperclass();
+                    try {
+                        return currentClass.getDeclaredField(name);
+                    }catch (NoSuchFieldException e){
+                        currentClass = currentClass.getSuperclass();
+                    }
                 }
+                throw new NoSuchFieldException(name);
             } else {
-                field = this.declaringClass.getDeclaredField(name);
+                return this.declaringClass.getDeclaredField(name);
             }
-            return field;
         }
 
         @Override
-        public Map<String, MetaField> linedFindAllFieldsMap(Class<?> clazz) throws NoSuchMethodException, NoSuchFieldException {
+        public Map<String, MetaField> linedFindAllFieldsMap() throws NoSuchMethodException, NoSuchFieldException {
             if (allMetaFieldMap.isEmpty()) {
-                synchronized (allMetaFieldMap){
-                    if (allMetaFieldMap.isEmpty()){
-                        lock = true;
-                        Class<?> currentClass = this.declaringClass;
-                        while (currentClass != null && currentClass != Object.class) {
-                            Field[] fields = currentClass.getDeclaredFields();
-                            for (Field f : fields)
-                                allMetaFieldMap.putIfAbsent(f.getName(), buildMetaField(f.getName(), f));
-                            currentClass = currentClass.getSuperclass();
+                synchronized (lock) {
+                    if (allMetaFieldMap.isEmpty()) {
+                        occupied = true;
+                        try {
+                            Class<?> currentClass = this.declaringClass;
+                            while (currentClass != null && currentClass != Object.class) {
+                                Field[] fields = currentClass.getDeclaredFields();
+                                for (Field f : fields)
+                                    allMetaFieldMap.putIfAbsent(f.getName(), buildMetaField(f.getName(), f));
+                                currentClass = currentClass.getSuperclass();
+                            }
+                            occupied = false;
+                        } catch (Throwable e) {
+                            allMetaFieldMap.clear();
+                            throw e;
                         }
-                        lock = false;
+                        allMetaFieldMap = AbstractImmutableMap.immutable(allMetaFieldMap);
                     }
                 }
                 return allMetaFieldMap;
-            }else{
-                if (!lock){
+            } else {
+                if (!occupied) {
                     return allMetaFieldMap;
-                }else {
-                    synchronized (allMetaFieldMap){
+                } else {
+                    synchronized (lock) {
                         return allMetaFieldMap;
                     }
                 }
@@ -200,10 +216,15 @@ public class ReflectionUtils {
             int methodKey = Objects.hash(name.hashCode(), Arrays.hashCode(parameterTypes));
             Method method = methodMap.get(methodKey);
             if (method == null) {
-                if ((method = methodMap.get(methodKey)) == null) {
-                    method = this.declaringClass.getMethod(name, parameterTypes);
-                    methodMap.putIfAbsent(methodKey, method);
+                Class<?> currentClass = this.declaringClass;
+                while (currentClass != null && currentClass != Object.class) {
+                    try {
+                        return currentClass.getDeclaredMethod(name, parameterTypes);
+                    }catch (NoSuchMethodException e){
+                        currentClass = currentClass.getSuperclass();
+                    }
                 }
+                throw new NoSuchMethodException(name+"("+ Arrays.toString(parameterTypes) +")");
             }
             return method;
         }
