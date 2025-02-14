@@ -1,6 +1,7 @@
 package io.github.maxwellnie.javormio.core.database.result;
 
 import io.github.maxwellnie.javormio.core.java.reflect.Reflection;
+import io.github.maxwellnie.javormio.core.java.reflect.property.Property;
 import io.github.maxwellnie.javormio.core.java.reflect.property.impl.meta.MetaProperty;
 import io.github.maxwellnie.javormio.core.java.type.TypeHandler;
 
@@ -21,7 +22,7 @@ public class TypeMapping {
     /**
      * 属性
      */
-    private final MetaProperty metaProperty;
+    private final Property property;
     /**
      * 类型处理器
      */
@@ -43,9 +44,9 @@ public class TypeMapping {
      */
     private int hashCode = -1;
 
-    public TypeMapping(Reflection<?> reflection, MetaProperty metaProperty, TypeHandler<?> typeHandler, String columnName, Map<String, TypeMapping> children, boolean isEntity) {
+    public TypeMapping(Reflection<?> reflection, Property<?> property, TypeHandler<?> typeHandler, String columnName, Map<String, TypeMapping> children, boolean isEntity) {
         this.reflection = reflection;
-        this.metaProperty = metaProperty;
+        this.property = property;
         this.typeHandler = typeHandler;
         this.columnName = columnName;
         this.children = children;
@@ -60,8 +61,8 @@ public class TypeMapping {
         return reflection.getDeclaringClass();
     }
 
-    public MetaProperty getMetaProperty() {
-        return metaProperty;
+    public Property getProperty() {
+        return property;
     }
 
     public TypeHandler<?> getTypeHandler() {
@@ -95,6 +96,6 @@ public class TypeMapping {
 
     @Override
     public int hashCode() {
-        return Objects.hash(reflection, metaProperty, typeHandler, columnName, children, hashCode);
+        return Objects.hash(reflection, property, typeHandler, columnName, children, hashCode);
     }
 }

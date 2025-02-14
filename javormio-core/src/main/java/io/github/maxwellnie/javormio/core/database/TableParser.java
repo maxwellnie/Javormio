@@ -23,7 +23,7 @@ public interface TableParser {
      * @return TableInfo
      */
     default TableInfo get() {
-        throw new RuntimeException("TableParser.get() is not support,please implement it in implement class.");
+        throw new RuntimeException("TableParser.get() is not support,please implement it.");
     }
 
     /**

@@ -1,7 +1,5 @@
 package io.github.maxwellnie.javormio.core.database.result;
 
-import io.github.maxwellnie.javormio.core.java.reflect.ObjectFactory;
-import io.github.maxwellnie.javormio.core.java.reflect.Reflection;
 import io.github.maxwellnie.javormio.core.java.reflect.ReflectionException;
 
 import java.sql.ResultSet;
@@ -10,7 +8,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * 结果集转换器
@@ -86,91 +83,59 @@ public class ResultSetConvertorByNie implements ResultSetConvertor {
      * @return Object
      */
     private Object simpleConvert(ResultSet resultSet, TypeMapping typeMapping) throws ConvertException {
-        LinkedHashMap<String, Integer> columnIndexMap = new LinkedHashMap<>();
         try {
             if (resultSet.isClosed())
                 throw new ConvertException("resultSet is closed.");
-            return convertObject(null, resultSet, typeMapping, columnIndexMap);
+            if (resultSet.next())
+                return simpleConvert0(null, resultSet, typeMapping, new Stack<>(), new Stack<>(), new LinkedHashMap<>());
+            else
+                return null;
         } catch (SQLException e) {
             throw new ConvertException(e);
         }
     }
     /**
-     * 矛盾点：双指针————列索引和行索引，建议隐式移动行列指针
-     */
-    private Object convertObject(Object parent, ResultSet resultSet, TypeMapping typeMapping, LinkedHashMap<String, Integer> columnIndexMap) throws ConvertException {
-        Object object = null;
-        try {
-            if (!typeMapping.isEntity()){
-                if (typeMapping.isComplex()){
-                    object = buildOtherObject(resultSet, typeMapping);
-                }else {
-                    object = typeMapping
-                            .getTypeHandler()
-                            .getValue(resultSet, columnIndexMap
-                                    .get(typeMapping.getColumnName())
-                            );
-                    return object;
-                }
-            }
-        }catch (SQLException e){
-
-        }
-        return object;
-    }
-    /**
-     * 读取一行数据
+     * 单表查询
      *
      * @param resultSet
      * @param typeMapping
      * @return Object
      */
-    private Object readRowObject(ResultSet resultSet, TypeMapping typeMapping) {
-        return null;
-    }
-    public void linkedToParentObject(Object parentObject, TypeMapping parentMapping, Object childObject, TypeMapping childMapping) {
-
-    }
-    public Object c_(ResultSet resultSet, TypeMapping typeMapping, Stack<Object> objectStack, Stack<TypeMapping> typeMappingStack, LinkedHashMap<String, Integer> columnIndexMap) throws ConvertException {
-        Object object = null;
+    public Object simpleConvert0(Object object, ResultSet resultSet, TypeMapping typeMapping, Stack<Object> objectStack, Stack<TypeMapping> typeMappingStack, LinkedHashMap<String, Integer> columnIndexMap) throws ConvertException {
+        typeMappingStack.push(typeMapping);
         try {
-            if(typeMapping.isComplex() && !typeMapping.isEntity()){
-                object = typeMapping
+            if(typeMapping.isComplex()){
+                if(object == null)
+                    object = typeMapping
                         .getReflection()
                         .getObjectFactory()
                         .produce();
+                objectStack.push(object);
                 for (Map.Entry<String, TypeMapping> child : typeMapping.getChildren().entrySet()){
-                    Object childObject = c_(resultSet, child.getValue(), objectStack, typeMappingStack, columnIndexMap);
-                    linkedToParentObject(objectStack.peek(), typeMapping, childObject, child.getValue());
-                }
-            } else if (typeMapping.isEntity()) {
-                object = typeMapping
-                        .getReflection()
-                        .getObjectFactory()
-                        .produce();
-                for (Map.Entry<String, TypeMapping> child : typeMapping.getChildren().entrySet()){
-                    Object childObject = c_(resultSet, child.getValue(), objectStack, typeMappingStack, columnIndexMap);
-                    linkedToParentObject(objectStack.peek(), typeMapping, childObject, child.getValue());
-                }
-                if (resultSet.next()){
-
+                    Object childObject = simpleConvert0(null, resultSet, child.getValue(), objectStack, typeMappingStack, columnIndexMap);
+                    linkedToParentObject(objectStack.peek(), typeMapping, child.getKey(), childObject, child.getValue());
                 }
             }else {
-                int columnIndex = columnIndexMap.computeIfAbsent(typeMapping.getColumnName(), (key) -> {
-                    try {
-                        return resultSet.findColumn(key);
-                    } catch (SQLException e) {
-                        throw new RuntimeException(e);
-                    }
-                });
+                String columnName = typeMapping.getColumnName();
+                int columnIndex = resultSet.findColumn(columnName);
+                columnIndexMap.putIfAbsent(columnName, columnIndex);
                 object = typeMapping
                         .getTypeHandler()
                         .getValue(resultSet, columnIndex);
+                objectStack.push(object);
+            }
+            typeMappingStack.pop();
+            objectStack.pop();
+            if (typeMappingStack.isEmpty() && resultSet.next()){
+                object = simpleConvert0(object, resultSet, typeMappingStack.peek(), objectStack, typeMappingStack, columnIndexMap);
             }
         }catch (NoSuchMethodException | SQLException | ReflectionException e){
             throw new ConvertException(e);
         }
         return object;
+    }
+    public void linkedToParentObject(Object parentObject, TypeMapping parentMapping, Object key, Object childObject, TypeMapping childMapping) {
+        parentMapping.getProperty().setValue(parentObject, childObject, key);
     }
     /**
      * 构建实体对象
