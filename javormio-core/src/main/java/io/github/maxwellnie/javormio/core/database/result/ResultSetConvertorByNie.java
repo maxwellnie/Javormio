@@ -86,10 +86,11 @@ public class ResultSetConvertorByNie implements ResultSetConvertor {
         try {
             if (resultSet.isClosed())
                 throw new ConvertException("resultSet is closed.");
-            if (resultSet.next())
-                return simpleConvert0(null, resultSet, typeMapping, new Stack<>(), new Stack<>(), new LinkedHashMap<>());
-            else
-                return null;
+            Object converted = null;
+            while (resultSet.next()) {
+                converted = simpleConvert0(converted, resultSet, typeMapping, new Stack<>(), new Stack<>(), new LinkedHashMap<>());
+            }
+            return converted;
         } catch (SQLException e) {
             throw new ConvertException(e);
         }
@@ -117,8 +118,9 @@ public class ResultSetConvertorByNie implements ResultSetConvertor {
                 }
             }else {
                 String columnName = typeMapping.getColumnName();
-                int columnIndex = resultSet.findColumn(columnName);
-                columnIndexMap.putIfAbsent(columnName, columnIndex);
+                int columnIndex = columnIndexMap.get(columnName);
+                if (columnIndex == 0)
+                    columnIndexMap.put(columnName, columnIndex = resultSet.findColumn(columnName));
                 object = typeMapping
                         .getTypeHandler()
                         .getValue(resultSet, columnIndex);
@@ -126,9 +128,6 @@ public class ResultSetConvertorByNie implements ResultSetConvertor {
             }
             typeMappingStack.pop();
             objectStack.pop();
-            if (typeMappingStack.isEmpty() && resultSet.next()){
-                object = simpleConvert0(object, resultSet, typeMappingStack.peek(), objectStack, typeMappingStack, columnIndexMap);
-            }
         }catch (NoSuchMethodException | SQLException | ReflectionException e){
             throw new ConvertException(e);
         }
