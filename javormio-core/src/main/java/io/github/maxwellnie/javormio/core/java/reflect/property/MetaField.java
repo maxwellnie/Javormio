@@ -8,7 +8,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 
 /**
- * 相对安全的对对象中的字段进行赋值和查询，避免破坏封装性。
+ * 相对安全的对象中的字段进行赋值和查询，避免破坏封装性。
  *
  * @author Maxwell Nie
  */

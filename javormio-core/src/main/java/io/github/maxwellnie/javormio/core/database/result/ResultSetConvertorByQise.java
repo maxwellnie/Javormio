@@ -15,27 +15,23 @@ import java.util.Map;
  * @author yurongqi
  * 将ResultSet转换为Java实体对象
  */
-public class ResultSetCOnvertorByQise implements ResultSetConvertor{
+public class ResultSetConvertorByQise implements ResultSetConvertor{
 //    ArrayList<Reflection<?>> typeMappingsReflectionList = new ArrayList<>();
     method m = new method();
     @lombok.SneakyThrows
     @Override
     public Object convert(ResultSet resultSet, TypeMapping typeMapping, boolean multipleTable) {
-        if (multipleTable){
-
-        }else{
-            if(resultSet.getRow()<=100){
-                return simpleConvert(resultSet, typeMapping);
-            } else{
-
-            }
-        }
-        return null;
+        return simpleConvert(resultSet, typeMapping);
     }
 
+    @SneakyThrows
     @Override
-    public Object convert(List<ResultSet> resultSet, TypeMapping typeMapping, boolean multipleTable) {
-        return null;
+    public Object convert(List<ResultSet> resultSets, TypeMapping typeMapping, boolean multipleTable) {
+        ArrayList list = new ArrayList();
+        for(ResultSet resultSet : resultSets){
+            list.add(simpleConvert(resultSet, typeMapping));
+        }
+        return list;
     }
 
     /**
