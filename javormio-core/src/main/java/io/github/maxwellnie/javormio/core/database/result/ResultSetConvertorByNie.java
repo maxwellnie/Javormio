@@ -87,9 +87,8 @@ public class ResultSetConvertorByNie implements ResultSetConvertor {
             if (resultSet.isClosed())
                 throw new ConvertException("resultSet is closed.");
             Object converted = null;
-            while (resultSet.next()) {
-                converted = simpleConvert0(converted, resultSet, typeMapping, new Stack<>(), new Stack<>(), new LinkedHashMap<>());
-            }
+            if (resultSet.next())
+                converted = simpleConvert0(resultSet, typeMapping, new Stack<>(), new Stack<>(), new LinkedHashMap<>());
             return converted;
         } catch (SQLException e) {
             throw new ConvertException(e);
@@ -102,34 +101,42 @@ public class ResultSetConvertorByNie implements ResultSetConvertor {
      * @param typeMapping
      * @return Object
      */
-    public Object simpleConvert0(Object object, ResultSet resultSet, TypeMapping typeMapping, Stack<Object> objectStack, Stack<TypeMapping> typeMappingStack, LinkedHashMap<String, Integer> columnIndexMap) throws ConvertException {
-        typeMappingStack.push(typeMapping);
-        try {
-            if(typeMapping.isComplex()){
-                if(object == null)
+    public Object simpleConvert0(ResultSet resultSet, TypeMapping typeMapping, Stack<Object> objectStack, Stack<TypeMapping> typeMappingStack, LinkedHashMap<String, Integer> columnIndexMap) throws ConvertException {
+        Object object = null;
+        while (true){
+            typeMappingStack.push(typeMapping);
+            try {
+                if(typeMapping.isComplex()){
+                    if(object == null)
+                        object = typeMapping
+                                .getReflection()
+                                .getObjectFactory()
+                                .produce();
+                    objectStack.push(object);
+                    for (Map.Entry<String, TypeMapping> child : typeMapping.getChildren().entrySet()){
+                        Object childObject = simpleConvert0(resultSet, child.getValue(), objectStack, typeMappingStack, columnIndexMap);
+                        linkedToParentObject(objectStack.peek(), typeMapping, child.getKey(), childObject, child.getValue());
+                    }
+                }else {
+                    String columnName = typeMapping.getColumnName();
+                    int columnIndex = columnIndexMap.get(columnName);
+                    if (columnIndex == 0)
+                        columnIndexMap.put(columnName, columnIndex = resultSet.findColumn(columnName));
                     object = typeMapping
-                        .getReflection()
-                        .getObjectFactory()
-                        .produce();
-                objectStack.push(object);
-                for (Map.Entry<String, TypeMapping> child : typeMapping.getChildren().entrySet()){
-                    Object childObject = simpleConvert0(null, resultSet, child.getValue(), objectStack, typeMappingStack, columnIndexMap);
-                    linkedToParentObject(objectStack.peek(), typeMapping, child.getKey(), childObject, child.getValue());
+                            .getTypeHandler()
+                            .getValue(resultSet, columnIndex);
+                    objectStack.push(object);
                 }
-            }else {
-                String columnName = typeMapping.getColumnName();
-                int columnIndex = columnIndexMap.get(columnName);
-                if (columnIndex == 0)
-                    columnIndexMap.put(columnName, columnIndex = resultSet.findColumn(columnName));
-                object = typeMapping
-                        .getTypeHandler()
-                        .getValue(resultSet, columnIndex);
-                objectStack.push(object);
+                TypeMapping typeMapping1 = typeMappingStack.pop();
+                Object object1 = objectStack.pop();
+                if (typeMappingStack.isEmpty() && resultSet.next()) {
+                    typeMapping = typeMapping1;
+                    object = object1;
+                }else
+                    break;
+            }catch (NoSuchMethodException | SQLException | ReflectionException e){
+                throw new ConvertException(e);
             }
-            typeMappingStack.pop();
-            objectStack.pop();
-        }catch (NoSuchMethodException | SQLException | ReflectionException e){
-            throw new ConvertException(e);
         }
         return object;
     }
