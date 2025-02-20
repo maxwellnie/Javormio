@@ -10,6 +10,6 @@ import java.util.Map;
 /**
  * @author Maxwell Nie
  */
-public interface TypeConvertor {
+public interface ResultSetConvertor {
     Object convert(TypeMappingTree typeMappingTree, Map<String, Integer> columnIndexMap, OperationContext context, ResultSet resultSet) throws ConvertException, SQLException;
 }
