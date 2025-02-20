@@ -78,7 +78,7 @@ public class DefaultTypeConvertor implements TypeConvertor {
                     } catch (ReflectionException | NoSuchMethodException e) {
                         throw new ConvertException(e);
                     }
-                    linkedChildrenToParentObject(nodeObjectStack, o, typeMapping);
+                    linkedChildrenToParentObject(nodeObjectStack, o, currentTypeMappingNode);
                 } else {
                     /**
                      * 读取当前类型映射对应列的数据并放入栈中
@@ -106,7 +106,7 @@ public class DefaultTypeConvertor implements TypeConvertor {
                 } catch (ReflectionException | NoSuchMethodException e) {
                     throw new ConvertException(e);
                 }
-           linkedChildrenToParentObject(nodeObjectStack, previousRootObject, tailTypeMappingNode.typeMapping);
+           linkedChildrenToParentObject(nodeObjectStack, previousRootObject, tailTypeMappingNode);
         }
         return previousRootObject;
     }
@@ -115,18 +115,28 @@ public class DefaultTypeConvertor implements TypeConvertor {
      * 链接多个子对象到父对象
      * @param nodeObjectStack
      * @param o
-     * @param parentTypeMapping
+     * @param parentTypeMappingNode
      */
-    private void linkedChildrenToParentObject(Stack<TypeMappingAndObject> nodeObjectStack, Object o, TypeMapping parentTypeMapping) {
-        TypeMappingAndObject previousNode = null;
+    private void linkedChildrenToParentObject(Stack<TypeMappingAndObject> nodeObjectStack, Object o, TypeMappingTree.TypeMappingNode parentTypeMappingNode) {
+        TypeMappingAndObject previousNode = nodeObjectStack.peek();
+        Stack<TypeMappingAndObject> tempStack = new Stack<>();
         /**
          * 链接子对象到父对象
          */
-        while ((previousNode = nodeObjectStack.pop()) != null)
-            linkedChildToParentObject(o, parentTypeMapping, previousNode.typeMappingNode.key, previousNode.object);
+        while (previousNode != null){
+            if (previousNode.typeMappingNode.parent == parentTypeMappingNode){
+                linkedChildToParentObject(o, parentTypeMappingNode.typeMapping, previousNode.typeMappingNode.key, previousNode.object);
+                previousNode = nodeObjectStack.pop();
+            }else {
+                previousNode = nodeObjectStack.pop();
+                tempStack.push(previousNode);
+            }
+        }
+        while ((previousNode = tempStack.pop()) != null)
+            nodeObjectStack.push(previousNode);
     }
 
-    class TypeMappingAndObject{
+    static class TypeMappingAndObject{
         TypeMappingTree.TypeMappingNode typeMappingNode;
         Object object;
 

@@ -2,8 +2,6 @@ package io.github.maxwellnie.javormio.core.database.result.beta;
 
 import io.github.maxwellnie.javormio.core.database.result.TypeMapping;
 
-import java.util.Map;
-
 /**
  * @author Maxwell Nie
  */
@@ -48,13 +46,24 @@ public class TypeMappingTree {
         TypeMappingNode next;
         boolean isNeedToMerge;
         String key;
+        TypeMappingNode parent;
 
-        public TypeMappingNode(TypeMapping typeMapping, TypeMappingNode previous, TypeMappingNode next, boolean isNeedToMerge, String key) {
+        public TypeMappingNode(TypeMapping typeMapping, TypeMappingNode previous, TypeMappingNode next, boolean isNeedToMerge, String key, TypeMappingNode parent) {
+
             this.typeMapping = typeMapping;
             this.previous = previous;
             this.next = next;
             this.isNeedToMerge = isNeedToMerge;
             this.key = key;
+            this.parent = parent;
+        }
+
+        public TypeMappingNode getParent() {
+            return parent;
+        }
+
+        public void setParent(TypeMappingNode parent) {
+            this.parent = parent;
         }
 
         public String getKey() {
