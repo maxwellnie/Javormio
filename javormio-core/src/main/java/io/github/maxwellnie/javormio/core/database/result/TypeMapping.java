@@ -44,7 +44,7 @@ public class TypeMapping {
      */
     private int hashCode = -1;
 
-    public TypeMapping(Reflection<?> reflection, Property<?> property, TypeHandler<?> typeHandler, String columnName, Map<String, TypeMapping> children, boolean isEntity) {
+    public TypeMapping(Reflection<?> reflection, Property property, TypeHandler<?> typeHandler, String columnName, Map<String, TypeMapping> children, boolean isEntity) {
         this.reflection = reflection;
         this.property = property;
         this.typeHandler = typeHandler;

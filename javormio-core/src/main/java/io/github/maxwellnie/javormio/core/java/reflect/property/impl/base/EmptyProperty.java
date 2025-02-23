@@ -6,9 +6,9 @@ import io.github.maxwellnie.javormio.core.java.reflect.property.Property;
 /**
  * @author Maxwell Nie
  */
-public class EmptyProperty implements Property<Object> {
+public class EmptyProperty implements Property {
     @Override
-    public <T> T getValue(Object o, Object o2) {
+    public Object getValue(Object o, Object o2) {
         return null;
     }
 

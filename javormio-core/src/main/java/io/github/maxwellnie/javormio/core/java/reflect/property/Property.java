@@ -5,24 +5,23 @@ package io.github.maxwellnie.javormio.core.java.reflect.property;
  *
  * @author Maxwell Nie
  */
-public interface Property<K> {
+public interface Property {
     /**
      * 获取属性的值
      *
      * @param o
-     * @param k
-     * @param <T>
+     * @param key
      * @return T
      */
-    <T> T getValue(Object o, K k);
+    Object getValue(Object o, Object key);
 
     /**
      * 设置属性的值
      *
      * @param o
-     * @param k
+     * @param key
      * @param value
      * @return Object
      */
-    Object setValue(Object o, K k, Object value);
+    Object setValue(Object o, Object key, Object value);
 }

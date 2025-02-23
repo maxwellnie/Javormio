@@ -6,7 +6,7 @@ import io.github.maxwellnie.javormio.core.java.reflect.property.Property;
 /**
  * @author Maxwell Nie
  */
-public class SelfProperty implements Property<Object> {
+public class SelfProperty implements Property{
     public static final SelfProperty INSTANCE = new SelfProperty();
 
     SelfProperty() {

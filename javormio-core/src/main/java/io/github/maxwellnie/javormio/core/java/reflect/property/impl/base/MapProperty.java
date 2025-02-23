@@ -7,14 +7,14 @@ import java.util.Map;
 /**
  * @author Maxwell Nie
  */
-public class MapProperty implements Property<Object> {
+public class MapProperty implements Property {
     public static final MapProperty INSTANCE = new MapProperty();
 
     @Override
-    public <T> T getValue(Object o, Object o2) {
+    public Object getValue(Object o, Object o2) {
         if (o == null)
             return null;
-        return (T) ((Map) o).get(o2);
+        return ((Map) o).get(o2);
     }
 
     @Override

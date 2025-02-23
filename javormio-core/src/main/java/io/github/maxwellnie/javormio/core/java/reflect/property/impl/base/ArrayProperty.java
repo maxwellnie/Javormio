@@ -9,18 +9,19 @@ import java.lang.reflect.Array;
  *
  * @author Maxwell Nie
  */
-public class ArrayProperty implements Property<Integer> {
+public class ArrayProperty implements Property {
     public static final ArrayProperty INSTANCE = new ArrayProperty();
 
     @Override
-    public <T> T getValue(Object o, Integer integer) {
+    public Object getValue(Object o, Object key) {
         if (o == null)
             return null;
-        return (T) Array.get(o, integer);
+        return Array.get(o, (int) key);
     }
 
     @Override
-    public Object setValue(Object o, Integer integer, Object value) {
+    public Object setValue(Object o, Object key, Object value) {
+        int integer = (int) key;
         if (o == null)
             throw new NullPointerException("The target object is null.");
         int length = Array.getLength(o);

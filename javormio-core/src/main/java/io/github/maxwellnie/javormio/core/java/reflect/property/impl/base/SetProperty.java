@@ -9,11 +9,12 @@ import java.util.Set;
 /**
  * @author Maxwell Nie
  */
-public class SetProperty implements Property<Integer> {
+public class SetProperty implements Property {
     public static final SetProperty INSTANCE = new SetProperty();
 
     @Override
-    public <T> T getValue(Object o, Integer index) {
+    public Object getValue(Object o, Object key) {
+        int index = (int) key;
         if (o == null)
             return null;
         Iterator iterator = ((Collection) o).iterator();
@@ -21,19 +22,19 @@ public class SetProperty implements Property<Integer> {
         for (int i = 0; i < index; i++) {
             value = iterator.next();
         }
-        return (T) value;
+        return value;
     }
 
     /**
      * 请注意，index参数无法对Set生效
      *
      * @param o
-     * @param index
+     * @param key
      * @param value
      * @return
      */
     @Override
-    public Object setValue(Object o, Integer index, Object value) {
+    public Object setValue(Object o, Object key, Object value) {
         if (o == null)
             throw new NullPointerException("The target object is null.");
         Set set = (Set) o;
