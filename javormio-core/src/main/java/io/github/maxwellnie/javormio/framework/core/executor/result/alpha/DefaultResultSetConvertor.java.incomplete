@@ -1,0 +1,118 @@
+package io.github.maxwellnie.javormio.framework.core.result.alpha;
+
+import io.github.maxwellnie.javormio.framework.Context;
+import io.github.maxwellnie.javormio.framework.core.result.ConvertException;
+import io.github.maxwellnie.javormio.framework.core.result.TypeMapping;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Objects;
+
+/**
+ * @author Maxwell Nie
+ */
+public class DefaultResultSetConvertor implements ResultSetConvertor {
+    @Override
+    public Object convert(TypeMappingTree typeMappingTree, Map<Object, Integer> columnIndexMap, OperationContext context, ResultSet resultSet) throws ConvertException, SQLException {
+        if (resultSet == null || typeMappingTree == null || typeMappingTree.rootTypeMapping == null)
+            throw new ConvertException("ResultSet or TypeMapping is null");
+        if (resultSet.isClosed())
+            throw new ConvertException("ResultSet is closed.");
+        if (typeMappingTree.complexQuery)
+            return complexConvert(typeMappingTree.rootTypeMapping, typeMappingTree.masterTypeMapping, columnIndexMap, context, resultSet);
+        ;
+        return simpleConvert(typeMappingTree.rootTypeMapping, columnIndexMap, context, resultSet);
+    }
+
+    private Object complexConvert(TypeMapping rootTypeMapping, TypeMapping masterTypeMapping, Map<Object, Integer> columnIndexMap, OperationContext context, ResultSet resultSet) throws SQLException, ConvertException {
+        Map<Integer, Object> previousObjectsHashMap = new LinkedHashMap<>();
+        Object previousRootObject = null;
+        while (resultSet.next()) {
+            if (previousRootObject != null) {
+                for (Map.Entry<Object, TypeMapping> child : rootTypeMapping.getChildren().entrySet()) {
+                    linkedChildToParentObject(previousRootObject, rootTypeMapping, child.getKey(), buildUnitObject(child.getValue(), columnIndexMap, context, resultSet));
+                }
+            } else
+                previousRootObject = buildUnitObject(rootTypeMapping, previousObjectsHashMap, columnIndexMap, context, resultSet);
+        }
+        return previousRootObject;
+    }
+
+    private Object simpleConvert(TypeMapping rootTypeMapping, Map<Object, Integer> columnIndexMap, OperationContext context, ResultSet resultSet) throws ConvertException, SQLException {
+        Object previousRootObject = null;
+        while (resultSet.next()) {
+            if (previousRootObject != null) {
+                for (Map.Entry<Object, TypeMapping> child : rootTypeMapping.getChildren().entrySet()) {
+                    linkedChildToParentObject(previousRootObject, rootTypeMapping, child.getKey(), buildUnitObject(child.getValue(), columnIndexMap, context, resultSet));
+                }
+            } else
+                previousRootObject = buildUnitObject(rootTypeMapping, columnIndexMap, context, resultSet);
+        }
+        return previousRootObject;
+    }
+
+    /**
+     * 链接子对象到父对象
+     *
+     * @param parentObject
+     * @param parentMapping
+     * @param key
+     * @param childObject
+     */
+    public void linkedChildToParentObject(Object parentObject, TypeMapping parentMapping, Object key, Object childObject) {
+        parentMapping.getProperty().setValue(parentObject, childObject, key);
+    }
+
+    private Object buildUnitObject(TypeMapping typeMapping, Map<Object, Integer> columnIndexMap, OperationContext context, ResultSet resultSet) throws ConvertException, SQLException {
+        try {
+            if (typeMapping.isComplex()) {
+                Object unitObject = typeMapping
+                        .getReflection()
+                        .getObjectFactory()
+                        .produce();
+                for (Map.Entry<Object, TypeMapping> child : typeMapping.getChildren().entrySet()) {
+                    linkedChildToParentObject(unitObject, typeMapping, child.getKey(), buildUnitObject(child.getValue(), columnIndexMap, context, resultSet));
+                }
+                return unitObject;
+            } else {
+                /**
+                 * 读取当前类型映射对应列的数据并放入栈中
+                 */
+                /**
+                 * 读取columnIndex缓存，若无则获取当前column的index并放入缓存
+                 */
+                int columnIndex = getColumnIndex(typeMapping, columnIndexMap, resultSet);
+                return typeMapping
+                        .getTypeHandler()
+                        .getValue(resultSet, columnIndex);
+            }
+        } catch (ReflectiveOperationException | NoSuchMethodException e) {
+            throw new ConvertException(e);
+        }
+    }
+
+    private int getColumnIndex(TypeMapping typeMapping, Map<Object, Integer> columnIndexMap, ResultSet resultSet) throws SQLException {
+        Object columnIndex = typeMapping.getColumnIndex();
+        int columnNumberIndex;
+        if (typeMapping.isColumnNumberIndex())
+            columnNumberIndex = (int) columnIndex;
+        else if (!columnIndexMap.containsKey(columnIndex))
+            columnIndexMap.put(columnIndex, columnNumberIndex = resultSet.findColumn(columnIndex.toString()));
+        else
+            columnNumberIndex = columnIndexMap.get(columnIndex);
+        return columnNumberIndex;
+    }
+
+    static class TypeMappingAndObject {
+        TypeMapping typeMapping;
+        Object object;
+
+        public TypeMappingAndObject(TypeMapping typeMapping, Object object) {
+            this.typeMapping = typeMapping;
+            this.object = object;
+        }
+    }
+}
