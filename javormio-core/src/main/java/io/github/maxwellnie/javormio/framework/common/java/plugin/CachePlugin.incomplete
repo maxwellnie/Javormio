@@ -7,7 +7,7 @@ import io.github.maxwellnie.javormio.framework.cache.SqlHashCacheKey;
 import io.github.maxwellnie.javormio.framework.core.executable.SqlExecutor;
 import io.github.maxwellnie.javormio.framework.core.jdbc.connection.ConnectionResource;
 import io.github.maxwellnie.javormio.framework.core.result.TypeMapping;
-import io.github.maxwellnie.javormio.framework.core.executor.ExecutableSql;
+import io.github.maxwellnie.javormio.framework.core.execution.ExecutableSql;
 import io.github.maxwellnie.javormio.framework.core.table.TableInfo;
 import io.github.maxwellnie.javormio.framework.java.proxy.MethodInvocationException;
 import io.github.maxwellnie.javormio.framework.java.proxy.invocation.InvocationLine;

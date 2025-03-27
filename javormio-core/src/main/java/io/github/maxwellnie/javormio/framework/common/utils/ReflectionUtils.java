@@ -1,6 +1,6 @@
 package io.github.maxwellnie.javormio.framework.common.utils;
 
-import io.github.maxwellnie.javormio.framework.core.interfaces.dynamic.SerializableFunction;
+import io.github.maxwellnie.javormio.framework.core.api.dynamic.SerializableFunction;
 import io.github.maxwellnie.javormio.framework.common.java.proxy.invocation.MethodInvoker;
 import io.github.maxwellnie.javormio.framework.common.java.proxy.invocation.TargetMethodInvoker;
 import io.github.maxwellnie.javormio.framework.common.java.reflect.ArrayObjectFactory;
@@ -34,7 +34,7 @@ public class ReflectionUtils {
      * @param <T>    实体类对象
      * @param <R>    Getter方法返回值类型
      * @return String
-     * @throws ReflectiveOperationException
+     * @
      */
     public static <T, R> String getMethodName(SerializableFunction<T, R> getter) throws ReflectiveOperationException {
         if (METHOD_NAME_CACHE.containsKey(getter))
@@ -45,7 +45,9 @@ public class ReflectionUtils {
             Method writeReplace = getter.getClass().getDeclaredMethod("writeReplace");
             writeReplace.setAccessible(true);
             SerializedLambda serializedLambda = (SerializedLambda) writeReplace.invoke(getter);
-            return METHOD_NAME_CACHE.put(getter, serializedLambda.getImplMethodName());
+            String name = serializedLambda.getImplMethodName();
+            METHOD_NAME_CACHE.put(getter, name);
+            return name;
         }
     }
 

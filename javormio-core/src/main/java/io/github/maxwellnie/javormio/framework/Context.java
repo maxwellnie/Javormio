@@ -1,13 +1,13 @@
 package io.github.maxwellnie.javormio.framework;
 
 import io.github.maxwellnie.javormio.framework.common.cache.Cache;
-import io.github.maxwellnie.javormio.framework.core.db.jdbc.connection.ConnectionResource;
-import io.github.maxwellnie.javormio.framework.core.db.jdbc.datasource.DynamicMultipleDataSource;
-import io.github.maxwellnie.javormio.framework.core.executor.result.ResultSetConvertor;
-import io.github.maxwellnie.javormio.framework.core.executor.SqlExecutor;
-import io.github.maxwellnie.javormio.framework.core.translate.method.DaoMethodFeature;
-import io.github.maxwellnie.javormio.framework.core.translate.method.SqlMethod;
-import io.github.maxwellnie.javormio.framework.core.translate.table.TableInfo;
+import io.github.maxwellnie.javormio.framework.extension.jdbc.connection.ConnectionResource;
+import io.github.maxwellnie.javormio.framework.extension.jdbc.datasource.DynamicMultipleDataSource;
+import io.github.maxwellnie.javormio.framework.core.execution.result.ResultSetConvertor;
+import io.github.maxwellnie.javormio.framework.core.execution.SqlExecutor;
+import io.github.maxwellnie.javormio.framework.core.translation.method.DaoMethodFeature;
+import io.github.maxwellnie.javormio.framework.core.translation.method.SqlMethod;
+import io.github.maxwellnie.javormio.framework.core.translation.table.TableInfo;
 import io.github.maxwellnie.javormio.framework.common.java.type.NullTypeHandler;
 import io.github.maxwellnie.javormio.framework.common.java.type.TypeHandler;
 
