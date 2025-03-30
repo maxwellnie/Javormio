@@ -11,6 +11,8 @@
     <modules>
         <module>javormio-core</module>
         <module>JavormioTester</module>
+        <module>javormio-common</module>
+        <module>javormio-extension</module>
     </modules>
 
     <properties>
