@@ -13,6 +13,7 @@
         <module>JavormioTester</module>
         <module>javormio-common</module>
         <module>javormio-extension</module>
+        <module>javormio-spi</module>
     </modules>
 
     <properties>

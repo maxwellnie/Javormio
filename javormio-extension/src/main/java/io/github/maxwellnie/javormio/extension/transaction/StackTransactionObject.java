@@ -1,6 +1,6 @@
 package io.github.maxwellnie.javormio.extension.transaction;
 
-import io.github.maxwellnie.javormio.TransactionObject;
+import io.github.maxwellnie.javormio.common.java.jdbc.TransactionObject;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;

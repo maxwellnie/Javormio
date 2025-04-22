@@ -1,6 +1,6 @@
 package io.github.maxwellnie.javormio.common.java.jdbc.connection;
 
-import io.github.maxwellnie.javormio.TransactionObject;
+import io.github.maxwellnie.javormio.common.java.jdbc.TransactionObject;
 import io.github.maxwellnie.javormio.common.cache.CacheKey;
 import io.github.maxwellnie.javormio.common.java.api.Resource;
 

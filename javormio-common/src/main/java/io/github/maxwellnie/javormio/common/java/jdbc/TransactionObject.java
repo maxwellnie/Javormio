@@ -1,4 +1,4 @@
-package io.github.maxwellnie.javormio;
+package io.github.maxwellnie.javormio.common.java.jdbc;
 
 import io.github.maxwellnie.javormio.common.cache.CacheKey;
 

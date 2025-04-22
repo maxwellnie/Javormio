@@ -1,6 +1,6 @@
 package io.github.maxwellnie.javormio.extension;
 
-import io.github.maxwellnie.javormio.TransactionObject;
+import io.github.maxwellnie.javormio.common.java.jdbc.TransactionObject;
 import io.github.maxwellnie.javormio.common.java.jdbc.connection.ConnectionResource;
 import io.github.maxwellnie.javormio.common.java.jdbc.datasource.DynamicMultipleDataSource;
 import io.github.maxwellnie.javormio.common.utils.SystemClock;

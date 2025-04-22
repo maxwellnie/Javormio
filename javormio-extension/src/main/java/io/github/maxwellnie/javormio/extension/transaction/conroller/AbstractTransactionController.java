@@ -1,6 +1,6 @@
 package io.github.maxwellnie.javormio.extension.transaction.conroller;
 
-import io.github.maxwellnie.javormio.TransactionObject;
+import io.github.maxwellnie.javormio.common.java.jdbc.TransactionObject;
 
 /**
  * 事务控制器抽象类
