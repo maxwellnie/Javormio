@@ -35,11 +35,20 @@ public class SPIProcessor extends AbstractProcessor {
                         "@Table can only be applied to classes", element);
                 continue;
             }
+            /**
+             * io.github.xx.aa.User
+             * meta.io.github.xx.aa=>判断是否存在这个文件夹，没有就创建
+             * （MetaUser）put=>meta.io.github.xx.aa文件夹
+             * HashSet
+             * hashSet.add(user.class);
+             * if(hashset.contains(user.class))
+             * MetaUser
+             */
             //ReflectionUtils
             //meta_user.java
             /*
                package meta;
-               public class meta_user extend BaseTable{
+               public class MetaUser extend BaseTable{
                    public String tableName ="tb_user";
                    public ColumnInfo userId = new ColumnInfo{
                          String name = "";
@@ -51,8 +60,7 @@ public class SPIProcessor extends AbstractProcessor {
              */
             /*
                 public interface Meta{
-                    meta_user meta_user = new meta_user();
-                    meta_role meta_role = new meta_role();
+                    meta.io.github.xx.aa.MetaUser io_github_xx_aa_MetaUser = new meta.io.github.xx.aa.MetaUser();
                 }
              */
             // 2. 类型转换
