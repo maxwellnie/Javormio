@@ -17,18 +17,11 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Column {
     /**
-     * 字段名
+     * 列名
      *
      * @return String
      */
     String value() default Constants.EMPTY_STRING;
-
-    /**
-     * 字段别名
-     *
-     * @return String
-     */
-    String alias() default Constants.EMPTY_STRING;
 
     /**
      * 类型处理器
