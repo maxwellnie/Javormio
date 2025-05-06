@@ -30,7 +30,14 @@ public interface NameHandler {
      * @return String
      */
     String getColumnName(String fieldName, String tableName);
-
+    /**
+     * 获取字段名
+     *
+     * @param fieldName
+     * @param tableName
+     * @return String
+     */
+    String getColumnName(String fieldName, String tableName, String alias);
     /**
      * 获取表名
      *
