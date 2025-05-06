@@ -1,5 +1,6 @@
 package io.github.maxwellnie.javormio.core;
 
+import io.github.maxwellnie.javormio.common.annotation.document.ExtensionPoint;
 import io.github.maxwellnie.javormio.common.cache.Cache;
 import io.github.maxwellnie.javormio.common.java.jdbc.connection.ConnectionResource;
 import io.github.maxwellnie.javormio.common.java.jdbc.datasource.DynamicMultipleDataSource;
@@ -24,6 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author Maxwell Nie
  */
+@ExtensionPoint
 public class Context {
     final Map<Class<?>, TypeHandler<?>> typeHandlerMap = new HashMap<>();
     final ThreadLocal<Map<Object, Object>> reusableObjectsPool = new ThreadLocal<>();
