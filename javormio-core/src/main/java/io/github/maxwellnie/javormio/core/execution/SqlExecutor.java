@@ -1,5 +1,6 @@
 package io.github.maxwellnie.javormio.core.execution;
 
+import io.github.maxwellnie.javormio.common.annotation.document.ExtensionPoint;
 import io.github.maxwellnie.javormio.core.execution.result.ConvertException;
 
 import java.sql.SQLException;
@@ -9,6 +10,7 @@ import java.sql.SQLException;
  *
  * @author Maxwell Nie
  */
+@ExtensionPoint
 public interface SqlExecutor {
     /**
      * 执行SQL
