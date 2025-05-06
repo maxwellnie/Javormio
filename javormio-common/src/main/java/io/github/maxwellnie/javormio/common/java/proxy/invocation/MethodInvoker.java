@@ -7,7 +7,7 @@ import io.github.maxwellnie.javormio.common.java.proxy.MethodInvocationException
  *
  * @author Maxwell Nie
  */
-public interface MethodInvoker {
+public interface MethodInvoker<T> {
     /**
      * perform the method.
      *
@@ -39,10 +39,20 @@ public interface MethodInvoker {
      * @return Object
      * @throws MethodInvocationException
      */
-    default Object invoke(Object target, Object[] args) throws MethodInvocationException {
+    default Object invoke(T target, Object[] args) throws MethodInvocationException {
         throw new MethodInvocationException("The invoke(Object, LObject) is not supported.");
     }
-
+    /**
+     * perform the method.
+     *
+     * @param target The target object
+     * @param args   The arguments
+     * @return Object
+     * @throws MethodInvocationException
+     */
+    default Object invokeExactly(T target, Object... args) throws MethodInvocationException {
+        throw new MethodInvocationException("The invoke(Object, LObject) is not supported.");
+    }
     /**
      * perform the method.
      *
@@ -50,7 +60,7 @@ public interface MethodInvoker {
      * @return Object
      * @throws MethodInvocationException
      */
-    default Object invoke(Object target) throws MethodInvocationException {
+    default Object invoke(T target) throws MethodInvocationException {
         throw new MethodInvocationException("The invoke(Object) is not supported.");
     }
 
