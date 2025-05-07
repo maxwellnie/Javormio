@@ -1,7 +1,7 @@
 package io.github.maxwellnie.javormio.core.execution.result.method;
 
-import io.github.maxwellnie.javormio.core.execution.result.TypeMapping;
 import io.github.maxwellnie.javormio.common.java.reflect.Reflection;
+import io.github.maxwellnie.javormio.core.execution.result.TypeMapping;
 
 import java.util.HashMap;
 

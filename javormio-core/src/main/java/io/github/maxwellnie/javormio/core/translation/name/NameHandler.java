@@ -30,6 +30,7 @@ public interface NameHandler {
      * @return String
      */
     String getColumnName(String fieldName, String tableName);
+
     /**
      * 获取字段名
      *
@@ -38,6 +39,7 @@ public interface NameHandler {
      * @return String
      */
     String getColumnName(String fieldName, String tableName, String alias);
+
     /**
      * 获取表名
      *

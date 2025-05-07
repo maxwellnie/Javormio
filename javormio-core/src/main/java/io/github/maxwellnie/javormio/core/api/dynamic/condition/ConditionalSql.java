@@ -1,8 +1,8 @@
 package io.github.maxwellnie.javormio.core.api.dynamic.condition;
 
 import io.github.maxwellnie.javormio.common.annotation.Incompletely;
-import io.github.maxwellnie.javormio.common.java.reflect.method.SerializableFunction;
 import io.github.maxwellnie.javormio.common.java.reflect.method.Action;
+import io.github.maxwellnie.javormio.common.java.reflect.method.SerializableFunction;
 
 import java.util.function.Function;
 
@@ -60,7 +60,6 @@ public class ConditionalSql {
             return s;
         };
     }
-
 
 
     /**

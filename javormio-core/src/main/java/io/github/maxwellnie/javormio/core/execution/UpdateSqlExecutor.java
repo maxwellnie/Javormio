@@ -1,8 +1,8 @@
 package io.github.maxwellnie.javormio.core.execution;
 
 import io.github.maxwellnie.javormio.common.java.api.Constants;
-import io.github.maxwellnie.javormio.core.translation.SqlParameter;
 import io.github.maxwellnie.javormio.common.java.jdbc.connection.ConnectionResource;
+import io.github.maxwellnie.javormio.core.translation.SqlParameter;
 
 import java.sql.*;
 import java.util.List;

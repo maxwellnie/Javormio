@@ -1,7 +1,7 @@
 package io.github.maxwellnie.javormio.core.translation.method;
 
-import io.github.maxwellnie.javormio.core.execution.result.TypeMapping;
 import io.github.maxwellnie.javormio.common.java.reflect.MethodFeature;
+import io.github.maxwellnie.javormio.core.execution.result.TypeMapping;
 
 import java.lang.reflect.Method;
 

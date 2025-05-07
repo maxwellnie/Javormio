@@ -7,5 +7,6 @@ import io.github.maxwellnie.javormio.core.translation.SqlParameter;
  */
 public interface SqlFragment {
     SqlParameter[] getParameters();
+
     String toSql();
 }

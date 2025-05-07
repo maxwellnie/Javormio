@@ -12,14 +12,16 @@ import java.util.List;
 
 /**
  * 查询方法
+ *
  * @author Maxwell Nie
  */
 public class SimpleQuerySqlMethod extends BaseSqlMethod {
     /**
      * 执行查询方法，参数列表为[String.class, List.class]
+     *
      * @param methodFeatureCode 方法特征码
-     * @param context 上下文
-     * @param args 参数
+     * @param context           上下文
+     * @param args              参数
      * @return 结果
      * @throws Throwable
      */

@@ -42,6 +42,7 @@ public interface MethodInvoker<T> {
     default Object invoke(T target, Object[] args) throws MethodInvocationException {
         throw new MethodInvocationException("The invoke(Object, LObject) is not supported.");
     }
+
     /**
      * perform the method.
      *
@@ -53,6 +54,7 @@ public interface MethodInvoker<T> {
     default Object invokeExactly(T target, Object... args) throws MethodInvocationException {
         throw new MethodInvocationException("The invoke(Object, LObject) is not supported.");
     }
+
     /**
      * perform the method.
      *

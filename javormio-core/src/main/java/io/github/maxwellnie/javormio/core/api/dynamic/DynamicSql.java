@@ -1,21 +1,21 @@
 package io.github.maxwellnie.javormio.core.api.dynamic;
 
-import io.github.maxwellnie.javormio.core.translation.table.TableInfo;
 import io.github.maxwellnie.javormio.common.java.reflect.method.Action;
+import io.github.maxwellnie.javormio.core.translation.table.TableInfo;
 
 /**
  * @author Maxwell Nie
  */
 public class DynamicSql<E> {
-    final Action<DynamicSql<E>, SqlFragment, DynamicSql<E>> callback = (dynamicSql, sqlFragment) -> {
-        dynamicSql.whereFragment = sqlFragment;
-        return dynamicSql;
-    };
     TableInfo tableInfo;
     Where<E, DynamicSql<E>> where;
     E entity;
     Class<E> entityClass;
     SqlFragment whereFragment;
+    final Action<DynamicSql<E>, SqlFragment, DynamicSql<E>> callback = (dynamicSql, sqlFragment) -> {
+        dynamicSql.whereFragment = sqlFragment;
+        return dynamicSql;
+    };
 
     public DynamicSql(Class<E> entityClass, TableInfo tableInfo) {
         this.entityClass = entityClass;

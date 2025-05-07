@@ -30,6 +30,7 @@ public class Context {
     final Map<Class<?>, TypeHandler<?>> typeHandlerMap = new HashMap<>();
     final ThreadLocal<Map<Object, Object>> reusableObjectsPool = new ThreadLocal<>();
     final Map<SerializableFunction<?, ?>, String> METHOD_NAME_CACHE = new ConcurrentHashMap<>();
+
     public Cache<?, ?> getCache(Object key) {
         return null;
     }

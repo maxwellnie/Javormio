@@ -12,7 +12,6 @@ import javax.lang.model.element.ElementKind;
 import javax.tools.Diagnostic;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -23,7 +22,7 @@ import java.util.stream.Collectors;
 public class MetaTableHandler implements ElementHandler {
     @Override
     public void handle(Set<? extends Element> elements, ProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
-        for (Element element : elements){
+        for (Element element : elements) {
             // 1. 类型校验
             if (element.getKind() != ElementKind.CLASS) { // 确保是类级别注解
                 processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING,
@@ -71,15 +70,15 @@ public class MetaTableHandler implements ElementHandler {
                     .stream()
                     .filter(e1 -> e1.getKind() == ElementKind.FIELD)
                     .collect(Collectors.toList());
-            for (Element field : fields){
+            for (Element field : fields) {
                 ColumnInfo columnInfo = new ColumnInfo();
                 Column column = field.getAnnotation(Column.class);
                 PrimaryKey primaryKey = field.getAnnotation(PrimaryKey.class);
-                if (column != null){
+                if (column != null) {
 
-                }else if(primaryKey != null){
+                } else if (primaryKey != null) {
                     columnInfo.setColumnName(field.getSimpleName().toString());
-                }else {
+                } else {
                     Class<?> type = field.asType().getClass();
                     columnInfo.setColumnName(field.getSimpleName().toString());
                 }
@@ -101,12 +100,12 @@ public class MetaTableHandler implements ElementHandler {
             } catch (IOException e) {
                 processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
                         "Failed to generate meta class: " + e.getMessage());
-            }finally {
+            } finally {
                 processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE,
                         "Generated meta class for " + element.getSimpleName());
                 processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE,
                         "Fields:");
-                for (Element field : fields){
+                for (Element field : fields) {
                     processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE,
                             field.getSimpleName());
                 }

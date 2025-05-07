@@ -1,10 +1,10 @@
 package io.github.maxwellnie.javormio.core.api.dynamic;
 
+import io.github.maxwellnie.javormio.common.java.reflect.method.Action;
 import io.github.maxwellnie.javormio.common.java.reflect.method.SerializableFunction;
 import io.github.maxwellnie.javormio.common.utils.ReflectionUtils;
 import io.github.maxwellnie.javormio.core.api.dynamic.condition.InvalidColumnException;
 import io.github.maxwellnie.javormio.core.translation.table.TableInfo;
-import io.github.maxwellnie.javormio.common.java.reflect.method.Action;
 
 /**
  * The lambda expression of the where clause of the sql.

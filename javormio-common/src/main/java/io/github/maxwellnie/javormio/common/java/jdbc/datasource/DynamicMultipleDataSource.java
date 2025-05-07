@@ -1,7 +1,7 @@
 package io.github.maxwellnie.javormio.common.java.jdbc.datasource;
 
-import io.github.maxwellnie.javormio.common.java.jdbc.TransactionObject;
 import io.github.maxwellnie.javormio.common.java.api.Registry;
+import io.github.maxwellnie.javormio.common.java.jdbc.TransactionObject;
 import io.github.maxwellnie.javormio.common.java.jdbc.connection.ConnectionResource;
 
 import javax.sql.DataSource;

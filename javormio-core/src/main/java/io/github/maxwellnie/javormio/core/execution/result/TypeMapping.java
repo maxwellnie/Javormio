@@ -1,9 +1,9 @@
 package io.github.maxwellnie.javormio.core.execution.result;
 
-import io.github.maxwellnie.javormio.core.translation.table.TableInfo;
 import io.github.maxwellnie.javormio.common.java.reflect.Reflection;
 import io.github.maxwellnie.javormio.common.java.reflect.property.Property;
 import io.github.maxwellnie.javormio.common.java.type.TypeHandler;
+import io.github.maxwellnie.javormio.core.translation.table.TableInfo;
 
 import java.util.Map;
 import java.util.Objects;

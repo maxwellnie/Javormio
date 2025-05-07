@@ -1,8 +1,8 @@
 package io.github.maxwellnie.javormio.core.translation;
 
 import io.github.maxwellnie.javormio.common.annotation.document.ExtensionPoint;
-import io.github.maxwellnie.javormio.core.translation.table.TableInfo;
 import io.github.maxwellnie.javormio.common.java.reflect.Reflection;
+import io.github.maxwellnie.javormio.core.translation.table.TableInfo;
 
 /**
  * 数据库表信息解析器

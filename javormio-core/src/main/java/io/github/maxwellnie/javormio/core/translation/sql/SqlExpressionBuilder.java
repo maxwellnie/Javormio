@@ -18,7 +18,7 @@ public class SqlExpressionBuilder {
         return sqlBuilder;
     }
 
-    public SqlBuilder notEq(SqlBuilder sqlBuilder, String columnName, Object value, Map<Class<?>, TypeHandler<?>> typeHandlerMap,boolean valueIsSql) {
+    public SqlBuilder notEq(SqlBuilder sqlBuilder, String columnName, Object value, Map<Class<?>, TypeHandler<?>> typeHandlerMap, boolean valueIsSql) {
         if (valueIsSql)
             sqlBuilder.append(" " + columnName + " <> " + value);
         else
@@ -26,7 +26,7 @@ public class SqlExpressionBuilder {
         return sqlBuilder;
     }
 
-    public SqlBuilder greater(SqlBuilder sqlBuilder, String columnName, Object value, Map<Class<?>, TypeHandler<?>> typeHandlerMap,boolean valueIsSql) {
+    public SqlBuilder greater(SqlBuilder sqlBuilder, String columnName, Object value, Map<Class<?>, TypeHandler<?>> typeHandlerMap, boolean valueIsSql) {
         if (valueIsSql)
             sqlBuilder.append(" " + columnName + " > " + value);
         else
@@ -58,7 +58,9 @@ public class SqlExpressionBuilder {
         return sqlBuilder;
     }
 
-    /**======================================以下方法无需valueIsSql参数=================================**/
+    /**
+     * ======================================以下方法无需valueIsSql参数=================================
+     **/
     public SqlBuilder between(SqlBuilder sqlBuilder, String columnName, Object value1, Object value2, Map<Class<?>, TypeHandler<?>> typeHandlerMap) {
         sqlBuilder.append(" " + columnName + " BETWEEN ? AND ?", getSqlParameter(value1, typeHandlerMap), getSqlParameter(value2, typeHandlerMap));
         return sqlBuilder;
@@ -83,11 +85,11 @@ public class SqlExpressionBuilder {
 
     protected void appendValue(SqlBuilder sqlBuilder, Object value, Map<Class<?>, TypeHandler<?>> typeHandlerMap, int mode) {
         if (mode == 0) {
-            sqlBuilder.append(null, getSqlParameter("%"+ value +"%", typeHandlerMap));
+            sqlBuilder.append(null, getSqlParameter("%" + value + "%", typeHandlerMap));
         } else if (mode == 1) {
-            sqlBuilder.append(null, getSqlParameter("%"+ value, typeHandlerMap));
+            sqlBuilder.append(null, getSqlParameter("%" + value, typeHandlerMap));
         } else if (mode == 2) {
-            sqlBuilder.append(null, getSqlParameter(value +"%", typeHandlerMap));
+            sqlBuilder.append(null, getSqlParameter(value + "%", typeHandlerMap));
         } else {
             throw new IllegalArgumentException("mode must be 0, 1, 2");
         }
@@ -96,18 +98,16 @@ public class SqlExpressionBuilder {
     public SqlBuilder in(SqlBuilder sqlBuilder, String columnName, Object[] values, Map<Class<?>, TypeHandler<?>> typeHandlerMap) {
         StringBuilder sql = new StringBuilder();
         sql.append(" ").append(columnName).append(" IN (");
-        for (int i = 0; i < values.length; i++) {
-            sql.append("?");
-            if (i != values.length - 1) sql.append(",");
-        }
-        sql.append(")");
-        sqlBuilder.append(sql.toString(), getSqlParameters(values, typeHandlerMap));
-        return sqlBuilder;
+        return appendValues(sqlBuilder, values, typeHandlerMap, sql);
     }
 
     public SqlBuilder notIn(SqlBuilder sqlBuilder, String columnName, Object[] values, Map<Class<?>, TypeHandler<?>> typeHandlerMap) {
         StringBuilder sql = new StringBuilder();
         sql.append(" ").append(columnName).append(" NOT IN (");
+        return appendValues(sqlBuilder, values, typeHandlerMap, sql);
+    }
+
+    protected SqlBuilder appendValues(SqlBuilder sqlBuilder, Object[] values, Map<Class<?>, TypeHandler<?>> typeHandlerMap, StringBuilder sql) {
         for (int i = 0; i < values.length; i++) {
             sql.append("?");
             if (i != values.length - 1) sql.append(",");
@@ -141,7 +141,6 @@ public class SqlExpressionBuilder {
         return sqlBuilder;
     }
 
-
     public SqlBuilder isNull(SqlBuilder sqlBuilder, String columnName) {
         sqlBuilder.append(" " + columnName + " IS NULL");
         return sqlBuilder;
@@ -171,10 +170,12 @@ public class SqlExpressionBuilder {
         sqlBuilder.append(" OR");
         return sqlBuilder;
     }
+
     protected SqlParameter getSqlParameter(Object value, Map<Class<?>, TypeHandler<?>> typeHandlerMap) {
-        TypeHandler<?> typeHandler = value == null? NullTypeHandler.INSTANCE : typeHandlerMap.get(value.getClass());
+        TypeHandler<?> typeHandler = value == null ? NullTypeHandler.INSTANCE : typeHandlerMap.get(value.getClass());
         return new SqlParameter(value, typeHandler);
     }
+
     protected SqlParameter[] getSqlParameters(Object[] values, Map<Class<?>, TypeHandler<?>> typeHandlerMap) {
         SqlParameter[] sqlParameters = new SqlParameter[values.length];
         for (int i = 0; i < values.length; i++) {

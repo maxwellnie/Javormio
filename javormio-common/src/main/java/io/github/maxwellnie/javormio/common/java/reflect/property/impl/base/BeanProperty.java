@@ -1,10 +1,10 @@
 package io.github.maxwellnie.javormio.common.java.reflect.property.impl.base;
 
 
+import io.github.maxwellnie.javormio.common.java.NotMappedFieldException;
 import io.github.maxwellnie.javormio.common.java.proxy.MethodInvocationException;
 import io.github.maxwellnie.javormio.common.java.reflect.property.MetaField;
 import io.github.maxwellnie.javormio.common.java.reflect.property.Property;
-import io.github.maxwellnie.javormio.common.java.NotMappedFieldException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;

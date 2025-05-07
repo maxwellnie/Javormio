@@ -1,7 +1,7 @@
 package io.github.maxwellnie.javormio.common.annotation.table.column;
 
-import io.github.maxwellnie.javormio.common.java.type.TypeHandler;
 import io.github.maxwellnie.javormio.common.java.api.Constants;
+import io.github.maxwellnie.javormio.common.java.type.TypeHandler;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

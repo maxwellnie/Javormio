@@ -9,22 +9,19 @@ import java.util.List;
 /**
  * @author Maxwell Nie
  */
-public class SqlBuilder implements SqlFragment{
+public class SqlBuilder implements SqlFragment {
     List<SqlParameter> parameters = new LinkedList<>();
     StringBuilder sql = new StringBuilder();
 
-    public SqlBuilder setParameters(List<SqlParameter> parameters) {
-        this.parameters = parameters;
-        return this;
-    }
-    public SqlBuilder append(String sqlFragment, SqlParameter... parameters){
+    public SqlBuilder append(String sqlFragment, SqlParameter... parameters) {
         if (sqlFragment != null)
             sql.append(sqlFragment);
         if (parameters != null)
             Collections.addAll(this.parameters, parameters);
         return this;
     }
-    public SqlBuilder append(SqlFragment sqlFragment){
+
+    public SqlBuilder append(SqlFragment sqlFragment) {
         if (sqlFragment == null)
             return this;
         if (sqlFragment.toSql() == null)
@@ -43,6 +40,11 @@ public class SqlBuilder implements SqlFragment{
     @Override
     public SqlParameter[] getParameters() {
         return parameters.toArray(new SqlParameter[0]);
+    }
+
+    public SqlBuilder setParameters(List<SqlParameter> parameters) {
+        this.parameters = parameters;
+        return this;
     }
 
     @Override

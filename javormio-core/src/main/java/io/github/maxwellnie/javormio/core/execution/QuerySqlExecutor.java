@@ -1,10 +1,10 @@
 package io.github.maxwellnie.javormio.core.execution;
 
+import io.github.maxwellnie.javormio.common.java.jdbc.connection.ConnectionResource;
 import io.github.maxwellnie.javormio.core.execution.result.ConvertException;
 import io.github.maxwellnie.javormio.core.execution.result.ResultSetConvertor;
 import io.github.maxwellnie.javormio.core.execution.result.TypeMapping;
 import io.github.maxwellnie.javormio.core.translation.SqlParameter;
-import io.github.maxwellnie.javormio.common.java.jdbc.connection.ConnectionResource;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

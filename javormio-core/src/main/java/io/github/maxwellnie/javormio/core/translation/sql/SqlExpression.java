@@ -5,7 +5,7 @@ import io.github.maxwellnie.javormio.core.translation.SqlParameter;
 /**
  * @author Maxwell Nie
  */
-public class SqlExpression implements SqlFragment{
+public class SqlExpression implements SqlFragment {
     protected String sql;
     protected SqlParameter[] parameters;
 

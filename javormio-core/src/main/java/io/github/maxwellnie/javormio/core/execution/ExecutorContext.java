@@ -1,8 +1,8 @@
 package io.github.maxwellnie.javormio.core.execution;
 
+import io.github.maxwellnie.javormio.common.java.jdbc.connection.ConnectionResource;
 import io.github.maxwellnie.javormio.core.execution.result.ResultSetConvertor;
 import io.github.maxwellnie.javormio.core.translation.method.DaoMethodFeature;
-import io.github.maxwellnie.javormio.common.java.jdbc.connection.ConnectionResource;
 
 import java.util.Map;
 
