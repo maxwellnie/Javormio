@@ -17,26 +17,34 @@ public interface Configuration {
      *
      * @return Map
      */
-    Map<String, List<ElementHandler>> getElementHandlersMap();
+    default Map<String, List<ElementHandler>> getElementHandlersMap(){
+        return null;
+    }
 
     /**
      * Velocity配置
      *
      * @return Properties
      */
-    Properties getVelocityProperties();
+    default Properties getVelocityProperties(){
+        return null;
+    }
 
     /**
      * 支持的源版本
      *
      * @return SourceVersion
      */
-    SourceVersion getSupportedSourceVersion();
+    default SourceVersion getSupportedSourceVersion(){
+        return null;
+    }
 
     /**
      * 支持的选项
      *
      * @return Set
      */
-    Set<String> getSupportedOptions();
+    default Set<String> getSupportedOptions(){
+        return null;
+    }
 }
