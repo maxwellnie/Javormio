@@ -19,7 +19,7 @@ public class CoreProcessor extends AbstractProcessor {
     private final Set<String> supportedAnnotationTypes;
     private final Set<String> supportedOptions;
     private SourceVersion supportedSourceVersion;
-    private Configuration configuration;
+    private final Properties velocityProperties;
 
     public CoreProcessor() {
         elementHandlersMap = new HashMap<>();
@@ -31,6 +31,8 @@ public class CoreProcessor extends AbstractProcessor {
         supportedAnnotationTypes = new HashSet<>();
         supportedAnnotationTypes.addAll(elementHandlersMap.keySet());
         supportedSourceVersion = SourceVersion.RELEASE_8;
+        velocityProperties  = new Properties();
+        velocityProperties.put("file.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
         loadConfigurations();
         initVelocity();
     }
@@ -39,12 +41,7 @@ public class CoreProcessor extends AbstractProcessor {
      * 初始化velocity
      */
     private void initVelocity() {
-        Properties properties = configuration == null ? null : configuration.getVelocityProperties();
-        if (properties == null) {
-            properties = new Properties();
-            properties.put("file.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
-        }
-        Velocity.init(properties);
+        Velocity.init(velocityProperties);
     }
 
     /**
@@ -61,7 +58,7 @@ public class CoreProcessor extends AbstractProcessor {
                     if (className != null) {
                         Class<?> clazz = Class.forName(className);
                         if (Configuration.class.isAssignableFrom(clazz)) {
-                            configuration = (Configuration) clazz.getConstructor().newInstance();
+                            Configuration configuration = (Configuration) clazz.getConstructor().newInstance();
                             Optional.of(configuration.getElementHandlersMap())
                                     .ifPresent(m->{
                                         for(Map.Entry<String, List<ElementHandler>> entry: m.entrySet()){
@@ -78,6 +75,8 @@ public class CoreProcessor extends AbstractProcessor {
                                     .ifPresent(sourceVersion -> supportedSourceVersion = sourceVersion);
                             Optional.of(configuration.getElementHandlersMap())
                                     .ifPresent(map -> supportedAnnotationTypes.addAll(map.keySet()));
+                            Optional.of(configuration.getVelocityProperties())
+                                    .ifPresent(this.velocityProperties::putAll);
                         }
                     }
                 }
