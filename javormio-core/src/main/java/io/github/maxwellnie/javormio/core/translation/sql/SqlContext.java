@@ -1,7 +1,6 @@
 package io.github.maxwellnie.javormio.core.translation.sql;
 
 import io.github.maxwellnie.javormio.common.java.reflect.ObjectFactory;
-import io.github.maxwellnie.javormio.core.translation.table.column.DefaultSqlExpressionBuilder;
 
 import java.util.Map;
 
@@ -11,5 +10,5 @@ import java.util.Map;
 public class SqlContext {
     private Map<Object, String> aliasMap;
     private ObjectFactory<SqlBuilder> sqlBuilderFactory;
-    private DefaultSqlExpressionBuilder sqlExpressionBuilder;
+    private SqlExpressionBuilder sqlExpressionBuilder;
 }

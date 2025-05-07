@@ -1,5 +1,7 @@
 package io.github.maxwellnie.javormio.core.translation.sql;
 
+import io.github.maxwellnie.javormio.core.translation.SqlParameter;
+
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -8,14 +10,14 @@ import java.util.List;
  * @author Maxwell Nie
  */
 public class SqlBuilder implements SqlFragment{
-    List<Object> parameters = new LinkedList<>();
+    List<SqlParameter> parameters = new LinkedList<>();
     StringBuilder sql = new StringBuilder();
 
-    public SqlBuilder setParameters(List<Object> parameters) {
+    public SqlBuilder setParameters(List<SqlParameter> parameters) {
         this.parameters = parameters;
         return this;
     }
-    public SqlBuilder append(String sqlFragment, Object... parameters){
+    public SqlBuilder append(String sqlFragment, SqlParameter... parameters){
         if (sqlFragment != null)
             sql.append(sqlFragment);
         if (parameters != null)
@@ -39,8 +41,8 @@ public class SqlBuilder implements SqlFragment{
     }
 
     @Override
-    public Object[] getParameters() {
-        return parameters.toArray();
+    public SqlParameter[] getParameters() {
+        return parameters.toArray(new SqlParameter[0]);
     }
 
     @Override
