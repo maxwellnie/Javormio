@@ -7,7 +7,7 @@ import io.github.maxwellnie.javormio.common.java.proxy.MethodInvocationException
  *
  * @author Maxwell Nie
  */
-public interface MethodInvoker<T> {
+public interface MethodInvoker<T, R> {
     /**
      * perform the method.
      *
@@ -15,7 +15,7 @@ public interface MethodInvoker<T> {
      * @return Object
      * @throws MethodInvocationException
      */
-    default Object invoke(InvokerContext context) throws MethodInvocationException {
+    default R invoke(InvokerContext context) throws MethodInvocationException {
         throw new MethodInvocationException("The invoke(InvokerContext) is not supported.");
     }
 
@@ -27,7 +27,7 @@ public interface MethodInvoker<T> {
      * @return Object
      * @throws MethodInvocationException
      */
-    default Object invoke(InvocationLine invocationLine, InvokerContext context) throws MethodInvocationException {
+    default R invoke(InvocationLine invocationLine, InvokerContext context) throws MethodInvocationException {
         throw new MethodInvocationException("The invoke(InvocationLine, InvokerContext) is not supported.");
     }
 
@@ -39,7 +39,7 @@ public interface MethodInvoker<T> {
      * @return Object
      * @throws MethodInvocationException
      */
-    default Object invoke(T target, Object[] args) throws MethodInvocationException {
+    default R invoke(T target, Object[] args) throws MethodInvocationException {
         throw new MethodInvocationException("The invoke(Object, LObject) is not supported.");
     }
 
@@ -51,7 +51,7 @@ public interface MethodInvoker<T> {
      * @return Object
      * @throws MethodInvocationException
      */
-    default Object invokeExactly(T target, Object... args) throws MethodInvocationException {
+    default R invokeExactly(T target, Object... args) throws MethodInvocationException {
         throw new MethodInvocationException("The invoke(Object, LObject) is not supported.");
     }
 
@@ -62,7 +62,7 @@ public interface MethodInvoker<T> {
      * @return Object
      * @throws MethodInvocationException
      */
-    default Object invoke(T target) throws MethodInvocationException {
+    default R invoke(T target) throws MethodInvocationException {
         throw new MethodInvocationException("The invoke(Object) is not supported.");
     }
 
@@ -72,7 +72,7 @@ public interface MethodInvoker<T> {
      * @return Object
      * @throws MethodInvocationException
      */
-    default Object invoke() throws MethodInvocationException {
+    default R invoke() throws MethodInvocationException {
         throw new MethodInvocationException("The invoke() is not supported.");
     }
 
@@ -83,7 +83,7 @@ public interface MethodInvoker<T> {
      * @return Object
      * @throws MethodInvocationException
      */
-    default Object invoke(Object[] args) throws MethodInvocationException {
+    default R invoke(Object[] args) throws MethodInvocationException {
         throw new MethodInvocationException("The invoke(LObject) is not supported.");
     }
 }
