@@ -31,8 +31,7 @@ public class BeanProperty implements Property {
                 throw new NullPointerException("MetaField is null");
             else
                 return metaField.get(o);
-        } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException |
-                 MethodInvocationException e) {
+        } catch (MethodInvocationException e) {
             throw new NotMappedFieldException(e);
         }
     }
@@ -45,8 +44,7 @@ public class BeanProperty implements Property {
         try {
             metaField.set(o, value);
             return o;
-        } catch (InvocationTargetException | MethodInvocationException | IllegalAccessException |
-                 NoSuchMethodException e) {
+        } catch (MethodInvocationException e) {
             throw new NotMappedFieldException(e);
         }
     }
