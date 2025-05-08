@@ -1,6 +1,6 @@
 package io.github.maxwellnie.javormio.core.translation.table.column;
 
-import io.github.maxwellnie.javormio.common.java.reflect.property.impl.meta.MetaProperty;
+import io.github.maxwellnie.javormio.common.java.reflect.property.MetaField;
 import io.github.maxwellnie.javormio.common.java.type.TypeHandler;
 import io.github.maxwellnie.javormio.core.translation.table.TableInfo;
 
@@ -9,7 +9,7 @@ import io.github.maxwellnie.javormio.core.translation.table.TableInfo;
  *
  * @author Maxwell Nie
  */
-public class ColumnInfo<T> {
+public class ColumnInfo<E, T> {
     /**
      * 列名
      */
@@ -17,7 +17,7 @@ public class ColumnInfo<T> {
     /**
      * 属性
      */
-    private MetaProperty metaProperty;
+    private MetaField<E, T> metaField;
     /**
      * 表信息
      */
@@ -35,12 +35,19 @@ public class ColumnInfo<T> {
         this.columnName = columnName;
     }
 
-    public MetaProperty getMetaProperty() {
-        return metaProperty;
+    public MetaField<E, T> getMetaField() {
+        return metaField;
     }
 
-    public void setMetaProperty(MetaProperty metaProperty) {
-        this.metaProperty = metaProperty;
+    public void setMetaField(MetaField<E, T> metaField) {
+        this.metaField = metaField;
+    }
+
+    public void setTypeHandler(TypeHandler<T> typeHandler) {
+        this.typeHandler = typeHandler;
+    }
+
+    public ColumnInfo() {
     }
 
     public TableInfo getTableInfo() {
@@ -51,11 +58,8 @@ public class ColumnInfo<T> {
         this.tableInfo = tableInfo;
     }
 
-    public TypeHandler getTypeHandler() {
+    public TypeHandler<T> getTypeHandler() {
         return typeHandler;
     }
 
-    public void setTypeHandler(TypeHandler typeHandler) {
-        this.typeHandler = typeHandler;
-    }
 }
