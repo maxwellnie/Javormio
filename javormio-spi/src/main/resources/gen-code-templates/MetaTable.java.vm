@@ -1,0 +1,22 @@
+package meta.${meta_table_path};
+
+import io.github.maxwellnie.javormio.common.java.reflect.property.MetaField;
+import io.github.maxwellnie.javormio.common.java.reflect.property.Property;
+import io.github.maxwellnie.javormio.core.translation.table.column.ColumnInfo;
+import meta.*;
+#foreach($import in ${imports})
+import $import;
+#end
+
+public class ${meta_table_name}{
+    public static final String TABLE_NAME = "${table_name}";
+    #foreach($column in ${columns})
+        public static final ColumnInfo ${column.fieldName} = new ColumnInfo();
+        static{
+            ${column.fieldName}.setColumnName("${column.columnName}");
+            ${column.fieldName}.setTypeHandler(new ${column.typeHandlerClassName}());
+            MetaField ${column.fieldName}MetaField = new MetaField();
+            ${column.fieldName}.setProperty(${column.fieldName}MetaField);
+        }
+    #end
+}
