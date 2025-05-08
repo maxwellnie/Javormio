@@ -11,15 +11,15 @@ import java.util.Map;
  *
  * @author Maxwell Nie
  */
-public class TableInfo {
+public class TableInfo<E> {
     /**
      * 列信息映射，key为字段名，value为列信息
      */
-    private final Map<String, ColumnInfo> columnInfoMapping;
+    private final Map<String, ColumnInfo<E, ?>> columnInfoMapping;
     /**
      * 列信息逆向映射，key为列名，value为列信息
      */
-    private final Map<String, ColumnInfo> columnInfoInverseMapping;
+    private final Map<String, ColumnInfo<E, ?>> columnInfoInverseMapping;
     /**
      * 表名
      */
@@ -27,7 +27,7 @@ public class TableInfo {
     /**
      * 映射类
      */
-    private final Class<?> mappingClass;
+    private final Class<E> mappingClass;
     /**
      * 主键
      */
@@ -51,11 +51,11 @@ public class TableInfo {
     /**
      * 关联信息
      */
-    private final JoinInfo[] joinInfo;
+    private final JoinInfo<E, ?>[] joinInfo;
 
-    public TableInfo(Map<String, ColumnInfo> columnInfoMapping, Map<String, ColumnInfo> columnInfoInverseMapping
-            , String tableName, Class<?> mappingClass, String[] columnNames, String primaryKeyFieldName, String[] uniqueKeys
-            , String[] indexKeys, JoinInfo[] joinInfo) {
+    public TableInfo(Map<String, ColumnInfo<E, ?>> columnInfoMapping, Map<String, ColumnInfo<E, ?>> columnInfoInverseMapping
+            , String tableName, Class<E> mappingClass, String[] columnNames, String primaryKeyFieldName, String[] uniqueKeys
+            , String[] indexKeys, JoinInfo<E, ?>[] joinInfo) {
         this.columnInfoMapping = columnInfoMapping;
         this.columnInfoInverseMapping = columnInfoInverseMapping;
         this.tableName = tableName;
@@ -75,11 +75,11 @@ public class TableInfo {
         return primaryKeyFieldName;
     }
 
-    public Map<String, ColumnInfo> getColumnInfoMapping() {
+    public Map<String, ColumnInfo<E, ?>> getColumnInfoMapping() {
         return columnInfoMapping;
     }
 
-    public Map<String, ColumnInfo> getColumnInfoInverseMapping() {
+    public Map<String, ColumnInfo<E, ?>> getColumnInfoInverseMapping() {
         return columnInfoInverseMapping;
     }
 
@@ -111,7 +111,7 @@ public class TableInfo {
         return indexKeys;
     }
 
-    public JoinInfo[] getJoinInfo() {
+    public JoinInfo<E, ?>[] getJoinInfo() {
         return joinInfo;
     }
 

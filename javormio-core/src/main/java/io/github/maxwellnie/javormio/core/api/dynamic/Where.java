@@ -12,7 +12,7 @@ import io.github.maxwellnie.javormio.core.translation.table.column.ColumnInfo;
  * @author Maxwell Nie
  */
 public class Where<E, P> implements Chainable<P> {
-    TableInfo tableInfo;
+    TableInfo<E> tableInfo;
     SqlFragment sqlFragment;
     StringBuilder sqlBuilder;
     ConditionsLogic<E, P, Where<E, P>> lazyConditionLogic;

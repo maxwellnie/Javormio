@@ -4,6 +4,7 @@ import io.github.maxwellnie.javormio.common.annotation.table.Table;
 import io.github.maxwellnie.javormio.common.annotation.table.column.Column;
 import io.github.maxwellnie.javormio.common.annotation.table.column.PrimaryKey;
 import io.github.maxwellnie.javormio.core.translation.table.column.ColumnInfo;
+import org.apache.velocity.VelocityContext;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
@@ -29,6 +30,8 @@ public class MetaTableHandler implements ElementHandler {
                         "@Table can only be applied to classes", element);
                 return;
             }
+            VelocityContext context = new VelocityContext();
+            context.put("metaTable", new MetaTable());
             /**
              * io.github.xx.aa.User
              * meta.io.github.xx.aa=>判断是否存在这个文件夹，没有就创建

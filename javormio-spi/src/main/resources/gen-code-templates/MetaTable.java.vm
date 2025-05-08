@@ -1,22 +1,57 @@
-package meta.${meta_table_path};
+package ${metaTable.packagePath};
 
+import io.github.maxwellnie.javormio.BaseTable;
 import io.github.maxwellnie.javormio.common.java.reflect.property.MetaField;
 import io.github.maxwellnie.javormio.common.java.reflect.property.Property;
 import io.github.maxwellnie.javormio.core.translation.table.column.ColumnInfo;
-import meta.*;
-#foreach($import in ${imports})
+import io.github.maxwellnie.javormio.core.translation.table.primary.PrimaryInfo;
+import ${baseMetaPackage};
+#foreach($import in ${metaTable.imports})
 import $import;
 #end
 
-public class ${meta_table_name}{
-    public static final String TABLE_NAME = "${table_name}";
-    #foreach($column in ${columns})
-        public static final ColumnInfo ${column.fieldName} = new ColumnInfo();
-        static{
-            ${column.fieldName}.setColumnName("${column.columnName}");
-            ${column.fieldName}.setTypeHandler(new ${column.typeHandlerClassName}());
-            MetaField ${column.fieldName}MetaField = new MetaField();
-            ${column.fieldName}.setProperty(${column.fieldName}MetaField);
-        }
+public class Meta${metaTable.className.getSimple} extends BaseTable<${metaTable.className}> {
+    public Meta${metaTable.className.getSimple}(){
+        super("${metaTable.tableName}", "${metaTable.defaultDataSourceName}", ${metaTable.className}.class);
+    }
+    #foreach($column in ${metaTable.columns})
+    #if($column.isPrimary)
+        public final PrimaryInfo<${metaTable.className}> ${column.fieldName} = new PrimaryInfo<>();
+    #else
+        public final ColumnInfo<${metaTable.className}> ${column.fieldName} = new ColumnInfo<>();
     #end
+    static{
+        ${column.fieldName}.setColumnName("${column.columnName}");
+        ${column.fieldName}.setTypeHandler(new ${column.typeHandlerClassName}());
+        ${column.fieldName}.setColumnType(${column.columnType});
+        MetaField<${metaTable.className}, ${column.typeName}> ${column.fieldName}MetaField = new MetaField<>(
+            "${column.fieldName}",
+            ${column.typeName}.class,
+            ${metaTable.className}.class,
+            new ${column.getterClassName}(),
+            new ${column.setterClassName}()
+        );
+        ${column.fieldName}.setMetaField(${column.fieldName}MetaField);
+    }
+    #end
+    public final ColumnInfo<E, ?>[] columnInfos = new ColumnInfo<>[]{
+        #foreach($column in ${metaTable.columns})
+            ${column.fieldName},
+        #end
+    };
+    public final PrimaryInfo<E, ?>[] primaryInfos = new PrimaryInfo<>[]{
+        #foreach($column in ${metaTable.columns})
+            #if($column.isPrimary)
+                ${column.fieldName},
+            #end
+        #end
+    };
+    @Override
+    public abstract ColumnInfo<E, ?>[] getColumnInfos(){
+        return this.columnInfos;
+    }
+    @Override
+    public abstract ColumnInfo<E, ?>[] getPrimaryInfos(){
+        return this.primaryInfos;
+    }
 }

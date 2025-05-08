@@ -7,7 +7,7 @@ import io.github.maxwellnie.javormio.core.translation.table.column.ColumnInfo;
  *
  * @author Maxwell Nie
  */
-public class PrimaryInfo extends ColumnInfo {
+public class PrimaryInfo<E, T> extends ColumnInfo<E, T> {
     /**
      * 主键生成器
      */

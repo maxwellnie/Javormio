@@ -19,13 +19,13 @@ public class ColumnInfo<E, T> {
      */
     private MetaField<E, T> metaField;
     /**
-     * 表信息
-     */
-    private TableInfo tableInfo;
-    /**
      * 类型处理器
      */
     private TypeHandler<T> typeHandler;
+    /**
+     * 列类型
+     */
+    private int columnType;
 
     public String getColumnName() {
         return columnName;
@@ -50,12 +50,12 @@ public class ColumnInfo<E, T> {
     public ColumnInfo() {
     }
 
-    public TableInfo getTableInfo() {
-        return tableInfo;
+    public int getColumnType() {
+        return columnType;
     }
 
-    public void setTableInfo(TableInfo tableInfo) {
-        this.tableInfo = tableInfo;
+    public void setColumnType(int columnType) {
+        this.columnType = columnType;
     }
 
     public TypeHandler<T> getTypeHandler() {
