@@ -1,4 +1,4 @@
-package io.github.maxwellnie.javormio;
+package io.github.maxwellnie.javormio.core.translation.table;
 
 import io.github.maxwellnie.javormio.core.translation.table.column.ColumnInfo;
 import io.github.maxwellnie.javormio.core.translation.table.primary.PrimaryInfo;

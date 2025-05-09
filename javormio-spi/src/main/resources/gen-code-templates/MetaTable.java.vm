@@ -1,8 +1,7 @@
 package ${metaTable.packagePath};
 
-import io.github.maxwellnie.javormio.BaseTable;
+import io.github.maxwellnie.javormio.core.translation.table.BaseTable;
 import io.github.maxwellnie.javormio.common.java.reflect.property.MetaField;
-import io.github.maxwellnie.javormio.common.java.reflect.property.Property;
 import io.github.maxwellnie.javormio.core.translation.table.column.ColumnInfo;
 import io.github.maxwellnie.javormio.core.translation.table.primary.PrimaryInfo;
 import ${baseMetaPackage};
