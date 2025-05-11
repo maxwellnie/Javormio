@@ -1,186 +1,45 @@
 package io.github.maxwellnie.javormio.flexible.sql.plugin;
 
-import io.github.maxwellnie.javormio.common.java.api.JavormioException;
-import io.github.maxwellnie.javormio.common.java.reflect.ObjectFactory;
 import io.github.maxwellnie.javormio.core.execution.ExecutableSql;
-import io.github.maxwellnie.javormio.core.translation.SqlParameter;
-import io.github.maxwellnie.javormio.core.translation.SqlType;
-import io.github.maxwellnie.javormio.core.translation.table.BaseMetaTableInfo;
-import io.github.maxwellnie.javormio.core.translation.table.column.ColumnInfo;
-import io.github.maxwellnie.javormio.flexible.sql.plugin.expression.Expression;
-import io.github.maxwellnie.javormio.flexible.sql.plugin.expression.SqlExpressionSupport;
-import io.github.maxwellnie.javormio.flexible.sql.plugin.table.ExpressionColumnInfo;
+import io.github.maxwellnie.javormio.core.execution.ExecutorContext;
+import io.github.maxwellnie.javormio.core.execution.QuerySqlExecutor;
+import io.github.maxwellnie.javormio.core.execution.StatementWrapper;
+import io.github.maxwellnie.javormio.core.translation.method.DaoMethodFeature;
+import io.github.maxwellnie.javormio.flexible.sql.plugin.result.ObjectExecuteResult;
+import io.github.maxwellnie.javormio.flexible.sql.plugin.result.ResultSetExecuteResult;
 
-import java.util.*;
-import java.util.function.Consumer;
+import java.sql.ResultSet;
+import java.util.LinkedHashMap;
 
 /**
  * @author Maxwell Nie
  */
 public class Query<T> {
-    protected BaseMetaTableInfo<T> table;
-    protected SqlBuilder selectColumnSql = new SqlBuilder().append("SELECT ");
-    protected SqlBuilder fromToOnSql = new SqlBuilder().append(" FROM");
-    protected SqlBuilder whereToEndSql = new SqlBuilder();
-    protected SqlExpressionSupport sqlExpressionSupport = new SqlExpressionSupport();
-    protected List<ColumnInfo> allColumns = new LinkedList<>();
-    protected Map<ColumnInfo, String> columnAliasMap = new LinkedHashMap<>();
-    protected Map<BaseMetaTableInfo, String> tableAliasMap = new LinkedHashMap<>();
-    protected FlexibleSqlContext context;
+    protected QueryBuilder<T> queryBuilder;
+    protected ExecutableSql executableSql;
 
-    protected Query() {
-    }
-    public Query<T> excludeColumns(ExpressionColumnInfo... excludedColumns){
-        for (ExpressionColumnInfo expressionColumnInfo : excludedColumns){
-            allColumns.remove(expressionColumnInfo.getColumnInfo());
-        }
-        return this;
-    }
-    public Query<T> aliasColumns(Consumer<AliasHelper> aliasConsumer){
-        this.columnAliasMap = new LinkedHashMap<>();
-        AliasHelper aliasHelper = new AliasHelper(columnAliasMap);
-        aliasConsumer.accept(aliasHelper);
-        return this;
-    }
-    public static <R> Query<R> from(BaseMetaTableInfo<R> table, FlexibleSqlContext context) throws JavormioException {
-        try{
-            Query<R> query = new Query<>();
-            query.table = table;
-            query.context = context;
-            SqlContext sqlContext = context.getSqlContext();
-            ObjectFactory<SqlBuilder> sqlBuilderFactory = sqlContext.getSqlBuilderFactory();
-            query.selectColumnSql.append(sqlBuilderFactory.produce());
-            query.fromToOnSql.append(sqlBuilderFactory.produce());
-            query.whereToEndSql.append(sqlBuilderFactory.produce());
-            query.sqlExpressionSupport = sqlContext.getSqlExpressionSupport();
-            query.allColumns.addAll(Arrays.asList(table.getColumnInfos()));
-            query.fromToOnSql.append(" ").append(table.tableName);
-            return query;
-        }catch (Exception e){
-            throw new JavormioException(e);
-        }
+    public Query(QueryBuilder<T> queryBuilder, ExecutableSql executableSql) {
+        this.queryBuilder = queryBuilder;
+        this.executableSql = executableSql;
     }
 
-    public static <R> Query<R> from(BaseMetaTableInfo<R> table, String alias, FlexibleSqlContext context) throws JavormioException {
-        Query<R> query = from(table, context);
-        query.tableAliasMap.put(table, alias);
-        query.fromToOnSql.append(" AS ").append(alias);
-        return query;
+    public ResultSetExecuteResult selectToResultSet(){
+        ExecutorContext<ResultSet> executorContext = new ExecutorContext<>(queryBuilder.context.getConnectionResource(), executableSql, new DaoMethodFeature<>(null, null, false), queryBuilder.context.getResultSetConvertor(), null, null, false);
+        StatementWrapper statementWrapper = queryBuilder.context.getSqlExecutor(QuerySqlExecutor.class).run(executorContext);
+        ResultSet resultSet = (ResultSet) statementWrapper.getResult();
+        return new ResultSetExecuteResult(resultSet, resultSet, queryBuilder.allColumns, new LinkedHashMap<>(), queryBuilder.columnAliasMap, statementWrapper, executorContext);
     }
-    public Query<T> and(Expression expression){
-        sqlExpressionSupport.and(whereToEndSql);
-        expression.applySql(sqlExpressionSupport, whereToEndSql, columnAliasMap, tableAliasMap);
-        return this;
-    }
-    public Query<T> or(Expression expression){
-        sqlExpressionSupport.or(whereToEndSql);
-        expression.applySql(sqlExpressionSupport, whereToEndSql, columnAliasMap, tableAliasMap);
-        return this;
-    }
-    public Query<T> where(Expression expression){
-        whereToEndSql.append(" WHERE");
-        expression.applySql(sqlExpressionSupport, whereToEndSql, columnAliasMap, tableAliasMap);
-        return this;
-    }
-    public Query<T> joinOn(BaseMetaTableInfo<T> table, Expression expression){
-        fromToOnSql.append(" JOIN ").append(table.tableName).append(" ON");
-        allColumns.addAll(Arrays.asList(table.getColumnInfos()));
-        expression.applySql(sqlExpressionSupport, fromToOnSql, columnAliasMap, tableAliasMap);
-        return this;
-    }
-    public Query<T> join(BaseMetaTableInfo<T> table, Expression expression){
-        fromToOnSql.append(" JOIN ").append(table.tableName);
-        allColumns.addAll(Arrays.asList(table.getColumnInfos()));
-        expression.applySql(sqlExpressionSupport, whereToEndSql, columnAliasMap, tableAliasMap);
-        return this;
-    }
-    public Query<T> leftJoinOn(BaseMetaTableInfo<T> table, Expression expression){
-        fromToOnSql.append(" LEFT JOIN ").append(table.tableName).append(" ON");
-        allColumns.addAll(Arrays.asList(table.getColumnInfos()));
-        where(expression);
-        return this;
-    }
-    public Query<T> rightJoinOn(BaseMetaTableInfo<T> table, Expression expression){
-        fromToOnSql.append(" RIGHT JOIN ").append(table.tableName).append(" ON");
-        allColumns.addAll(Arrays.asList(table.getColumnInfos()));
-        expression.applySql(sqlExpressionSupport, fromToOnSql, columnAliasMap, tableAliasMap);
-        return this;
-    }
-    public Query<T> joinOn(BaseMetaTableInfo<T> table, String alias, Expression expression){
-        tableAliasMap.put(table, alias);
-        fromToOnSql.append(" JOIN ").append(table.tableName).append(" AS ").append(alias).append(" ON");
-        allColumns.addAll(Arrays.asList(table.getColumnInfos()));
-        expression.applySql(sqlExpressionSupport, fromToOnSql, columnAliasMap, tableAliasMap);
-        return this;
-    }
-    public Query<T> join(BaseMetaTableInfo<T> table, String alias, Expression expression){
-        fromToOnSql.append(" JOIN ").append(table.tableName).append(" AS ").append(alias);
-        allColumns.addAll(Arrays.asList(table.getColumnInfos()));
-        expression.applySql(sqlExpressionSupport, whereToEndSql, columnAliasMap, tableAliasMap);
-        return this;
-    }
-    public Query<T> leftJoinOn(BaseMetaTableInfo<T> table, String alias, Expression expression){
-        fromToOnSql.append(" LEFT JOIN ").append(table.tableName).append(" AS ").append(alias).append(" ON");
-        allColumns.addAll(Arrays.asList(table.getColumnInfos()));
-        expression.applySql(sqlExpressionSupport, fromToOnSql, columnAliasMap, tableAliasMap);
-        return this;
-    }
-    public Query<T> rightJoinOn(BaseMetaTableInfo<T> table, String alias, Expression expression){
-        fromToOnSql.append(" RIGHT JOIN ").append(table.tableName).append(" AS ").append(alias).append(" ON");
-        allColumns.addAll(Arrays.asList(table.getColumnInfos()));
-        expression.applySql(sqlExpressionSupport, fromToOnSql, columnAliasMap, tableAliasMap);
-        return this;
-    }
-    public Query<T> groupBy(ColumnInfo... columnInfos){
-        whereToEndSql.append(" GROUP BY ");
-        for (int i = 0; i < columnInfos.length; i++){
-            if (i != 0)
-                whereToEndSql.append(",");
-            String columnName = columnAliasMap.get(columnInfos[i]);
-            if (columnName == null)
-                columnName = columnInfos[i].getColumnName();
-            whereToEndSql.append(columnName);
-        }
-        return this;
-    }
-    public CompleteExecutableSql<T> toSql(){
-        StringBuilder sqlBuilder = selectColumnSql.getSqlStringBuilder();
-        for (int i = 0; i < allColumns.size(); i++){
-            if (i != 0)
-                sqlBuilder.append(",");
-            sqlBuilder.append(allColumns.get(i).getColumnName());
-            if (columnAliasMap.containsKey(allColumns.get(i))){
-                sqlBuilder.append(" AS ").append(columnAliasMap.get(allColumns.get(i)));
-            }
-        }
-        sqlBuilder.append(fromToOnSql.toSql());
-        sqlBuilder.append(whereToEndSql.toSql());
-        ExecutableSql executableSql = new ExecutableSql();
-        executableSql.setSqlList(new String[]{sqlBuilder.toString()});
-        List<SqlParameter[]> parametersList = new LinkedList<>();
-        int length = selectColumnSql.parameters.size()+fromToOnSql.parameters.size()+whereToEndSql.parameters.size();
-        SqlParameter[] parameters = new SqlParameter[length];
-        int i = 0;
-        for (SqlParameter sqlParameter : selectColumnSql.parameters){
-            parameters[i++] = sqlParameter;
-        }
-        i = 0;
-        for (SqlParameter sqlParameter : fromToOnSql.parameters){
-            parameters[i++] = sqlParameter;
-        }
-        i = 0;
-        for (SqlParameter sqlParameter : whereToEndSql.parameters){
-            parameters[i++] = sqlParameter;
-        }
-        parametersList.add(parameters);
-        executableSql.setParametersList(parametersList);
-        executableSql.setType(SqlType.SELECT);
-        return new CompleteExecutableSql<>(this, executableSql);
-    }
-    public CompleteExecutableSql<T> toSql(Consumer<ExecutableSql> consumer){
-        CompleteExecutableSql<T> completeExecutableSql = toSql();
-        consumer.accept(completeExecutableSql.getExecutableSql());
-        return completeExecutableSql;
+    public ObjectExecuteResult<T> selectToEntity() {
+        ExecutorContext<ResultSet> executorContext = new ExecutorContext<>(queryBuilder.context.getConnectionResource(), executableSql, new DaoMethodFeature<>(null, null, false), queryBuilder.context.getResultSetConvertor(), null,  null, false);
+        StatementWrapper statementWrapper = queryBuilder.context.getSqlExecutor(QuerySqlExecutor.class).run(executorContext);
+        return new ObjectExecuteResult<>(queryBuilder.table, (ResultSet) statementWrapper.getResult(), queryBuilder.allColumns, new LinkedHashMap<>(), queryBuilder.columnAliasMap, statementWrapper, executorContext);
     }
 
+    public QueryBuilder<T> getQuery() {
+        return queryBuilder;
+    }
+
+    public ExecutableSql getExecutableSql() {
+        return executableSql;
+    }
 }
