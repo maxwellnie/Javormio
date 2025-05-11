@@ -1,6 +1,7 @@
-package io.github.maxwellnie.javormio.core.translation.sql;
+package io.github.maxwellnie.javormio.flexible.sql.plugin;
 
 import io.github.maxwellnie.javormio.core.translation.SqlParameter;
+import io.github.maxwellnie.javormio.core.translation.sql.SqlFragment;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -45,6 +46,10 @@ public class SqlBuilder implements SqlFragment {
     public SqlBuilder setParameters(List<SqlParameter> parameters) {
         this.parameters = parameters;
         return this;
+    }
+
+    public StringBuilder getSqlStringBuilder() {
+        return sql;
     }
 
     @Override

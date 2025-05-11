@@ -1,16 +1,17 @@
-package io.github.maxwellnie.javormio.core.translation.sql;
+package io.github.maxwellnie.javormio.flexible.sql.plugin;
 
 import io.github.maxwellnie.javormio.core.translation.SqlParameter;
+import io.github.maxwellnie.javormio.core.translation.sql.SqlFragment;
 
 /**
  * @author Maxwell Nie
  */
-public class SqlExpression implements SqlFragment {
+public class Sql implements SqlFragment {
     protected String sql;
     protected SqlParameter[] parameters;
 
 
-    public SqlExpression(String sql, SqlParameter[] parameters) {
+    public Sql(String sql, SqlParameter[] parameters) {
         this.sql = sql;
         this.parameters = parameters;
     }
