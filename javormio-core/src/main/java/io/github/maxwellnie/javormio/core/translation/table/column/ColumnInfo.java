@@ -2,7 +2,7 @@ package io.github.maxwellnie.javormio.core.translation.table.column;
 
 import io.github.maxwellnie.javormio.common.java.reflect.property.MetaField;
 import io.github.maxwellnie.javormio.common.java.type.TypeHandler;
-import io.github.maxwellnie.javormio.core.translation.table.TableInfo;
+import io.github.maxwellnie.javormio.core.translation.table.BaseMetaTableInfo;
 
 /**
  * 列信息
@@ -26,6 +26,15 @@ public class ColumnInfo<E, T> {
      * 列类型
      */
     private int columnType;
+    private BaseMetaTableInfo<E> table;
+
+    public BaseMetaTableInfo<E> getTable() {
+        return table;
+    }
+
+    public void setTable(BaseMetaTableInfo<E> table) {
+        this.table = table;
+    }
 
     public String getColumnName() {
         return columnName;

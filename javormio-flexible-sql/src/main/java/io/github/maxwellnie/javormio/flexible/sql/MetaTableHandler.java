@@ -1,9 +1,12 @@
-package io.github.maxwellnie.javormio;
+package io.github.maxwellnie.javormio.flexible.sql;
 
 import io.github.maxwellnie.javormio.common.annotation.table.Table;
 import io.github.maxwellnie.javormio.common.annotation.table.column.Column;
 import io.github.maxwellnie.javormio.common.annotation.table.column.PrimaryKey;
 import io.github.maxwellnie.javormio.core.translation.table.column.ColumnInfo;
+import io.github.maxwellnie.javormio.flexible.sql.plugin.table.MetaTable;
+import io.github.maxwellnie.javormio.source.code.processor.CustomProcessor;
+import io.github.maxwellnie.javormio.source.code.processor.SPIPlugin;
 import org.apache.velocity.VelocityContext;
 
 import javax.annotation.processing.ProcessingEnvironment;
@@ -20,9 +23,11 @@ import java.util.stream.Collectors;
 /**
  * @author Maxwell Nie
  */
-public class MetaTableHandler implements ElementHandler {
+@SPIPlugin(Table.class)
+public class MetaTableHandler implements CustomProcessor {
+
     @Override
-    public void handle(Set<? extends Element> elements, ProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
+    public void process(Set<? extends Element> elements, ProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
         for (Element element : elements) {
             // 1. 类型校验
             if (element.getKind() != ElementKind.CLASS) { // 确保是类级别注解
@@ -45,9 +50,9 @@ public class MetaTableHandler implements ElementHandler {
             //meta_user.java
             /*
                package meta;
-               public class MetaUser extend BaseTable{
+               public class MetaUser extend BaseMetaTableInfo{
                    public String tableName ="tb_user";
-                   public ColumnInfo userId = new ColumnInfo{
+                   public MetaColumnInfo userId = new MetaColumnInfo{
                          String name = "";
                          Class<?> type = io.github.xx.aa.User.class;
                          Class<?> typeHandler = null;

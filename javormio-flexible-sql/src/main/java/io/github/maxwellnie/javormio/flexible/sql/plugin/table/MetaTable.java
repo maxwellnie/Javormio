@@ -1,4 +1,4 @@
-package io.github.maxwellnie.javormio;
+package io.github.maxwellnie.javormio.flexible.sql.plugin.table;
 
 
 import java.util.List;
@@ -10,7 +10,7 @@ public class MetaTable {
     public ClassName className;
     public String defaultDataSourceName;
     public String tableName;
-    public List<Column> columns;
+    public List<MetaColumn> metaColumns;
     public String packagePath;
     public List<String> imports;
 

@@ -1,0 +1,19 @@
+package io.github.maxwellnie.javormio.flexible.sql.plugin.expression.impl;
+
+import io.github.maxwellnie.javormio.core.translation.table.column.ColumnInfo;
+import io.github.maxwellnie.javormio.flexible.sql.plugin.expression.Expression;
+
+/**
+ * @author Maxwell Nie
+ */
+public abstract class DoubleValueExpression<E, T> implements Expression {
+    protected ColumnInfo<E, T> firstColumnInfo;
+    protected T firstValue;
+    protected T secondValue;
+
+    public DoubleValueExpression(ColumnInfo<E, T> firstColumnInfo, T firstValue, T secondValue) {
+        this.firstColumnInfo = firstColumnInfo;
+        this.firstValue = firstValue;
+        this.secondValue = secondValue;
+    }
+}

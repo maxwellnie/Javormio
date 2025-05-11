@@ -1,5 +1,6 @@
 package io.github.maxwellnie.javormio.core.execution;
 
+import io.github.maxwellnie.javormio.common.java.api.ObjectMap;
 import io.github.maxwellnie.javormio.common.java.jdbc.connection.ConnectionResource;
 import io.github.maxwellnie.javormio.core.execution.result.ConvertException;
 import io.github.maxwellnie.javormio.core.execution.result.ResultSetConvertor;
@@ -8,6 +9,7 @@ import io.github.maxwellnie.javormio.core.translation.SqlParameter;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -18,17 +20,16 @@ import java.util.List;
  */
 public class QuerySqlExecutor extends BaseSqlExecutor {
     @Override
-    public Object run(ExecutorContext executorContext) throws SQLException, ConvertException {
+    public <T> Object run(ExecutorContext<T> executorContext) throws ConvertException {
         ConnectionResource connectionResource = executorContext.getConnectionResource();
         ExecutableSql executableSql = executorContext.getExecutableSql();
         //获取类型映射
-        TypeMapping typeMapping = executorContext.getDaoMethodFeature().getTypeMapping();
+        ObjectMap<ResultSet, T> typeMapping = executorContext.getDaoMethodFeature().getTypeMapping();
         //获取结果集转换器
         ResultSetConvertor resultSetConvertor = executorContext.getResultSetConvertor();
         //获取连接对象
         Connection connection = connectionResource
                 .getConnection();
-        boolean multipleTable = executorContext.getDaoMethodFeature().isMultipleTable();
         //打开报表
         try (PreparedStatement preparedStatement = connection.prepareStatement(executableSql.getSqlList()[0])) {
             //获取参数列表
@@ -48,7 +49,9 @@ public class QuerySqlExecutor extends BaseSqlExecutor {
                             .setValue(preparedStatement, index++, sqlParameter.getValue());
                 }
             }
-            return resultSetConvertor.convert(preparedStatement.executeQuery(), typeMapping, multipleTable);
+            return resultSetConvertor.convert(preparedStatement.executeQuery(), typeMapping, executorContext.getInstanceMethodInvoker());
+        }catch (SQLException e){
+            throw new ConvertException(e);
         }
     }
 }

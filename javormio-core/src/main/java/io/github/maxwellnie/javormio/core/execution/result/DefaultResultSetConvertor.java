@@ -1,29 +1,33 @@
 package io.github.maxwellnie.javormio.core.execution.result;
 
+import io.github.maxwellnie.javormio.common.java.api.ObjectMap;
+import io.github.maxwellnie.javormio.common.java.proxy.invocation.MethodInvoker;
+
 import java.sql.ResultSet;
 import java.util.List;
 
 /**
  * @author Maxwell Nie
  */
-public class DefaultResultSetConvertor implements ResultSetConvertor {
-    private Object simpleConvert(ResultSet resultSet, TypeMapping typeMapping) {
-        return null;
-    }
+public class DefaultResultSetConvertor implements ResultSetConvertor{
 
-    private Object multipleTableConvert(ResultSet resultSet, TypeMapping typeMapping) {
-        return null;
+    @Override
+    public <E> E convert(ResultSet resultSet, ObjectMap<ResultSet, E> typeMapping, MethodInvoker<E, E> instanceInvoker) throws ConvertException {
+        try{
+            if (instanceInvoker!=null){
+                E e = instanceInvoker.invoke();
+                typeMapping.map(resultSet, e);
+                return e;
+            }else {
+                return typeMapping.map(resultSet, null);
+            }
+        }catch (Throwable e){
+            throw new ConvertException(e);
+        }
     }
 
     @Override
-    public Object convert(ResultSet resultSet, TypeMapping typeMapping, boolean multipleTable) {
-        if (multipleTable)
-            return multipleTableConvert(resultSet, typeMapping);
-        return simpleConvert(resultSet, typeMapping);
-    }
-
-    @Override
-    public Object convert(List<ResultSet> resultSet, TypeMapping typeMapping, boolean multipleTable) {
+    public <E> E convert(List<ResultSet> resultSets, ObjectMap<ResultSet, E> typeMapping, MethodInvoker<E, E> instanceInvoker) throws ConvertException {
         return null;
     }
 }

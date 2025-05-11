@@ -19,5 +19,5 @@ public interface SqlExecutor {
      * @return 执行结果
      * @throws SQLException
      */
-    Object run(ExecutorContext executorContext) throws SQLException, ConvertException;
+    <T> Object run(ExecutorContext<T> executorContext) throws ConvertException;
 }

@@ -1,7 +1,9 @@
 package io.github.maxwellnie.javormio.core.execution;
 
 import io.github.maxwellnie.javormio.common.java.api.Constants;
+import io.github.maxwellnie.javormio.common.java.api.ObjectMap;
 import io.github.maxwellnie.javormio.common.java.jdbc.connection.ConnectionResource;
+import io.github.maxwellnie.javormio.common.java.proxy.invocation.MethodInvoker;
 import io.github.maxwellnie.javormio.core.execution.result.ConvertException;
 import io.github.maxwellnie.javormio.core.execution.result.ResultSetConvertor;
 import io.github.maxwellnie.javormio.core.execution.result.TypeMapping;
@@ -21,13 +23,13 @@ import java.util.function.Consumer;
  */
 public class BatchSqlExecutor extends BaseSqlExecutor {
     @Override
-    public Object run(ExecutorContext executorContext) throws SQLException, ConvertException {
+    public <T> Object run(ExecutorContext<T> executorContext) throws ConvertException {
         //获取连接资源、可执行sql、属性
         ConnectionResource connectionResource = executorContext.getConnectionResource();
         ExecutableSql executableSql = executorContext.getExecutableSql();
         Map<String, Object> properties = executorContext.getProperties();
         //获取类型映射
-        TypeMapping typeMapping = executorContext.getDaoMethodFeature().getTypeMapping();
+        ObjectMap<ResultSet, T> typeMapping = executorContext.getDaoMethodFeature().getTypeMapping();
         //获取结果集转换器----批量查询参数
         ResultSetConvertor resultSetConvertor = executorContext.getResultSetConvertor();
         //判断SQL类型是否是INSERT或UPDATE或DELETE
@@ -68,9 +70,10 @@ public class BatchSqlExecutor extends BaseSqlExecutor {
                     handleGeneratedKeysOfInsert(updateCounts, consumer, preparedStatement);
                 return updateCounts;
             } else {
-                boolean multipleTable = executorContext.getDaoMethodFeature().isMultipleTable();
-                return handleResultSetOfQuery(updateCounts, preparedStatement, resultSetConvertor, typeMapping, multipleTable);
+                return handleResultSetOfQuery(updateCounts, preparedStatement, resultSetConvertor, typeMapping, executorContext.instanceMethodInvoker);
             }
+        }catch (SQLException e){
+            throw new ConvertException(e);
         }
     }
 
@@ -94,18 +97,18 @@ public class BatchSqlExecutor extends BaseSqlExecutor {
      * @param preparedStatement  预处理报表
      * @param resultSetConvertor 结果集转换器
      * @param typeMapping        类型映射
-     * @param multipleTable      是否是多表查询
+     * @param instanceMethodInvoker 实例方法调用者
      * @return Object
      * @throws SQLException
      */
-    private Object handleResultSetOfQuery(int[] updateCounts, PreparedStatement preparedStatement, ResultSetConvertor resultSetConvertor, TypeMapping typeMapping, boolean multipleTable) throws SQLException, ConvertException {
+    private<N, E> E handleResultSetOfQuery(int[] updateCounts, PreparedStatement preparedStatement, ResultSetConvertor resultSetConvertor, ObjectMap<ResultSet, E> typeMapping, MethodInvoker<E, E> instanceMethodInvoker) throws SQLException, ConvertException {
         //收集产生的结果集
-        LinkedList<ResultSet> list = new LinkedList<>();
+        List<ResultSet> list = new LinkedList<>();
         for (int ignored : updateCounts) {
             list.add(preparedStatement.getResultSet());
         }
         //转换结果集到Java对象
-        return resultSetConvertor.convert(list, typeMapping, multipleTable);
+        return resultSetConvertor.convert(list, typeMapping, instanceMethodInvoker);
     }
 
 }

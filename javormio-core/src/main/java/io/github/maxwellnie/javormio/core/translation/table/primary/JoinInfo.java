@@ -1,5 +1,6 @@
 package io.github.maxwellnie.javormio.core.translation.table.primary;
 
+import io.github.maxwellnie.javormio.common.java.proxy.invocation.MethodInvoker;
 import io.github.maxwellnie.javormio.core.translation.table.TableInfo;
 import io.github.maxwellnie.javormio.core.translation.table.column.ColumnInfo;
 
@@ -24,13 +25,11 @@ public class JoinInfo<E1, E2> extends TableInfo<E2> {
      */
     private final String slaveKey;
 
-    public JoinInfo(Map<String, ColumnInfo<E2, ?>> columnInfoMapping, Map<String, ColumnInfo<E2, ?>> columnInfoInverseMapping
-            , String tableName, Class<E2> mappingClass, String[] columnNames, String primaryKeyFieldName, String[] uniqueKeys
-            , String[] indexKeys, JoinInfo<E2, ?>[] joinInfo, String masterKey, String slaveKey, TableInfo<E1> masterTable) {
-        super(columnInfoMapping, columnInfoInverseMapping, tableName, mappingClass, columnNames, primaryKeyFieldName, uniqueKeys, indexKeys, joinInfo);
+    public JoinInfo(String tableName, String defaultDataSourceName, Class<E2> mappingClass, MethodInvoker<E2, E2> instanceInvoker, Map<String, ColumnInfo<E2, ?>> columnInfoMapping, Map<String, ColumnInfo<E2, ?>> columnInfoInverseMapping, String tableName1, Class<E2> mappingClass1, JoinInfo<E2, ?>[] joinInfo, TableInfo<E1> masterTable, String masterKey, String slaveKey) {
+        super(tableName, defaultDataSourceName, mappingClass, instanceInvoker, columnInfoMapping, columnInfoInverseMapping, tableName1, mappingClass1, joinInfo);
+        this.masterTable = masterTable;
         this.masterKey = masterKey;
         this.slaveKey = slaveKey;
-        this.masterTable = masterTable;
     }
 
     public TableInfo<E1> getMasterTable() {

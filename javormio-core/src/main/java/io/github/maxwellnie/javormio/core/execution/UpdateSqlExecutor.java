@@ -2,6 +2,7 @@ package io.github.maxwellnie.javormio.core.execution;
 
 import io.github.maxwellnie.javormio.common.java.api.Constants;
 import io.github.maxwellnie.javormio.common.java.jdbc.connection.ConnectionResource;
+import io.github.maxwellnie.javormio.core.execution.result.ConvertException;
 import io.github.maxwellnie.javormio.core.translation.SqlParameter;
 
 import java.sql.*;
@@ -18,7 +19,7 @@ import static io.github.maxwellnie.javormio.core.translation.SqlType.isInsert;
  */
 public class UpdateSqlExecutor extends BaseSqlExecutor {
     @Override
-    public Object run(ExecutorContext executorContext) throws SQLException {
+    public <T> Object run(ExecutorContext<T> executorContext) throws ConvertException {
         //获取连接资源、可执行sql、属性
         ConnectionResource connectionResource = executorContext.getConnectionResource();//连接
         ExecutableSql executableSql = executorContext.getExecutableSql();//sql
@@ -58,6 +59,8 @@ public class UpdateSqlExecutor extends BaseSqlExecutor {
             if (selectGeneratedKeys)
                 consumer.accept(preparedStatement.getGeneratedKeys());
             return updateCount;
+        }catch (SQLException e){
+            throw new ConvertException(e);
         }
     }
 }

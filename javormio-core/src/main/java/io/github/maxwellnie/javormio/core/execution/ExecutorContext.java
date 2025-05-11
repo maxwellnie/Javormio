@@ -1,6 +1,7 @@
 package io.github.maxwellnie.javormio.core.execution;
 
 import io.github.maxwellnie.javormio.common.java.jdbc.connection.ConnectionResource;
+import io.github.maxwellnie.javormio.common.java.proxy.invocation.MethodInvoker;
 import io.github.maxwellnie.javormio.core.execution.result.ResultSetConvertor;
 import io.github.maxwellnie.javormio.core.translation.method.DaoMethodFeature;
 
@@ -9,7 +10,7 @@ import java.util.Map;
 /**
  * @author Maxwell Nie
  */
-public class ExecutorContext {
+public class ExecutorContext<E> {
     /**
      * 连接资源
      */
@@ -21,21 +22,26 @@ public class ExecutorContext {
     /**
      * 方法特征
      */
-    DaoMethodFeature daoMethodFeature;
+    DaoMethodFeature<E> daoMethodFeature;
     /**
      * 结果集转换器
      */
     ResultSetConvertor resultSetConvertor;
     /**
+     * 实例方法调用者
+     */
+    MethodInvoker<E, E> instanceMethodInvoker;
+    /**
      * 其他参数
      */
     Map<String, Object> properties;
 
-    public ExecutorContext(ConnectionResource connectionResource, ExecutableSql executableSql, DaoMethodFeature daoMethodFeature, ResultSetConvertor resultSetConvertor, Map<String, Object> properties) {
+    public ExecutorContext(ConnectionResource connectionResource, ExecutableSql executableSql, DaoMethodFeature<E> daoMethodFeature, ResultSetConvertor resultSetConvertor, MethodInvoker<E, E> instanceMethodInvoker, Map<String, Object> properties) {
         this.connectionResource = connectionResource;
         this.executableSql = executableSql;
         this.daoMethodFeature = daoMethodFeature;
         this.resultSetConvertor = resultSetConvertor;
+        this.instanceMethodInvoker = instanceMethodInvoker;
         this.properties = properties;
     }
 
@@ -55,16 +61,20 @@ public class ExecutorContext {
         this.executableSql = executableSql;
     }
 
-    public DaoMethodFeature getDaoMethodFeature() {
+    public DaoMethodFeature<E> getDaoMethodFeature() {
         return daoMethodFeature;
     }
 
-    public void setDaoMethodFeature(DaoMethodFeature daoMethodFeature) {
+    public void setDaoMethodFeature(DaoMethodFeature<E> daoMethodFeature) {
         this.daoMethodFeature = daoMethodFeature;
     }
 
     public ResultSetConvertor getResultSetConvertor() {
         return resultSetConvertor;
+    }
+
+    public MethodInvoker<E, E> getInstanceMethodInvoker() {
+        return instanceMethodInvoker;
     }
 
     public void setResultSetConvertor(ResultSetConvertor resultSetConvertor) {

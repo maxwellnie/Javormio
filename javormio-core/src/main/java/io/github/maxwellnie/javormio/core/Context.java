@@ -42,7 +42,9 @@ public class Context {
     public SqlExecutor getSqlExecutor(Class<?> implClazz) {
         return null;
     }
-
+    public SqlExecutor getSqlExecutor(int type) {
+        return null;
+    }
     public SqlExecutor getSqlExecutor(String className) {
         return null;
     }

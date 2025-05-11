@@ -1,4 +1,4 @@
-package io.github.maxwellnie.javormio.core.translation.sql;
+package io.github.maxwellnie.javormio.flexible.sql.plugin;
 
 /**
  * @author Maxwell Nie

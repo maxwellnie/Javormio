@@ -1,6 +1,6 @@
 package ${metaTable.packagePath};
 
-import io.github.maxwellnie.javormio.core.translation.table.BaseTable;
+import io.github.maxwellnie.javormio.core.translation.table.BaseMetaTableInfo;
 import io.github.maxwellnie.javormio.common.java.reflect.property.MetaField;
 import io.github.maxwellnie.javormio.core.translation.table.column.ColumnInfo;
 import io.github.maxwellnie.javormio.core.translation.table.primary.PrimaryInfo;
@@ -9,17 +9,18 @@ import ${baseMetaPackage};
 import $import;
 #end
 
-public class Meta${metaTable.className.getSimple} extends BaseTable<${metaTable.className}> {
+public class Meta${metaTable.className.getSimple} extends BaseMetaTableInfo<${metaTable.className}> {
     public Meta${metaTable.className.getSimple}(){
         super("${metaTable.tableName}", "${metaTable.defaultDataSourceName}", ${metaTable.className}.class);
     }
     #foreach($column in ${metaTable.columns})
     #if($column.isPrimary)
         public final PrimaryInfo<${metaTable.className}> ${column.fieldName} = new PrimaryInfo<>();
+        ${column.fieldName}.setKeyGenerator(new ${column.keyGeneratorClassName}());
     #else
         public final ColumnInfo<${metaTable.className}> ${column.fieldName} = new ColumnInfo<>();
     #end
-    static{
+    {
         ${column.fieldName}.setColumnName("${column.columnName}");
         ${column.fieldName}.setTypeHandler(new ${column.typeHandlerClassName}());
         ${column.fieldName}.setColumnType(${column.columnType});
@@ -31,6 +32,7 @@ public class Meta${metaTable.className.getSimple} extends BaseTable<${metaTable.
             new ${column.setterClassName}()
         );
         ${column.fieldName}.setMetaField(${column.fieldName}MetaField);
+        ${column.fieldName}.setTable(this);
     }
     #end
     public final ColumnInfo<E, ?>[] columnInfos = new ColumnInfo<>[]{

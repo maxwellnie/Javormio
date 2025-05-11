@@ -1,9 +1,11 @@
 package io.github.maxwellnie.javormio.core.execution.result;
 
+import io.github.maxwellnie.javormio.common.java.api.JavormioException;
+
 /**
  * @author Maxwell Nie
  */
-public class ConvertException extends Exception {
+public class ConvertException extends JavormioException {
     public ConvertException() {
     }
 
