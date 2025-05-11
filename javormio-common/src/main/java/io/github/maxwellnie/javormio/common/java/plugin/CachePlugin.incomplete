@@ -6,7 +6,7 @@ import io.github.maxwellnie.javormio.cache.Cache;
 import io.github.maxwellnie.javormio.cache.SqlHashCacheKey;
 import io.github.maxwellnie.javormio.core.executable.SqlExecutor;
 import io.github.maxwellnie.javormio.core.jdbc.connection.ConnectionResource;
-import io.github.maxwellnie.javormio.core.result.TypeMapping;
+import io.github.maxwellnie.javormio.core.executeResult.TypeMapping;
 import execution.core.io.github.maxwellnie.javormio.ExecutableSql;
 import io.github.maxwellnie.javormio.core.table.TableInfo;
 import io.github.maxwellnie.javormio.java.proxy.MethodInvocationException;
@@ -28,10 +28,10 @@ public class CachePlugin {
     public Object execute(InvocationLine invocationLine, InvokerContext invokerContext,
                           ExecutableSql executableSql, TableInfo tableInfo, ConnectionResource connectionResource, TypeMapping typeMapping)
             throws MethodInvocationException {
-        Object result = cache.get(new SqlHashCacheKey(executableSql.getNamespace(),
+        Object executeResult = cache.get(new SqlHashCacheKey(executableSql.getNamespace(),
                 connectionResource.getDataSourceName(), executableSql.getSqlList(), executableSql.getParametersList()));
-        if (result != null) {
-            return result;
+        if (executeResult != null) {
+            return executeResult;
         } else {
             return invocationLine.proceed(invokerContext);
         }
@@ -42,10 +42,10 @@ public class CachePlugin {
             throws MethodInvocationException {
         ExecutableSql executableSql = (ExecutableSql) invokerContext.getArgs()[0];
         ConnectionResource connectionResource = (ConnectionResource) invokerContext.getArgs()[1];
-        Object result = cache.get(new SqlHashCacheKey(executableSql.getNamespace(),
+        Object executeResult = cache.get(new SqlHashCacheKey(executableSql.getNamespace(),
                 connectionResource.getDataSourceName(), executableSql.getSqlList(), executableSql.getParametersList()));
-        if (result != null) {
-            return result;
+        if (executeResult != null) {
+            return executeResult;
         } else {
             return invocationLine.proceed(invokerContext);
         }

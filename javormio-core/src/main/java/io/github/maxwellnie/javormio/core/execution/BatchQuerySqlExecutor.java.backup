@@ -1,8 +1,8 @@
 package io.github.maxwellnie.javormio.core.sql.executor;
 
 import io.github.maxwellnie.javormio.core.jdbc.connection.ConnectionResource;
-import io.github.maxwellnie.javormio.core.result.ResultSetConvertor;
-import io.github.maxwellnie.javormio.core.result.TypeMapping;
+import io.github.maxwellnie.javormio.core.executeResult.ResultSetConvertor;
+import io.github.maxwellnie.javormio.core.executeResult.TypeMapping;
 import execution.core.io.github.maxwellnie.javormio.ExecutableSql;
 import translation.core.io.github.maxwellnie.javormio.SqlParameter;
 import io.github.maxwellnie.javormio.java.api.Constants;
