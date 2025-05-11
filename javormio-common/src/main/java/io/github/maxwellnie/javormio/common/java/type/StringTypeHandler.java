@@ -8,6 +8,7 @@ import java.sql.SQLException;
  * @author Maxwell Nie
  */
 public class StringTypeHandler implements TypeHandler<String> {
+    public static final StringTypeHandler INSTANCE = new StringTypeHandler();
     @Override
     public String getValue(ResultSet rs, int index) throws SQLException {
         return rs.getString(index);

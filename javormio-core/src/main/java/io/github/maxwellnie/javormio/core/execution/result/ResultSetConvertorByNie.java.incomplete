@@ -1,4 +1,4 @@
-package io.github.maxwellnie.javormio.core.result;
+package io.github.maxwellnie.javormio.core.executeResult;
 
 import io.github.maxwellnie.javormio.java.reflect.ReflectiveOperationException;
 

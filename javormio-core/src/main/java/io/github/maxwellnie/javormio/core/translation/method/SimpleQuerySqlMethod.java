@@ -51,6 +51,7 @@ public class SimpleQuerySqlMethod extends BaseSqlMethod {
                 //获取类型映射
                 context.getDaoMethodFeature(methodFeatureCode),
                 context.getResultSetConvertor(),
+                null,
                 null
         );
         //4. 执行

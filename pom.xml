@@ -13,7 +13,8 @@
         <module>JavormioTester</module>
         <module>javormio-common</module>
         <module>javormio-extension</module>
-        <module>javormio-spi</module>
+        <module>javormio-source-code-processor</module>
+        <module>javormio-flexible-sql</module>
     </modules>
 
     <properties>

@@ -1,5 +1,5 @@
-package io.github.maxwellnie.javormio.core.result;
-import io.github.maxwellnie.javormio.core.result.method.method;
+package io.github.maxwellnie.javormio.core.executeResult;
+import io.github.maxwellnie.javormio.core.executeResult.method.method;
 import io.github.maxwellnie.javormio.java.reflect.ObjectFactory;
 import io.github.maxwellnie.javormio.java.reflect.Reflection;
 import io.github.maxwellnie.javormio.java.reflect.property.impl.meta.MetaProperty;
