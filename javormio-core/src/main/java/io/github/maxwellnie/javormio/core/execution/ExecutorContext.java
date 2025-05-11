@@ -35,6 +35,10 @@ public class ExecutorContext<E> {
      * 其他参数
      */
     Map<String, Object> properties;
+    /**
+     * 是否自动转换
+     */
+    boolean autoConvert = true;
 
     public ExecutorContext(ConnectionResource connectionResource, ExecutableSql executableSql, DaoMethodFeature<E> daoMethodFeature, ResultSetConvertor resultSetConvertor, MethodInvoker<E, E> instanceMethodInvoker, Map<String, Object> properties) {
         this.connectionResource = connectionResource;
@@ -43,6 +47,16 @@ public class ExecutorContext<E> {
         this.resultSetConvertor = resultSetConvertor;
         this.instanceMethodInvoker = instanceMethodInvoker;
         this.properties = properties;
+    }
+
+    public ExecutorContext(ConnectionResource connectionResource, ExecutableSql executableSql, DaoMethodFeature<E> daoMethodFeature, ResultSetConvertor resultSetConvertor, MethodInvoker<E, E> instanceMethodInvoker, Map<String, Object> properties, boolean autoConvert) {
+        this.connectionResource = connectionResource;
+        this.executableSql = executableSql;
+        this.daoMethodFeature = daoMethodFeature;
+        this.resultSetConvertor = resultSetConvertor;
+        this.instanceMethodInvoker = instanceMethodInvoker;
+        this.properties = properties;
+        this.autoConvert = autoConvert;
     }
 
     public ConnectionResource getConnectionResource() {
@@ -79,6 +93,18 @@ public class ExecutorContext<E> {
 
     public void setResultSetConvertor(ResultSetConvertor resultSetConvertor) {
         this.resultSetConvertor = resultSetConvertor;
+    }
+
+    public boolean isAutoConvert() {
+        return autoConvert;
+    }
+
+    public void setInstanceMethodInvoker(MethodInvoker<E, E> instanceMethodInvoker) {
+        this.instanceMethodInvoker = instanceMethodInvoker;
+    }
+
+    public void setAutoConvert(boolean autoConvert) {
+        this.autoConvert = autoConvert;
     }
 
     public Map<String, Object> getProperties() {

@@ -19,5 +19,5 @@ public interface SqlExecutor {
      * @return 执行结果
      * @throws SQLException
      */
-    <T> Object run(ExecutorContext<T> executorContext) throws ConvertException;
+    <T> StatementWrapper run(ExecutorContext<T> executorContext) throws ConvertException;
 }

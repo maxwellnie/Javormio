@@ -1,7 +1,7 @@
 package io.github.maxwellnie.javormio.extension;
 
 import io.github.maxwellnie.javormio.common.java.jdbc.TransactionObject;
-import io.github.maxwellnie.javormio.common.java.jdbc.connection.ConnectionResource;
+import io.github.maxwellnie.javormio.common.java.jdbc.connection.JConnectionResource;
 import io.github.maxwellnie.javormio.common.java.jdbc.datasource.DynamicMultipleDataSource;
 import io.github.maxwellnie.javormio.common.utils.SystemClock;
 import io.github.maxwellnie.javormio.extension.transaction.StackTransactionObject;
@@ -76,11 +76,11 @@ public class DefaultDataSource implements DynamicMultipleDataSource {
     /**
      * 获取连接，并且获取当前线程的事务对象
      *
-     * @return ConnectionResource
+     * @return JConnectionResource
      * @throws SQLException
      */
     @Override
-    public ConnectionResource getConnection() throws SQLException {
+    public JConnectionResource getConnection() throws SQLException {
         String dataSourceName = this.currentDataSourceName.get();
         DataSource dataSource = getCurrentDataSource();
         TransactionObject transactionObject;
@@ -88,19 +88,19 @@ public class DefaultDataSource implements DynamicMultipleDataSource {
             transactionObject = new StackTransactionObject();
         else
             transactionObject = currentTransactionObject.get();
-        return new ConnectionResource(dataSourceName, dataSource, dataSource.getConnection(), transactionObject);
+        return new JConnectionResource(dataSourceName, dataSource, dataSource.getConnection(), transactionObject);
     }
 
     /**
      * 获取连接，并且获取当前线程的事务对象
      *
      * @param autoCommit
-     * @return ConnectionResource
+     * @return JConnectionResource
      * @throws SQLException
      */
     @Override
-    public ConnectionResource getConnection(boolean autoCommit) throws SQLException {
-        ConnectionResource connectionResource = getConnection();
+    public JConnectionResource getConnection(boolean autoCommit) throws SQLException {
+        JConnectionResource connectionResource = getConnection();
         connectionResource.setAutoCommit(autoCommit);
         return connectionResource;
     }
@@ -109,11 +109,11 @@ public class DefaultDataSource implements DynamicMultipleDataSource {
      * 获取连接，并且获取当前线程的事务对象
      *
      * @param timeout
-     * @return ConnectionResource
+     * @return JConnectionResource
      * @throws SQLException
      */
     @Override
-    public ConnectionResource getConnection(long timeout) throws SQLException {
+    public JConnectionResource getConnection(long timeout) throws SQLException {
         String dataSourceName = this.currentDataSourceName.get();
         DataSource dataSource = getCurrentDataSource();
         TransactionObject transactionObject;
@@ -124,7 +124,7 @@ public class DefaultDataSource implements DynamicMultipleDataSource {
             transactionObject = currentTransactionObject.get();
         }
         currentTransactionObject.set(transactionObject);
-        return new ConnectionResource(dataSourceName, dataSource, dataSource.getConnection(), transactionObject);
+        return new JConnectionResource(dataSourceName, dataSource, dataSource.getConnection(), transactionObject);
     }
 
     /**
@@ -132,12 +132,12 @@ public class DefaultDataSource implements DynamicMultipleDataSource {
      *
      * @param autoCommit
      * @param timeout
-     * @return ConnectionResource
+     * @return JConnectionResource
      * @throws SQLException
      */
     @Override
-    public ConnectionResource getConnection(boolean autoCommit, long timeout) throws SQLException {
-        ConnectionResource connectionResource = getConnection(timeout);
+    public JConnectionResource getConnection(boolean autoCommit, long timeout) throws SQLException {
+        JConnectionResource connectionResource = getConnection(timeout);
         connectionResource.setAutoCommit(autoCommit);
         return connectionResource;
     }

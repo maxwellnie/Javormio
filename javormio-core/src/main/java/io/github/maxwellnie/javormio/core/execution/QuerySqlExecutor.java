@@ -2,13 +2,12 @@ package io.github.maxwellnie.javormio.core.execution;
 
 import io.github.maxwellnie.javormio.common.java.api.ObjectMap;
 import io.github.maxwellnie.javormio.common.java.jdbc.connection.ConnectionResource;
+import io.github.maxwellnie.javormio.common.java.jdbc.connection.JConnectionResource;
 import io.github.maxwellnie.javormio.core.execution.result.ConvertException;
 import io.github.maxwellnie.javormio.core.execution.result.ResultSetConvertor;
-import io.github.maxwellnie.javormio.core.execution.result.TypeMapping;
 import io.github.maxwellnie.javormio.core.translation.SqlParameter;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -20,7 +19,7 @@ import java.util.List;
  */
 public class QuerySqlExecutor extends BaseSqlExecutor {
     @Override
-    public <T> Object run(ExecutorContext<T> executorContext) throws ConvertException {
+    public <T> StatementWrapper run(ExecutorContext<T> executorContext) throws ConvertException {
         ConnectionResource connectionResource = executorContext.getConnectionResource();
         ExecutableSql executableSql = executorContext.getExecutableSql();
         //获取类型映射
@@ -31,7 +30,7 @@ public class QuerySqlExecutor extends BaseSqlExecutor {
         Connection connection = connectionResource
                 .getConnection();
         //打开报表
-        try (PreparedStatement preparedStatement = connection.prepareStatement(executableSql.getSqlList()[0])) {
+        try (StatementWrapper statementWrapper = new StatementWrapper(connection.prepareStatement(executableSql.getSqlList()[0]), null, executorContext.isAutoConvert())) {
             //获取参数列表
             List<SqlParameter[]> sqlParametersList = executableSql.getParametersList();
             //当前行SQL的参数数组
@@ -46,10 +45,14 @@ public class QuerySqlExecutor extends BaseSqlExecutor {
                 for (SqlParameter sqlParameter : sqlParameters) {
                     //获取参数的类型处理器，使用类型处理器设置报表的参数
                     sqlParameter.getTypeHandler()
-                            .setValue(preparedStatement, index++, sqlParameter.getValue());
+                            .setValue(statementWrapper.statement, index++, sqlParameter.getValue());
                 }
             }
-            return resultSetConvertor.convert(preparedStatement.executeQuery(), typeMapping, executorContext.getInstanceMethodInvoker());
+            if (executorContext.isAutoConvert())
+                statementWrapper.setResult(resultSetConvertor.convert(statementWrapper.statement.executeQuery(), typeMapping, executorContext.getInstanceMethodInvoker()));
+            else
+                statementWrapper.setResult(statementWrapper.statement.executeQuery());
+            return statementWrapper;
         }catch (SQLException e){
             throw new ConvertException(e);
         }

@@ -1,21 +1,16 @@
 package io.github.maxwellnie.javormio.flexible.sql.plugin;
 
+import io.github.maxwellnie.javormio.common.java.api.JavormioException;
 import io.github.maxwellnie.javormio.common.java.reflect.ObjectFactory;
 import io.github.maxwellnie.javormio.core.execution.ExecutableSql;
-import io.github.maxwellnie.javormio.core.execution.ExecutorContext;
-import io.github.maxwellnie.javormio.core.execution.QuerySqlExecutor;
 import io.github.maxwellnie.javormio.core.translation.SqlParameter;
 import io.github.maxwellnie.javormio.core.translation.SqlType;
-import io.github.maxwellnie.javormio.core.translation.method.DaoMethodFeature;
 import io.github.maxwellnie.javormio.core.translation.table.BaseMetaTableInfo;
 import io.github.maxwellnie.javormio.core.translation.table.column.ColumnInfo;
 import io.github.maxwellnie.javormio.flexible.sql.plugin.expression.Expression;
 import io.github.maxwellnie.javormio.flexible.sql.plugin.expression.SqlExpressionSupport;
-import io.github.maxwellnie.javormio.flexible.sql.plugin.result.ObjectExecuteResult;
-import io.github.maxwellnie.javormio.flexible.sql.plugin.result.ResultSetExecuteResult;
 import io.github.maxwellnie.javormio.flexible.sql.plugin.table.ExpressionColumnInfo;
 
-import java.sql.ResultSet;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -26,12 +21,12 @@ public class Query<T> {
     protected BaseMetaTableInfo<T> table;
     protected SqlBuilder selectColumnSql = new SqlBuilder().append("SELECT ");
     protected SqlBuilder fromToOnSql = new SqlBuilder().append(" FROM");
-    protected SqlBuilder whereToEndSql = new SqlBuilder().append(" WHERE");
+    protected SqlBuilder whereToEndSql = new SqlBuilder();
     protected SqlExpressionSupport sqlExpressionSupport = new SqlExpressionSupport();
     protected List<ColumnInfo> allColumns = new LinkedList<>();
     protected Map<ColumnInfo, String> columnAliasMap = new LinkedHashMap<>();
     protected Map<BaseMetaTableInfo, String> tableAliasMap = new LinkedHashMap<>();
-    protected SpiContext context;
+    protected FlexibleSqlContext context;
 
     protected Query() {
     }
@@ -47,22 +42,26 @@ public class Query<T> {
         aliasConsumer.accept(aliasHelper);
         return this;
     }
-    public static <R> Query<R> from(BaseMetaTableInfo<R> table, SpiContext context) throws ReflectiveOperationException {
-        Query<R> query = new Query<>();
-        query.table = table;
-        query.context = context;
-        SqlContext sqlContext = context.getSqlContext();
-        ObjectFactory<SqlBuilder> sqlBuilderFactory = sqlContext.getSqlBuilderFactory();
-        query.selectColumnSql.append(sqlBuilderFactory.produce());
-        query.fromToOnSql.append(sqlBuilderFactory.produce());
-        query.whereToEndSql.append(sqlBuilderFactory.produce());
-        query.sqlExpressionSupport = sqlContext.getSqlExpressionSupport();
-        query.allColumns.addAll(Arrays.asList(table.getColumnInfos()));
-        query.fromToOnSql.append(" ").append(table.tableName);
-        return query;
+    public static <R> Query<R> from(BaseMetaTableInfo<R> table, FlexibleSqlContext context) throws JavormioException {
+        try{
+            Query<R> query = new Query<>();
+            query.table = table;
+            query.context = context;
+            SqlContext sqlContext = context.getSqlContext();
+            ObjectFactory<SqlBuilder> sqlBuilderFactory = sqlContext.getSqlBuilderFactory();
+            query.selectColumnSql.append(sqlBuilderFactory.produce());
+            query.fromToOnSql.append(sqlBuilderFactory.produce());
+            query.whereToEndSql.append(sqlBuilderFactory.produce());
+            query.sqlExpressionSupport = sqlContext.getSqlExpressionSupport();
+            query.allColumns.addAll(Arrays.asList(table.getColumnInfos()));
+            query.fromToOnSql.append(" ").append(table.tableName);
+            return query;
+        }catch (Exception e){
+            throw new JavormioException(e);
+        }
     }
 
-    public static <R> Query<R> from(BaseMetaTableInfo<R> table, String alias, SpiContext context) throws ReflectiveOperationException {
+    public static <R> Query<R> from(BaseMetaTableInfo<R> table, String alias, FlexibleSqlContext context) throws JavormioException {
         Query<R> query = from(table, context);
         query.tableAliasMap.put(table, alias);
         query.fromToOnSql.append(" AS ").append(alias);
@@ -79,6 +78,7 @@ public class Query<T> {
         return this;
     }
     public Query<T> where(Expression expression){
+        whereToEndSql.append(" WHERE");
         expression.applySql(sqlExpressionSupport, whereToEndSql, columnAliasMap, tableAliasMap);
         return this;
     }
@@ -97,7 +97,7 @@ public class Query<T> {
     public Query<T> leftJoinOn(BaseMetaTableInfo<T> table, Expression expression){
         fromToOnSql.append(" LEFT JOIN ").append(table.tableName).append(" ON");
         allColumns.addAll(Arrays.asList(table.getColumnInfos()));
-        expression.applySql(sqlExpressionSupport, fromToOnSql, columnAliasMap, tableAliasMap);
+        where(expression);
         return this;
     }
     public Query<T> rightJoinOn(BaseMetaTableInfo<T> table, Expression expression){
@@ -143,7 +143,7 @@ public class Query<T> {
         }
         return this;
     }
-    protected ExecutableSql build(){
+    public CompleteExecutableSql<T> toSql(){
         StringBuilder sqlBuilder = selectColumnSql.getSqlStringBuilder();
         for (int i = 0; i < allColumns.size(); i++){
             if (i != 0)
@@ -175,16 +175,12 @@ public class Query<T> {
         parametersList.add(parameters);
         executableSql.setParametersList(parametersList);
         executableSql.setType(SqlType.SELECT);
-        return executableSql;
+        return new CompleteExecutableSql<>(this, executableSql);
     }
-    public ResultSetExecuteResult selectToResultSet(){
-        ExecutorContext<ResultSet> executorContext = new ExecutorContext<>(context.getConnectionResource(), build(), new DaoMethodFeature<>(null, (r1, r2)->r1, false), context.getResultSetConvertor(), null, null);
-        ResultSet resultSet = (ResultSet) context.getSqlExecutor(QuerySqlExecutor.class).run(executorContext);
-        return new ResultSetExecuteResult(resultSet, resultSet, allColumns, new LinkedHashMap<>(), columnAliasMap);
+    public CompleteExecutableSql<T> toSql(Consumer<ExecutableSql> consumer){
+        CompleteExecutableSql<T> completeExecutableSql = toSql();
+        consumer.accept(completeExecutableSql.getExecutableSql());
+        return completeExecutableSql;
     }
-    public ObjectExecuteResult<T> selectToEntity() {
-        ExecutorContext<ResultSet> executorContext = new ExecutorContext<>(context.getConnectionResource(), build(), new DaoMethodFeature<>(null, (r1, r2) -> r1, false), context.getResultSetConvertor(), null,  null);
-        ResultSet resultSet = (ResultSet) context.getSqlExecutor(QuerySqlExecutor.class).run(executorContext);
-        return new ObjectExecuteResult<>(table, resultSet, allColumns, new LinkedHashMap<>(), columnAliasMap);
-    }
+
 }

@@ -2,6 +2,7 @@ package io.github.maxwellnie.javormio.core.execution;
 
 import io.github.maxwellnie.javormio.common.java.api.Constants;
 import io.github.maxwellnie.javormio.common.java.jdbc.connection.ConnectionResource;
+import io.github.maxwellnie.javormio.common.java.jdbc.connection.JConnectionResource;
 import io.github.maxwellnie.javormio.core.execution.result.ConvertException;
 import io.github.maxwellnie.javormio.core.translation.SqlParameter;
 
@@ -19,7 +20,7 @@ import static io.github.maxwellnie.javormio.core.translation.SqlType.isInsert;
  */
 public class UpdateSqlExecutor extends BaseSqlExecutor {
     @Override
-    public <T> Object run(ExecutorContext<T> executorContext) throws ConvertException {
+    public <T> StatementWrapper run(ExecutorContext<T> executorContext) throws ConvertException {
         //获取连接资源、可执行sql、属性
         ConnectionResource connectionResource = executorContext.getConnectionResource();//连接
         ExecutableSql executableSql = executorContext.getExecutableSql();//sql
@@ -35,8 +36,8 @@ public class UpdateSqlExecutor extends BaseSqlExecutor {
         1. 如果sql类型是insert，并且需要查询生成的主键，那么就打开报表，并且设置返回生成的主键
         2. 反之正常创建PreparedStatement对象
          */
-        try (PreparedStatement preparedStatement = selectGeneratedKeys ? connection.prepareStatement(executableSql.getSqlList()[0], Statement.RETURN_GENERATED_KEYS)
-                : connection.prepareStatement(executableSql.getSqlList()[0])) {
+        try (StatementWrapper statementWrapper = new StatementWrapper(selectGeneratedKeys ? connection.prepareStatement(executableSql.getSqlList()[0], Statement.RETURN_GENERATED_KEYS)
+                : connection.prepareStatement(executableSql.getSqlList()[0]), null, executorContext.isAutoConvert())) {
             //获取参数列表
             List<SqlParameter[]> sqlParametersList = executableSql.getParametersList();
             //当前行SQL的参数数组
@@ -50,15 +51,16 @@ public class UpdateSqlExecutor extends BaseSqlExecutor {
                 //遍历参数
                 for (SqlParameter sqlParameter : sqlParameters) {
                     //获取参数的类型处理器，使用类型处理器设置报表的参数
-                    sqlParameter.getTypeHandler().setValue(preparedStatement, index++, sqlParameter.getValue());
+                    sqlParameter.getTypeHandler().setValue(statementWrapper.statement, index++, sqlParameter.getValue());
                 }
             }
             //该ExecutableSql对数据库表产生的影响
-            int updateCount = preparedStatement.executeUpdate();
+            int updateCount = statementWrapper.statement.executeUpdate();
             //判断是否需要获取生成的主键值，如果需要则交给消费者处理
             if (selectGeneratedKeys)
-                consumer.accept(preparedStatement.getGeneratedKeys());
-            return updateCount;
+                consumer.accept(statementWrapper.statement.getGeneratedKeys());
+            statementWrapper.setResult(updateCount);
+            return statementWrapper;
         }catch (SQLException e){
             throw new ConvertException(e);
         }

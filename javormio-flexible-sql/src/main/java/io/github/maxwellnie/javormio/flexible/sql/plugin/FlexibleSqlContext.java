@@ -5,7 +5,7 @@ import io.github.maxwellnie.javormio.core.Context;
 /**
  * @author Maxwell Nie
  */
-public class SpiContext extends Context {
+public class FlexibleSqlContext extends Context {
     public SqlContext getSqlContext() {
         return null;
     }

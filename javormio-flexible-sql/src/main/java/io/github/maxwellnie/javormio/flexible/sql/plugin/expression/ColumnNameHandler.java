@@ -14,10 +14,7 @@ public class ColumnNameHandler {
         if (tableName == null){
             tableName = columnInfo.getTable().tableName;
         }
-        String columnName = columnAliases.get(columnInfo);
-        if (columnName == null){
-            columnName = columnInfo.getColumnName();
-        }
+        String columnName = columnInfo.getColumnName();
         return tableName + "." + columnName;
     }
 }

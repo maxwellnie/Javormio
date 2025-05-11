@@ -7,8 +7,13 @@ import io.github.maxwellnie.javormio.flexible.sql.plugin.expression.SqlExpressio
  * @author Maxwell Nie
  */
 public class SqlContext {
-    private ObjectFactory<SqlBuilder> sqlBuilderFactory;
-    private SqlExpressionSupport sqlExpressionSupport;
+    private final ObjectFactory<SqlBuilder> sqlBuilderFactory;
+    private final SqlExpressionSupport sqlExpressionSupport;
+
+    public SqlContext(ObjectFactory<SqlBuilder> sqlBuilderFactory, SqlExpressionSupport sqlExpressionSupport) {
+        this.sqlBuilderFactory = sqlBuilderFactory;
+        this.sqlExpressionSupport = sqlExpressionSupport;
+    }
 
     public ObjectFactory<SqlBuilder> getSqlBuilderFactory() {
         return sqlBuilderFactory;

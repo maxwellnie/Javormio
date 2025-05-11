@@ -35,7 +35,7 @@ public class Tool {
     public <E, T> T getColumnValue(ColumnInfo<E, T> columnInfo) throws ResultParseException{
         try{
             int index = getColumnIndex(columnInfo);
-            return (T) columnInfo.getTypeHandler().getValue(resultSet, index);
+            return columnInfo.getTypeHandler().getValue(resultSet, index);
         }catch (SQLException e){
             throw new ResultParseException(e);
         }

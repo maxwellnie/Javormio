@@ -1,6 +1,6 @@
 package io.github.maxwellnie.javormio.common.java.jdbc.connection.factory.impl;
 
-import io.github.maxwellnie.javormio.common.java.jdbc.connection.ConnectionResource;
+import io.github.maxwellnie.javormio.common.java.jdbc.connection.JConnectionResource;
 import io.github.maxwellnie.javormio.common.java.jdbc.connection.factory.ConnectionFactory;
 import io.github.maxwellnie.javormio.common.java.jdbc.datasource.DynamicMultipleDataSource;
 
@@ -34,7 +34,7 @@ public class DefaultConnectionFactory implements ConnectionFactory {
     }
 
     @Override
-    public ConnectionResource getConnection() throws SQLException {
+    public JConnectionResource getConnection() throws SQLException {
         return dataSource.getConnection();
     }
 

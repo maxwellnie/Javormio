@@ -19,8 +19,7 @@ public class MethodFeature {
 
     public MethodFeature(Method method) {
         this.method = method;
-        this.methodFeatureCode = method.hashCode();
-        ;
+        this.methodFeatureCode = method==null? 0: method.hashCode();
     }
 
     public MethodFeature(Method method, int methodFeatureCode) {

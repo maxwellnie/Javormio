@@ -2,7 +2,7 @@ package io.github.maxwellnie.javormio.common.java.jdbc.datasource;
 
 import io.github.maxwellnie.javormio.common.java.api.Registry;
 import io.github.maxwellnie.javormio.common.java.jdbc.TransactionObject;
-import io.github.maxwellnie.javormio.common.java.jdbc.connection.ConnectionResource;
+import io.github.maxwellnie.javormio.common.java.jdbc.connection.JConnectionResource;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
@@ -49,7 +49,7 @@ public interface DynamicMultipleDataSource extends Registry<Object, DataSource> 
      * @return Connection
      * @throws SQLException
      */
-    ConnectionResource getConnection() throws SQLException;
+    JConnectionResource getConnection() throws SQLException;
 
     /**
      * 获取连接
@@ -58,7 +58,7 @@ public interface DynamicMultipleDataSource extends Registry<Object, DataSource> 
      * @return Connection
      * @throws SQLException
      */
-    ConnectionResource getConnection(boolean autoCommit) throws SQLException;
+    JConnectionResource getConnection(boolean autoCommit) throws SQLException;
 
     /**
      * 获取连接
@@ -67,7 +67,7 @@ public interface DynamicMultipleDataSource extends Registry<Object, DataSource> 
      * @return Connection
      * @throws SQLException
      */
-    ConnectionResource getConnection(long timeout) throws SQLException;
+    JConnectionResource getConnection(long timeout) throws SQLException;
 
     /**
      * 获取连接
@@ -77,7 +77,7 @@ public interface DynamicMultipleDataSource extends Registry<Object, DataSource> 
      * @return Connection
      * @throws SQLException
      */
-    ConnectionResource getConnection(boolean autoCommit, long timeout) throws SQLException;
+    JConnectionResource getConnection(boolean autoCommit, long timeout) throws SQLException;
 
     /**
      * 获取所有的数据源

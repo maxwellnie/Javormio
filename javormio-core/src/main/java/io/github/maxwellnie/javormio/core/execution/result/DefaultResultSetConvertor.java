@@ -4,6 +4,7 @@ import io.github.maxwellnie.javormio.common.java.api.ObjectMap;
 import io.github.maxwellnie.javormio.common.java.proxy.invocation.MethodInvoker;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 /**

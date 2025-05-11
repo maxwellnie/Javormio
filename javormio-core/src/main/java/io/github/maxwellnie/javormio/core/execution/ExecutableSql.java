@@ -68,4 +68,5 @@ public class ExecutableSql {
     public void setType(int type) {
         this.type = type;
     }
+
 }

@@ -2,7 +2,7 @@ package io.github.maxwellnie.javormio.common.java.jdbc.connection.factory;
 
 import io.github.maxwellnie.javormio.common.java.api.Factory;
 import io.github.maxwellnie.javormio.common.java.api.Resource;
-import io.github.maxwellnie.javormio.common.java.jdbc.connection.ConnectionResource;
+import io.github.maxwellnie.javormio.common.java.jdbc.connection.JConnectionResource;
 
 import java.sql.SQLException;
 
@@ -11,7 +11,7 @@ import java.sql.SQLException;
  *
  * @author Maxwell Nie
  */
-public interface ConnectionFactory extends AutoCloseable, Resource, Factory<ConnectionResource> {
+public interface ConnectionFactory extends AutoCloseable, Resource, Factory<JConnectionResource> {
     /**
      * 设置是否自动提交
      *
@@ -29,9 +29,9 @@ public interface ConnectionFactory extends AutoCloseable, Resource, Factory<Conn
     /**
      * 获取数据库连接资源
      *
-     * @return ConnectionResource
+     * @return JConnectionResource
      */
-    ConnectionResource getConnection() throws SQLException;
+    JConnectionResource getConnection() throws SQLException;
 
     /**
      * 是否自动提交
