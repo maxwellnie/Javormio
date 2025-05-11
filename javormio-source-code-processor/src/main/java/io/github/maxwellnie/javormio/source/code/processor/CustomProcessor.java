@@ -1,4 +1,4 @@
-package io.github.maxwellnie.javormio;
+package io.github.maxwellnie.javormio.source.code.processor;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
@@ -6,11 +6,11 @@ import javax.lang.model.element.Element;
 import java.util.Set;
 
 /**
- * 元素处理器
+ * 扩展处理器
  *
  * @author Maxwell Nie
  */
-public interface ElementHandler {
+public interface CustomProcessor {
     /**
      * 处理被遍历到的元素
      *
@@ -18,5 +18,5 @@ public interface ElementHandler {
      * @param processingEnv
      * @param roundEnv
      */
-    void handle(Set<? extends Element> element, ProcessingEnvironment processingEnv, RoundEnvironment roundEnv);
+    void process(Set<? extends Element> element, ProcessingEnvironment processingEnv, RoundEnvironment roundEnv);
 }
