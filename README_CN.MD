@@ -285,3 +285,16 @@ Set<User> users = QueryBuilder.from(tableUser, "a", context).toSql().selectToRes
 ```java
 List<Map<String, Obejct>> users = QueryBuilder.from(tableUser, "a", context).toSql().selectToResultSet().collectToMap();
 ```
+2. 当然我们也可以使其返回from方法指定的表对象对应实体类对象
+- 使用collectToEntity方法后直接收集User对象
+```java
+List<User> users = QueryBuilder.from(tableUser, "a", context).toSql().selectToEntity().collect(Collectors.toList());
+```
+- 使用collectToEntity方法将User对象转换为UserVO对象
+```java
+List<UserVO> users = QueryBuilder.from(tableUser, "a", context).toSql().selectToEntity().mapTo(UserVO::new, (user, userVO)->{
+    userVO.setName(user.getName());
+    userVO.setAge(user.getAge());
+    return userVO;
+}).collect(Collectors.toList());
+```
