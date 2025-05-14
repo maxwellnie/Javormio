@@ -5,7 +5,7 @@ import io.github.maxwellnie.javormio.core.translation.SqlParameter;
 /**
  * @author Maxwell Nie
  */
-public class MultipleRowSql extends Sql{
+public class MultipleRowSql extends Sql {
     protected MultipleRowSql prev;
     protected MultipleRowSql next;
 

@@ -14,7 +14,8 @@ public class MetaColumn {
     public String getterClassName;
     public String setterClassName;
     public String keyGeneratorClassName;
-    public boolean isPrimary(){
+
+    public boolean isPrimary() {
         return (columnType & ColumnType.PRIMARY) != 0;
     }
 }

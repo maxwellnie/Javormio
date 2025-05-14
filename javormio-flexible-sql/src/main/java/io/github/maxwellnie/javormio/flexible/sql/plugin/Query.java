@@ -5,8 +5,10 @@ import io.github.maxwellnie.javormio.core.execution.ExecutorContext;
 import io.github.maxwellnie.javormio.core.execution.QuerySqlExecutor;
 import io.github.maxwellnie.javormio.core.execution.StatementWrapper;
 import io.github.maxwellnie.javormio.core.translation.method.DaoMethodFeature;
-import io.github.maxwellnie.javormio.flexible.sql.plugin.result.ObjectExecuteResult;
-import io.github.maxwellnie.javormio.flexible.sql.plugin.result.ResultSetExecuteResult;
+import io.github.maxwellnie.javormio.flexible.sql.plugin.result.ExecutionResults;
+import io.github.maxwellnie.javormio.flexible.sql.plugin.result.stream.EntityResultStream;
+import io.github.maxwellnie.javormio.flexible.sql.plugin.result.stream.ExecutionResultStream;
+import io.github.maxwellnie.javormio.flexible.sql.plugin.result.stream.ResultStream;
 
 import java.sql.ResultSet;
 import java.util.LinkedHashMap;
@@ -23,19 +25,19 @@ public class Query<T> {
         this.executableSql = executableSql;
     }
 
-    public ResultSetExecuteResult selectToResultSet(){
+    public ResultStream<ExecutionResults> selectToResultStream() {
         ExecutorContext<ResultSet> executorContext = new ExecutorContext<>(queryBuilder.context.getConnectionResource(), executableSql, new DaoMethodFeature<>(null, null, false), queryBuilder.context.getResultSetConvertor(), null, null, false);
         StatementWrapper statementWrapper = queryBuilder.context.getSqlExecutor(QuerySqlExecutor.class).run(executorContext);
         ResultSet resultSet = (ResultSet) statementWrapper.getResult();
-        return new ResultSetExecuteResult(resultSet, resultSet, queryBuilder.allColumns, new LinkedHashMap<>(), queryBuilder.columnAliasMap, statementWrapper, executorContext);
-    }
-    public ObjectExecuteResult<T> selectToEntity() {
-        ExecutorContext<ResultSet> executorContext = new ExecutorContext<>(queryBuilder.context.getConnectionResource(), executableSql, new DaoMethodFeature<>(null, null, false), queryBuilder.context.getResultSetConvertor(), null,  null, false);
-        StatementWrapper statementWrapper = queryBuilder.context.getSqlExecutor(QuerySqlExecutor.class).run(executorContext);
-        return new ObjectExecuteResult<>(queryBuilder.table, (ResultSet) statementWrapper.getResult(), queryBuilder.allColumns, new LinkedHashMap<>(), queryBuilder.columnAliasMap, statementWrapper, executorContext);
+        ExecutionResults executionResults = new ExecutionResults(resultSet, new LinkedHashMap<>(), queryBuilder.allColumns, queryBuilder.columnAliasMap, new AutoCloseable[]{statementWrapper});
+        return new ExecutionResultStream(executionResults);
     }
 
-    public QueryBuilder<T> getQuery() {
+    public ResultStream<T> selectToEntityStream() {
+        return new EntityResultStream<>(selectToResultStream(), queryBuilder.table.instanceInvoker);
+    }
+
+    public QueryBuilder<T> getQueryBuilder() {
         return queryBuilder;
     }
 

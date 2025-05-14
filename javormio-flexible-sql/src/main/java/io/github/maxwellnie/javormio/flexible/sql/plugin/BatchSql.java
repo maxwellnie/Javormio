@@ -4,9 +4,10 @@ import io.github.maxwellnie.javormio.core.translation.SqlParameter;
 
 /**
  * 批量SQL
+ *
  * @author Maxwell Nie
  */
-public class BatchSql extends Sql{
+public class BatchSql extends Sql {
     /**
      * 每组参数的数量
      */

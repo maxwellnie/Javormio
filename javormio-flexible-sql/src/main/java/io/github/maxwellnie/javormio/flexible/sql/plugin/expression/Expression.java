@@ -4,7 +4,6 @@ import io.github.maxwellnie.javormio.core.translation.table.BaseMetaTableInfo;
 import io.github.maxwellnie.javormio.core.translation.table.column.ColumnInfo;
 import io.github.maxwellnie.javormio.flexible.sql.plugin.SqlBuilder;
 
-
 import java.util.Map;
 
 /**

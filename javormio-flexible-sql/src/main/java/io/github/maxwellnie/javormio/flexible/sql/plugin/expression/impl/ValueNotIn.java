@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * @author Maxwell Nie
  */
-public class ValueNotIn<E, T> extends ValuesColumnExpression<E, T>{
+public class ValueNotIn<E, T> extends ValuesColumnExpression<E, T> {
     public ValueNotIn(ColumnInfo<E, T> columnInfo, T[] values) {
         super(columnInfo, values);
     }
