@@ -41,9 +41,9 @@ public class SingleSqlExecutor implements SqlExecutor {
     protected <T extends Statement> T openStatement(StatementHelper<T> statementHelper, ExecutableSql executableSql, Connection connection) throws SQLException {
         int type = executableSql.getType();
         if (SqlType.isBatch(type))
-            return statementHelper.createStatement(connection, executableSql);
-        else
             return statementHelper.createBatchStatement(connection, executableSql);
+        else
+            return statementHelper.createStatement(connection, executableSql);
     }
 
     @Override
