@@ -34,10 +34,10 @@ public class SqlExecutorExtension implements SqlExecutor {
     }
 
     @Override
-    public <T> StatementWrapper run(ExecutorContext<T> executorContext) throws ConvertException {
-        ExecutableSql sql = executorContext.getExecutableSql();
+    public <T> StatementWrapper run(ExecutorContext<T> executorParameters) throws ConvertException {
+        ExecutableSql sql = executorParameters.getExecutableSql();
         logger.info("SQL: " + sql.getSql(), "PARAMS:" + sql.getParameters());
-        return sqlExecutor.run(executorContext);
+        return sqlExecutor.run(executorParameters);
     }
 }
 ```
