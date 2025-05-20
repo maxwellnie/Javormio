@@ -12,9 +12,14 @@
         <module>javormio-core</module>
         <module>JavormioTester</module>
         <module>javormio-common</module>
-        <module>javormio-extension</module>
         <module>javormio-source-code-processor</module>
         <module>javormio-flexible-sql</module>
+        <module>javormio-spring-common</module>
+        <module>javormio-transaction-jta</module>
+        <module>javormio-spring-boot-starter</module>
+        <module>javormio-flexible-sql-spring</module>
+        <module>javormio-flexible-sql-spring-boot-starter</module>
+        <module>javormio-mapper</module>
     </modules>
 
     <properties>
