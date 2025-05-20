@@ -1,4 +1,4 @@
-package io.github.maxwellnie.javormio.flexible.sql.plugin.result;
+package io.github.maxwellnie.javormio.core.execution.result;
 
 import io.github.maxwellnie.javormio.common.java.api.JavormioException;
 
