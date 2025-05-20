@@ -24,8 +24,8 @@ public interface TableParser {
      *
      * @return TableInfo
      */
-    default TableInfo get() {
-        throw new RuntimeException("TableParser.get() is not support,please implement it.");
+    default<T> TableInfo<T> get(Class<T> clazz) {
+        throw new RuntimeException("TableParser.get(Class) is not support,please implement it.");
     }
 
     /**
@@ -34,7 +34,7 @@ public interface TableParser {
      * @param clazz 实体类
      * @return TableInfo
      */
-    TableInfo parse(Class<?> clazz);
+    <T> TableInfo<T> parse(Class<T> clazz);
 
     /**
      * 解析数据库表信息
@@ -43,5 +43,5 @@ public interface TableParser {
      * @return TableInfo
      */
 
-    TableInfo parse(Reflection<?> reflection);
+    <T> TableInfo<T> parse(Reflection<T> reflection);
 }

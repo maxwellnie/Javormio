@@ -11,13 +11,13 @@ public class PrimaryInfo<E, T> extends ColumnInfo<E, T> {
     /**
      * 主键生成器
      */
-    private KeyGenerator keyGenerator;
+    private KeyGenerator<E, T> keyGenerator;
 
-    public KeyGenerator getKeyGenerator() {
+    public KeyGenerator<E, T> getKeyGenerator() {
         return keyGenerator;
     }
 
-    public void setKeyGenerator(KeyGenerator keyGenerator) {
+    public void setKeyGenerator(KeyGenerator<E, T> keyGenerator) {
         this.keyGenerator = keyGenerator;
     }
 }

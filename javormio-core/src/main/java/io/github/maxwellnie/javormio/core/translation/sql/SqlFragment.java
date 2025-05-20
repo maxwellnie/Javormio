@@ -9,4 +9,5 @@ public interface SqlFragment {
     SqlParameter[] getParameters();
 
     String toSql();
+    boolean isEmpty();
 }

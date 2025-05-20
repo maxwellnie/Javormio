@@ -1,12 +1,14 @@
 package io.github.maxwellnie.javormio.core.translation.table;
 
-import io.github.maxwellnie.javormio.common.java.proxy.invocation.MethodInvoker;
-import io.github.maxwellnie.javormio.common.utils.StringUtils;
 import io.github.maxwellnie.javormio.core.translation.table.column.ColumnInfo;
 import io.github.maxwellnie.javormio.core.translation.table.primary.JoinInfo;
+import io.github.maxwellnie.javormio.core.translation.table.primary.KeyGenerator;
 import io.github.maxwellnie.javormio.core.translation.table.primary.PrimaryInfo;
 
+import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * 表信息
@@ -28,13 +30,19 @@ public class TableInfo<E> extends BaseMetaTableInfo<E>{
      */
     private final JoinInfo<E, ?>[] joinInfo;
     private final PrimaryInfo<E, ?>[] primaryInfos;
+    private final KeyGenerator<E, ?>[] keyGenerators;
     @SuppressWarnings("unchecked")
-    public TableInfo(String tableName, String defaultDataSourceName, Class<E> mappingClass, MethodInvoker<E, E> instanceInvoker, Map<String, ColumnInfo<E, ?>> columnInfoMapping, Map<String, ColumnInfo<E, ?>> columnInfoInverseMapping, String tableName1, Class<E> mappingClass1, JoinInfo<E, ?>[] joinInfo) {
+    public TableInfo(String tableName, String defaultDataSourceName, Class<E> mappingClass, Supplier<E> instanceInvoker, JoinInfo<E, ?>[] joinInfo) {
         super(tableName, defaultDataSourceName, mappingClass, instanceInvoker);
-        this.columnInfoMapping = columnInfoMapping;
-        this.columnInfoInverseMapping = columnInfoInverseMapping;
+        this.columnInfoMapping = new LinkedHashMap<>();
+        this.columnInfoInverseMapping = new LinkedHashMap<>();
+        for (ColumnInfo<E, ?> columnInfo : this.getColumnInfos()){
+            columnInfoMapping.put(columnInfo.getColumnName(), columnInfo);
+            columnInfoInverseMapping.put(columnInfo.getMetaField().getName(), columnInfo);
+        }
         this.joinInfo = joinInfo;
         this.primaryInfos = (PrimaryInfo<E, ?>[]) this.columnInfoMapping.values().stream().filter(c->c instanceof PrimaryInfo).toArray();
+        this.keyGenerators = (KeyGenerator<E, ?>[]) Arrays.stream(this.primaryInfos).map(PrimaryInfo::getKeyGenerator).toArray();
     }
 
 
@@ -45,9 +53,6 @@ public class TableInfo<E> extends BaseMetaTableInfo<E>{
     public Map<String, ColumnInfo<E, ?>> getColumnInfoInverseMapping() {
         return columnInfoInverseMapping;
     }
-
-
-
 
     public JoinInfo<E, ?>[] getJoinInfo() {
         return joinInfo;
@@ -61,5 +66,10 @@ public class TableInfo<E> extends BaseMetaTableInfo<E>{
     @Override
     public PrimaryInfo<E, ?>[] getPrimaryInfos() {
         return primaryInfos;
+    }
+
+    @Override
+    public KeyGenerator<E, ?>[] getAllKeyGenerators() {
+        return keyGenerators;
     }
 }

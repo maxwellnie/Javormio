@@ -1,10 +1,8 @@
 package io.github.maxwellnie.javormio.core.translation.table.primary;
 
-import io.github.maxwellnie.javormio.common.java.proxy.invocation.MethodInvoker;
 import io.github.maxwellnie.javormio.core.translation.table.TableInfo;
-import io.github.maxwellnie.javormio.core.translation.table.column.ColumnInfo;
 
-import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * 表关联信息
@@ -25,8 +23,8 @@ public class JoinInfo<E1, E2> extends TableInfo<E2> {
      */
     private final String slaveKey;
 
-    public JoinInfo(String tableName, String defaultDataSourceName, Class<E2> mappingClass, MethodInvoker<E2, E2> instanceInvoker, Map<String, ColumnInfo<E2, ?>> columnInfoMapping, Map<String, ColumnInfo<E2, ?>> columnInfoInverseMapping, String tableName1, Class<E2> mappingClass1, JoinInfo<E2, ?>[] joinInfo, TableInfo<E1> masterTable, String masterKey, String slaveKey) {
-        super(tableName, defaultDataSourceName, mappingClass, instanceInvoker, columnInfoMapping, columnInfoInverseMapping, tableName1, mappingClass1, joinInfo);
+    public JoinInfo(String tableName, String defaultDataSourceName, Class<E2> mappingClass, Supplier<E2> instanceInvoker, JoinInfo<E2, ?>[] joinInfo, TableInfo<E1> masterTable, String masterKey, String slaveKey) {
+        super(tableName, defaultDataSourceName, mappingClass, instanceInvoker, joinInfo);
         this.masterTable = masterTable;
         this.masterKey = masterKey;
         this.slaveKey = slaveKey;
