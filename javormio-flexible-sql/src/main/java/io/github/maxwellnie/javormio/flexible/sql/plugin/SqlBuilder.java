@@ -22,6 +22,12 @@ public class SqlBuilder implements SqlFragment {
         return this;
     }
 
+    public SqlBuilder append(SqlParameter... parameters) {
+        if (parameters != null)
+            Collections.addAll(this.parameters, parameters);
+        return this;
+    }
+
     public SqlBuilder append(SqlFragment sqlFragment) {
         if (sqlFragment == null)
             return this;
@@ -48,6 +54,10 @@ public class SqlBuilder implements SqlFragment {
         return this;
     }
 
+    public List<SqlParameter> getParameterList() {
+        return parameters;
+    }
+
     public StringBuilder getSqlStringBuilder() {
         return sql;
     }
@@ -55,5 +65,10 @@ public class SqlBuilder implements SqlFragment {
     @Override
     public String toSql() {
         return sql.toString();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return sql.length() == 0;
     }
 }

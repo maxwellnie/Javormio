@@ -99,7 +99,7 @@ public class SqlExpressionSupport {
             default:
                 throw new IllegalArgumentException("mode must be 0, 1, 2");
         }
-        sqlBuilder.append(null, getSqlParameter(formattedValue, typeHandler));
+        sqlBuilder.append(getSqlParameter(formattedValue, typeHandler));
     }
 
     public <T> SqlBuilder in(SqlBuilder sqlBuilder, String columnName, T[] values, TypeHandler<T> typeHandler) {

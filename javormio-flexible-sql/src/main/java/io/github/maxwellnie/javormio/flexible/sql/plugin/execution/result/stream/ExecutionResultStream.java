@@ -1,7 +1,7 @@
-package io.github.maxwellnie.javormio.flexible.sql.plugin.result.stream;
+package io.github.maxwellnie.javormio.flexible.sql.plugin.execution.result.stream;
 
-import io.github.maxwellnie.javormio.flexible.sql.plugin.result.ExecutionResults;
-import io.github.maxwellnie.javormio.flexible.sql.plugin.result.ResultParseException;
+import io.github.maxwellnie.javormio.core.execution.result.ResultParseException;
+import io.github.maxwellnie.javormio.flexible.sql.plugin.execution.result.convertor.ExecutionResults;
 
 /**
  * @author Maxwell Nie

@@ -10,6 +10,12 @@ import java.util.Map;
  */
 public class ColumnNameHandler {
     public static String getColumnName(ColumnInfo columnInfo, Map<ColumnInfo, String> columnAliases, Map<BaseMetaTableInfo, String> tableAliases) {
+        if (columnInfo.getColumnName() == null) {
+            String alias = columnAliases.get(columnInfo);
+            alias = alias == null ? columnInfo.getColumnName() : alias;
+            if (alias == null)
+                throw new SqlExpressionException("The column name of \"" + columnInfo + "\" is not found,if you used sql function as column alias, please add alias to sql function");
+        }
         String tableName = tableAliases.get(columnInfo.getTable());
         if (tableName == null) {
             tableName = columnInfo.getTable().tableName;

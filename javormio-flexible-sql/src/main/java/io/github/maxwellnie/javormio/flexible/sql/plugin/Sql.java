@@ -25,4 +25,9 @@ public class Sql implements SqlFragment {
     public String toSql() {
         return sql;
     }
+
+    @Override
+    public boolean isEmpty() {
+        return false;
+    }
 }

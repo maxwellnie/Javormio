@@ -1,5 +1,8 @@
-package io.github.maxwellnie.javormio.flexible.sql.plugin.result;
+package io.github.maxwellnie.javormio.flexible.sql.plugin.execution.result.convertor;
 
+import io.github.maxwellnie.javormio.core.execution.executor.SqlExecutor;
+import io.github.maxwellnie.javormio.core.execution.executor.parameter.ExecutorParameters;
+import io.github.maxwellnie.javormio.core.execution.result.ResultParseException;
 import io.github.maxwellnie.javormio.core.translation.table.column.ColumnInfo;
 import io.github.maxwellnie.javormio.flexible.sql.plugin.table.ExpressionColumnInfo;
 
@@ -20,21 +23,16 @@ public class ExecutionResults {
     protected ResultSet resultSet;
     protected List<ColumnInfo> baseColumnInfos;
     protected Map<ColumnInfo, String> columnAliases;
-    protected AutoCloseable[] autoCloseableResources;
+    protected SqlExecutor sqlExecutor;
+    protected ExecutorParameters executorParameters;
 
-    public ExecutionResults(ResultSet resultSet, Map<ColumnInfo, Integer> columnIndexMap, List<ColumnInfo> baseColumnInfos, Map<ColumnInfo, String> columnAliases) {
+    public ExecutionResults(Map<ColumnInfo, Integer> columnIndexMap, ResultSet resultSet, List<ColumnInfo> baseColumnInfos, Map<ColumnInfo, String> columnAliases, SqlExecutor sqlExecutor, ExecutorParameters executorParameters) {
         this.columnIndexMap = columnIndexMap;
         this.resultSet = resultSet;
         this.baseColumnInfos = baseColumnInfos;
         this.columnAliases = columnAliases;
-    }
-
-    public ExecutionResults(ResultSet resultSet, Map<ColumnInfo, Integer> columnIndexMap, List<ColumnInfo> baseColumnInfos, Map<ColumnInfo, String> columnAliases, AutoCloseable[] autoCloseableResources) {
-        this.columnIndexMap = columnIndexMap;
-        this.resultSet = resultSet;
-        this.baseColumnInfos = baseColumnInfos;
-        this.columnAliases = columnAliases;
-        this.autoCloseableResources = autoCloseableResources;
+        this.sqlExecutor = sqlExecutor;
+        this.executorParameters = executorParameters;
     }
 
     public int getColumnIndex(ColumnInfo columnInfo) throws SQLException {
@@ -74,12 +72,16 @@ public class ExecutionResults {
         return columnAliases;
     }
 
-    public AutoCloseable[] getAutoCloseableResources() {
-        return autoCloseableResources;
-    }
-
     public ResultsIterator iterator() {
         return new ResultsIterator(this);
+    }
+
+    public SqlExecutor getSqlExecutor() {
+        return sqlExecutor;
+    }
+
+    public ExecutorParameters getExecutorParameters() {
+        return executorParameters;
     }
 
     public List<ColumnInfo> getBaseColumnInfos() {
