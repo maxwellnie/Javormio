@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  io.github.maxwellnie.javormio.flexible.sql.spring.boot.FlexibleSqlAutoConfiguration
