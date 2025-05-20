@@ -70,26 +70,4 @@ public class DynamicSql<E> {
         dynamicSql.entity = o;
         return dynamicSql;
     }
-    //模拟大量请求创建DynamicSql对象
-
-//    public static void main(String[] args) throws InterruptedException {
-//        DynamicSql<LambdaWhere.User> dynamicSql = new DynamicSql<>(LambdaWhere.User.class, null).lambdaWhere().end();
-//        DynamicSql<LambdaWhere.User> dynamicSql1 = new DynamicSql<>(LambdaWhere.User.class, null).lambdaWhere().end();
-//        DynamicSql<String> dynamicSql2 = new DynamicSql<>("", null).lambdaWhere().end();
-//        System.out.println(dynamicSql.end == dynamicSql1.end);
-//        System.out.println(dynamicSql1.end.equals(dynamicSql2.end));
-//        System.out.println(dynamicSql.end);
-//        System.out.println(dynamicSql1.end);
-//        LinkedList<DynamicSql<String>> list = new LinkedList<>();
-//        for (int i = 0; i < 100000000; i++){
-//            DynamicSql<?> dynamicSql3 = i == 0? new DynamicSql<>("", null).lambdaWhere().end() : list.getLast();
-//            list.add(dynamicSql3.reset(String.class, null).lambdaWhere().end());
-//        }
-//        AtomicBoolean flag = new AtomicBoolean(true);
-//        list.forEach(dynamicSql3 -> {if (!dynamicSql3.end.equals(dynamicSql2.end))
-//        flag.set(false);});
-//        System.out.println(flag.get());
-//        list = null;
-//        Thread.sleep(100000);
-//    }
 }
