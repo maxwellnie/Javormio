@@ -1,23 +1,22 @@
 package io.github.maxwellnie.javormio.core;
 
 import io.github.maxwellnie.javormio.common.annotation.document.ExtensionPoint;
-import io.github.maxwellnie.javormio.common.cache.Cache;
-import io.github.maxwellnie.javormio.common.java.jdbc.connection.ConnectionResource;
-import io.github.maxwellnie.javormio.common.java.jdbc.datasource.DynamicMultipleDataSource;
+import io.github.maxwellnie.javormio.common.java.jdbc.datasource.DynamicDataSource;
+import io.github.maxwellnie.javormio.common.java.jdbc.transaction.TransactionObject;
 import io.github.maxwellnie.javormio.common.java.reflect.method.SerializableFunction;
-import io.github.maxwellnie.javormio.common.java.type.NullTypeHandler;
-import io.github.maxwellnie.javormio.common.java.type.TypeHandler;
+import io.github.maxwellnie.javormio.common.java.type.*;
+import io.github.maxwellnie.javormio.core.api.SqlOperation;
 import io.github.maxwellnie.javormio.core.api.dynamic.DynamicSql;
-import io.github.maxwellnie.javormio.core.execution.SqlExecutor;
-import io.github.maxwellnie.javormio.core.execution.result.ResultSetConvertor;
-import io.github.maxwellnie.javormio.core.translation.method.DaoMethodFeature;
-import io.github.maxwellnie.javormio.core.translation.method.SqlMethod;
+import io.github.maxwellnie.javormio.core.execution.executor.SingleSqlExecutor;
+import io.github.maxwellnie.javormio.core.execution.executor.SqlExecutor;
+import io.github.maxwellnie.javormio.core.execution.statement.StatementHelper;
+import io.github.maxwellnie.javormio.core.translation.TableParser;
 import io.github.maxwellnie.javormio.core.translation.table.TableInfo;
 
 import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
+import java.sql.Connection;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -27,60 +26,50 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @ExtensionPoint
 public class Context {
-    final Map<Class<?>, TypeHandler<?>> typeHandlerMap = new HashMap<>();
-    final ThreadLocal<Map<Object, Object>> reusableObjectsPool = new ThreadLocal<>();
-    final Map<SerializableFunction<?, ?>, String> METHOD_NAME_CACHE = new ConcurrentHashMap<>();
-
-    public Cache<?, ?> getCache(Object key) {
-        return null;
+    protected final ThreadLocal<Map<Object, Object>> reusableObjectsPool = new ThreadLocal<>();
+    protected final ThreadLocal<TransactionObject> transactionObject = new ThreadLocal<>();
+    protected final Map<SerializableFunction<?, ?>, String> METHOD_NAME_CACHE = new ConcurrentHashMap<>();
+    protected final Map<Object, StatementHelper<?>> statementHelperMap = new LinkedHashMap<>();
+    protected final Map<Object, TypeHandler<?>> typeHandlerPool = new LinkedHashMap<>();
+    {
+        typeHandlerPool.put(String.class, new StringTypeHandler());
+        typeHandlerPool.put(Integer.class, new IntegerTypeHandler());
+        typeHandlerPool.put(Long.class, new LongTypeHandler());
+        typeHandlerPool.put(Byte.class, new ByteTypeHandler());
+        typeHandlerPool.put(Short.class, new ShortTypeHandler());
+        typeHandlerPool.put(Float.class, new FloatTypeHandler());
+        typeHandlerPool.put(Double.class, new DoubleTypeHandler());
+    }
+    protected TableParser tableParser;
+    protected final Map<Object, SqlExecutor> sqlExecutorPool = new LinkedHashMap<>();
+    {
+        sqlExecutorPool.put(SingleSqlExecutor.class, new SingleSqlExecutor());
+    }
+    protected DynamicDataSource dynamicDataSource;
+    @SuppressWarnings("unchecked")
+    public<T extends SqlExecutor> T getSqlExecutor(Class<T> implClazz) {
+        return (T) sqlExecutorPool.get(implClazz);
     }
 
-    public SqlMethod getSqlMethod(Class<?> daoImplClazz, String methodName, Class<?>[] parameterTypes) {
-        return null;
+    public DynamicDataSource getDynamicMultipleDataSource() {
+        return dynamicDataSource;
     }
-
-    public SqlExecutor getSqlExecutor(Class<?> implClazz) {
-        return null;
+    public Connection getConnection() {
+        return getDynamicMultipleDataSource().getConnection();
     }
-    public SqlExecutor getSqlExecutor(int type) {
-        return null;
-    }
-    public SqlExecutor getSqlExecutor(String className) {
-        return null;
-    }
-
-    public DynamicMultipleDataSource getDynamicMultipleDataSource() {
-        return null;
-    }
-
-    public ConnectionResource getConnectionResource() {
-        return null;
-    }
-
-    public TypeHandler<?> getTypeHandler(Class<?> clazz) {
-        return null;
+    @SuppressWarnings("unchecked")
+    public<T> TypeHandler<T> getTypeHandler(Class<T> clazz) {
+        return (TypeHandler<T>) typeHandlerPool.get(clazz);
     }
 
     public TypeHandler<?> getTypeHandler(Object obj) {
         if (obj == null)
             return NullTypeHandler.INSTANCE;
-        return typeHandlerMap.get(obj.getClass());
+        return typeHandlerPool.get(obj.getClass());
     }
-
-    public DaoMethodFeature getDaoMethodFeature(Class<?> daoImplClazz, String methodName, Class<?>[] parameterTypes) {
-        return null;
-    }
-
-    public TableInfo getTableInfo(Class<?> clazz) {
-        return null;
-    }
-
-    public DaoMethodFeature getDaoMethodFeature(int methodFeatureCode) {
-        return null;
-    }
-
-    public ResultSetConvertor getResultSetConvertor() {
-        return null;
+    @SuppressWarnings("unchecked")
+    public<T> TableInfo<T> getTableInfo(Class<T> clazz) {
+        return tableParser.get(clazz);
     }
 
     @SuppressWarnings("unchecked")
@@ -94,7 +83,9 @@ public class Context {
         }
         return dynamicSql.reset(entityObj, entityClass, getTableInfo(entityClass));
     }
-
+    public StatementHelper<?> getStatementHelper(Object key) {
+        return statementHelperMap.get(key);
+    }
     public <E> DynamicSql<E> newDynamicSql(Class<E> entityClass) {
         DynamicSql<?> dynamicSql = (DynamicSql<?>) getReusableObject(DynamicSql.class);
         if (dynamicSql == null) {
@@ -112,7 +103,12 @@ public class Context {
         }
         return map.get(key);
     }
-
+    public TransactionObject getTransaction() {
+        return transactionObject.get();
+    }
+    public SqlOperation getOperation() {
+        return null;
+    }
     public void setReusableObject(Object key, Object value) {
         Map<Object, Object> map = reusableObjectsPool.get();
         if (map == null) {
@@ -145,4 +141,8 @@ public class Context {
             return name;
         }
     }
+    public <T> void addTypeHandler(Class<T> clazz, TypeHandler<T> typeHandler) {
+        typeHandlerPool.put(clazz, typeHandler);
+    }
+
 }
