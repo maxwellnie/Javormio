@@ -110,8 +110,9 @@ public class Query<T> {
         executableSql.setType(SqlType.SELECT);
         SqlExecutor sqlExecutor = queryBuilder.flexibleSqlContext.getContext().getSqlExecutor(SingleSqlExecutor.class);
         TypeHandler<Long> longTypeHandler = queryBuilder.flexibleSqlContext.getContext().getTypeHandler(Long.class);
-        return (long) sqlExecutor.query(new ExecutorParameters(queryBuilder.flexibleSqlContext.getContext().getConnection(),
+        Object result = sqlExecutor.query(new ExecutorParameters(queryBuilder.flexibleSqlContext.getContext().getConnection(),
                 executableSql, new ValueResultSetConvertor<>(longTypeHandler), new PreparedStatementHelper(), ""));
+        return result == null ? -1 : (long) result;
     }
 
     /**
