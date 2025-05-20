@@ -18,12 +18,12 @@ public class LongTypeHandler implements TypeHandler<Long> {
         if (t != null) {
             if (t instanceof String) {
                 try {
-                    t = Long.parseLong((String) t);
+                    preparedStatement.setLong(index, Long.parseLong((String) t));
                 } catch (NumberFormatException e) {
                     throw new SQLException("The type of the parameter is not Digit String.");
                 }
             } else if (t instanceof Number) {
-                t = ((Number) t).longValue();
+                preparedStatement.setLong(index, ((Number) t).longValue());
             } else
                 throw new SQLException("The type of the parameter is not Number and Digit String.");
         } else
