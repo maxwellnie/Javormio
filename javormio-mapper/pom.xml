@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
@@ -9,7 +9,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>javormio-extension</artifactId>
+    <artifactId>javormio-mapper</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -19,8 +19,9 @@
     <dependencies>
         <dependency>
             <groupId>io.github.maxwellnie.javormio</groupId>
-            <artifactId>javormio-common</artifactId>
+            <artifactId>javormio-core</artifactId>
             <version>1.0-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>
