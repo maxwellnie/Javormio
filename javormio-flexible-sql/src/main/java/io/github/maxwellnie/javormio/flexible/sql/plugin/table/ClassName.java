@@ -4,7 +4,7 @@ package io.github.maxwellnie.javormio.flexible.sql.plugin.table;
  * @author Maxwell Nie
  */
 public class ClassName {
-    String name;
+    public String name;
 
     public String getSimpleName() {
         return name.substring(name.lastIndexOf(".") + 1);
@@ -16,4 +16,5 @@ public class ClassName {
                 "name='" + name + '\'' +
                 '}';
     }
+
 }
