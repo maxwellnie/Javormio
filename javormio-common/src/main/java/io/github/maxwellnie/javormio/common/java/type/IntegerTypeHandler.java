@@ -15,7 +15,7 @@ public class IntegerTypeHandler implements TypeHandler<Integer> {
 
     @Override
     public void setValue(PreparedStatement preparedStatement, int index, Object t) throws SQLException {
-        if (t != null && !(t instanceof Integer)) {
+        if (t != null) {
             if (t instanceof String) {
                 try {
                     t = Integer.parseInt((String) t);
