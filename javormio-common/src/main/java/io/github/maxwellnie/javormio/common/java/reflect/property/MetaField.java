@@ -62,11 +62,11 @@ public class MetaField<E, T> {
         return name;
     }
 
-    public Class<?> getType() {
+    public Class<T> getType() {
         return type;
     }
 
-    public Class<?> getDeclaringClass() {
+    public Class<E> getDeclaringClass() {
         return declaringClass;
     }
 

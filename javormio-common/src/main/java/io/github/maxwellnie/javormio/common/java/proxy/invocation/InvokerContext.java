@@ -5,16 +5,16 @@ package io.github.maxwellnie.javormio.common.java.proxy.invocation;
  *
  * @author Maxwell Nie
  */
-public class InvokerContext {
-    final Object target;
+public class InvokerContext<T> {
+    final T target;
     final Object[] args;
 
-    public InvokerContext(Object target, Object[] args) {
+    public InvokerContext(T target, Object[] args) {
         this.target = target;
         this.args = args;
     }
 
-    public Object getTarget() {
+    public T getTarget() {
         return target;
     }
 

@@ -3,9 +3,9 @@ package io.github.maxwellnie.javormio.common.java.api;
 import java.io.Serializable;
 
 /**
- * 映射接口，如开启对象映射缓存，请不要在使用lambda表达式时捕获外部变量
+ * 映射接口，如开启对象映射缓存
  * @param <N> 源对象
- * @param <E></E> 目标对象
+ * @param <E> 目标对象
  * @author Maxwell Nie
  */
 @FunctionalInterface

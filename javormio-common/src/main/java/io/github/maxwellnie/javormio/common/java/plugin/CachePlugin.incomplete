@@ -5,7 +5,7 @@ import io.github.maxwellnie.javormio.annotation.proxy.ProxyDefine;
 import io.github.maxwellnie.javormio.cache.Cache;
 import io.github.maxwellnie.javormio.cache.SqlHashCacheKey;
 import io.github.maxwellnie.javormio.core.executable.SqlExecutor;
-import io.github.maxwellnie.javormio.core.jdbc.connection.ConnectionResource;
+import io.github.maxwellnie.javormio.core.jdbc.connection.Connection;
 import io.github.maxwellnie.javormio.core.executeResult.TypeMapping;
 import execution.core.io.github.maxwellnie.javormio.ExecutableSql;
 import io.github.maxwellnie.javormio.core.table.TableInfo;
@@ -26,10 +26,10 @@ public class CachePlugin {
 
     @Interceptor
     public Object execute(InvocationLine invocationLine, InvokerContext invokerContext,
-                          ExecutableSql executableSql, TableInfo tableInfo, ConnectionResource connectionResource, TypeMapping typeMapping)
+                          ExecutableSql executableSql, TableInfo tableInfo, Connection connection, TypeMapping typeMapping)
             throws MethodInvocationException {
         Object executeResult = cache.get(new SqlHashCacheKey(executableSql.getNamespace(),
-                connectionResource.getDataSourceName(), executableSql.getSqlList(), executableSql.getParametersList()));
+                Connection.getDataSourceName(), executableSql.getSqlList(), executableSql.getParametersList()));
         if (executeResult != null) {
             return executeResult;
         } else {
@@ -41,9 +41,9 @@ public class CachePlugin {
     public Object execute(InvocationLine invocationLine, InvokerContext invokerContext)
             throws MethodInvocationException {
         ExecutableSql executableSql = (ExecutableSql) invokerContext.getArgs()[0];
-        ConnectionResource connectionResource = (ConnectionResource) invokerContext.getArgs()[1];
+        Connection connection = (Connection) invokerContext.getArgs()[1];
         Object executeResult = cache.get(new SqlHashCacheKey(executableSql.getNamespace(),
-                connectionResource.getDataSourceName(), executableSql.getSqlList(), executableSql.getParametersList()));
+                Connection.getDataSourceName(), executableSql.getSqlList(), executableSql.getParametersList()));
         if (executeResult != null) {
             return executeResult;
         } else {

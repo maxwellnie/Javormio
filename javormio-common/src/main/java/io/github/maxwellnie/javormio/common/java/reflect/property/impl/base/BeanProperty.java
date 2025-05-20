@@ -6,7 +6,6 @@ import io.github.maxwellnie.javormio.common.java.proxy.MethodInvocationException
 import io.github.maxwellnie.javormio.common.java.reflect.property.MetaField;
 import io.github.maxwellnie.javormio.common.java.reflect.property.Property;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 /**
