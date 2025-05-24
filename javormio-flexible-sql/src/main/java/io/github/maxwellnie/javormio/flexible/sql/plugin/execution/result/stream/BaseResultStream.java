@@ -4,7 +4,6 @@ import io.github.maxwellnie.javormio.common.java.api.ObjectMap;
 import io.github.maxwellnie.javormio.core.execution.result.ResultParseException;
 import io.github.maxwellnie.javormio.flexible.sql.plugin.execution.result.convertor.*;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -18,22 +17,22 @@ import java.util.stream.Collector;
  * @author Maxwell Nie
  */
 public abstract class BaseResultStream<T> implements ResultStream<T> {
-    protected ExecutionResults executionResults;
+    protected ResultContext resultContext;
 
-    public BaseResultStream(ExecutionResults executionResults) {
-        if (executionResults == null)
-            throw new ResultParseException("\"executionResults\" must not be null!");
-        this.executionResults = executionResults;
+    public BaseResultStream(ResultContext resultContext) {
+        if (resultContext == null)
+            throw new ResultParseException("\"resultContext\" must not be null!");
+        this.resultContext = resultContext;
     }
 
     @Override
     public <R> ResultStream<R> mapTo(Supplier<R> supplier, ObjectMap<T, R> objectMap) {
-        return new MapResultStream<>(executionResults, this, supplier, objectMap);
+        return new MapResultStream<>(resultContext, this, supplier, objectMap);
     }
 
     @Override
     public <R> ResultStream<R> mapTo(ResultMapping<T, R> resultMapping) {
-        return new MapResultStream<>(executionResults, this, resultMapping.supplier, resultMapping.objectMap);
+        return new MapResultStream<>(resultContext, this, resultMapping.supplier, resultMapping.objectMap);
     }
 
     @Override
@@ -44,22 +43,15 @@ public abstract class BaseResultStream<T> implements ResultStream<T> {
     @SuppressWarnings("unchecked")
     @Override
     public <R, A> R collect(Collector<T, A, R> collector) {
-        executionResults.getExecutorParameters().setResultSetConvertor(new FCollectorConvertor<>(this, collector));
-        return (R) executionResults.getSqlExecutor().query(executionResults.getExecutorParameters());
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public List<Map<String, Object>> collectToMap() {
-        executionResults.getExecutorParameters().setResultSetConvertor(new FMapConvertor(this));
-        return (List<Map<String, Object>>) executionResults.getSqlExecutor().query(executionResults.getExecutorParameters());
+        resultContext.getExecutorParameters().setResultSetConvertor(new FCollectorConvertor<>(this, collector));
+        return (R) resultContext.getSqlExecutor().query(resultContext.getExecutorParameters());
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public void forEach(Consumer<? super T> action) throws ResultParseException {
-        executionResults.getExecutorParameters().setResultSetConvertor(new FNonConvertor<>(this, action));
-        executionResults.getSqlExecutor().query(executionResults.getExecutorParameters());
+        resultContext.getExecutorParameters().setResultSetConvertor(new FNonConvertor<>(this, action));
+        resultContext.getSqlExecutor().query(resultContext.getExecutorParameters());
     }
     /**
      * 接收查询结果集的一个结果
@@ -71,29 +63,29 @@ public abstract class BaseResultStream<T> implements ResultStream<T> {
     @Override
     @SuppressWarnings("unchecked")
     public <R> R collect(Supplier<R> supplier, BiConsumer<R, ? super T> accumulator) {
-        executionResults.getExecutorParameters().setResultSetConvertor(new FCustomCollectorConvertor<>(this, supplier, accumulator));
-        return (R) executionResults.getSqlExecutor().query(executionResults.getExecutorParameters());
+        resultContext.getExecutorParameters().setResultSetConvertor(new FCustomCollectorConvertor<>(this, supplier, accumulator));
+        return (R) resultContext.getSqlExecutor().query(resultContext.getExecutorParameters());
     }
 
     @Override
-    public ExecutionResults getExecutionResults() {
-        return executionResults;
+    public ResultContext getExecutionResults() {
+        return resultContext;
     }
 
 
     @Override
     @SuppressWarnings("unchecked")
     public T[] toArray() {
-        executionResults.getExecutorParameters().setResultSetConvertor(new FArrayConvertor<>(this));
-        return (T[]) executionResults.getSqlExecutor().query(executionResults.getExecutorParameters());
+        resultContext.getExecutorParameters().setResultSetConvertor(new FArrayConvertor<>(this));
+        return (T[]) resultContext.getSqlExecutor().query(resultContext.getExecutorParameters());
     }
 
 
     @Override
     @SuppressWarnings("unchecked")
     public T[] toArray(int length) {
-        executionResults.getExecutorParameters().setResultSetConvertor(new FArrayConvertor<>(this, length));
-        return (T[]) executionResults.getSqlExecutor().query(executionResults.getExecutorParameters());
+        resultContext.getExecutorParameters().setResultSetConvertor(new FArrayConvertor<>(this, length));
+        return (T[]) resultContext.getSqlExecutor().query(resultContext.getExecutorParameters());
     }
 
     static class MapResultStream<In, Out> extends BaseResultStream<Out> {
@@ -101,8 +93,8 @@ public abstract class BaseResultStream<T> implements ResultStream<T> {
         final Supplier<Out> supplier;
         final ObjectMap<In, Out> objectMap;
 
-        public MapResultStream(ExecutionResults executionResults, BaseResultStream<In> inputResultStream, Supplier<Out> supplier, ObjectMap<In, Out> objectMap) {
-            super(executionResults);
+        public MapResultStream(ResultContext resultContext, BaseResultStream<In> inputResultStream, Supplier<Out> supplier, ObjectMap<In, Out> objectMap) {
+            super(resultContext);
             this.inputResultStream = inputResultStream;
             this.supplier = supplier;
             this.objectMap = objectMap;

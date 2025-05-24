@@ -4,6 +4,7 @@ import io.github.maxwellnie.javormio.core.execution.executor.SqlExecutor;
 import io.github.maxwellnie.javormio.core.execution.executor.parameter.ExecutorParameters;
 import io.github.maxwellnie.javormio.core.execution.result.ResultParseException;
 import io.github.maxwellnie.javormio.core.translation.table.column.ColumnInfo;
+import io.github.maxwellnie.javormio.flexible.sql.plugin.expression.SqlExpressionSupport;
 import io.github.maxwellnie.javormio.flexible.sql.plugin.table.ExpressionColumnInfo;
 
 import java.sql.ResultSet;
@@ -18,7 +19,7 @@ import java.util.function.Consumer;
  *
  * @author Maxwell Nie
  */
-public class ExecutionResults {
+public class ResultContext {
     protected Map<ColumnInfo, Integer> columnIndexMap;
     protected ResultSet resultSet;
     protected List<ColumnInfo> baseColumnInfos;
@@ -26,7 +27,7 @@ public class ExecutionResults {
     protected SqlExecutor sqlExecutor;
     protected ExecutorParameters executorParameters;
 
-    public ExecutionResults(Map<ColumnInfo, Integer> columnIndexMap, ResultSet resultSet, List<ColumnInfo> baseColumnInfos, Map<ColumnInfo, String> columnAliases, SqlExecutor sqlExecutor, ExecutorParameters executorParameters) {
+    public ResultContext(Map<ColumnInfo, Integer> columnIndexMap, ResultSet resultSet, List<ColumnInfo> baseColumnInfos, Map<ColumnInfo, String> columnAliases, SqlExecutor sqlExecutor, ExecutorParameters executorParameters) {
         this.columnIndexMap = columnIndexMap;
         this.resultSet = resultSet;
         this.baseColumnInfos = baseColumnInfos;
@@ -56,7 +57,7 @@ public class ExecutionResults {
         }
     }
 
-    public <E, T> T getColumnValue(ExpressionColumnInfo<E, T> expressionColumnInfo) throws ResultParseException {
+    public <E, T> T getColumnValue(ExpressionColumnInfo<? extends SqlExpressionSupport,E, T> expressionColumnInfo) throws ResultParseException {
         return getColumnValue(expressionColumnInfo.getColumnInfo());
     }
 
@@ -93,27 +94,27 @@ public class ExecutionResults {
      *
      * @author Maxwell Nie
      */
-    public static class ResultsIterator implements Iterator<ExecutionResults> {
-        final ExecutionResults executionResults;
+    public static class ResultsIterator implements Iterator<ResultContext> {
+        final ResultContext resultContext;
 
-        ResultsIterator(ExecutionResults executionResults) {
-            this.executionResults = executionResults;
+        ResultsIterator(ResultContext resultContext) {
+            this.resultContext = resultContext;
         }
 
         @Override
         public boolean hasNext() {
             try {
-                return !executionResults.getResultSet().isLast();
+                return !resultContext.getResultSet().isLast();
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
         }
 
         @Override
-        public ExecutionResults next() {
+        public ResultContext next() {
             try {
-                executionResults.getResultSet().next();
-                return executionResults;
+                resultContext.getResultSet().next();
+                return resultContext;
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -122,17 +123,17 @@ public class ExecutionResults {
         @Override
         public void remove() {
             try {
-                executionResults.getResultSet().deleteRow();
+                resultContext.getResultSet().deleteRow();
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
         }
 
         @Override
-        public void forEachRemaining(Consumer<? super ExecutionResults> action) {
+        public void forEachRemaining(Consumer<? super ResultContext> action) {
             while (true) {
                 try {
-                    if (!executionResults.getResultSet().next()) break;
+                    if (!resultContext.getResultSet().next()) break;
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
@@ -140,8 +141,8 @@ public class ExecutionResults {
             }
         }
 
-        public ExecutionResults getExecutionResults() {
-            return executionResults;
+        public ResultContext getExecutionResults() {
+            return resultContext;
         }
     }
 }

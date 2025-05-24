@@ -2,8 +2,8 @@ package io.github.maxwellnie.javormio.flexible.sql.plugin.execution.result.strea
 
 import io.github.maxwellnie.javormio.common.java.api.ObjectMap;
 import io.github.maxwellnie.javormio.core.execution.ExecutionException;
-import io.github.maxwellnie.javormio.core.execution.result.ResultParseException;
-import io.github.maxwellnie.javormio.flexible.sql.plugin.execution.result.convertor.ExecutionResults;
+import io.github.maxwellnie.javormio.flexible.sql.plugin.execution.result.convertor.FMapConvertor;
+import io.github.maxwellnie.javormio.flexible.sql.plugin.execution.result.convertor.ResultContext;
 
 import java.util.List;
 import java.util.Map;
@@ -67,9 +67,9 @@ public interface ResultStream<T> {
     /**
      * 获取执行结果
      *
-     * @return ExecutionResults
+     * @return ResultContext
      */
-    ExecutionResults getExecutionResults();
+    ResultContext getExecutionResults();
 
     /**
      * 获取数组
@@ -90,7 +90,11 @@ public interface ResultStream<T> {
      *
      * @return List<Map < String, Object>>
      */
-    List<Map<String, Object>> collectToMap();
+    @SuppressWarnings("unchecked")
+    default List<Map<String, Object>> collectToMap() {
+        getExecutionResults().getExecutorParameters().setResultSetConvertor(new FMapConvertor(this));
+        return (List<Map<String, Object>>) getExecutionResults().getSqlExecutor().query(getExecutionResults().getExecutorParameters());
+    }
 
     /**
      * 遍历

@@ -1,7 +1,6 @@
-package io.github.maxwellnie.javormio.flexible.sql.plugin;
+package io.github.maxwellnie.javormio.core.translation.sql;
 
 import io.github.maxwellnie.javormio.core.translation.SqlParameter;
-import io.github.maxwellnie.javormio.core.translation.sql.SqlFragment;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -21,7 +20,13 @@ public class SqlBuilder implements SqlFragment {
             Collections.addAll(this.parameters, parameters);
         return this;
     }
-
+    public SqlBuilder insertToHead(String sqlFragment, SqlParameter... parameters) {
+        if (sqlFragment != null)
+            sql.insert(0, sqlFragment);
+        if (parameters != null)
+            Collections.addAll(this.parameters, parameters);
+        return this;
+    }
     public SqlBuilder append(SqlParameter... parameters) {
         if (parameters != null)
             Collections.addAll(this.parameters, parameters);
@@ -39,7 +44,17 @@ public class SqlBuilder implements SqlFragment {
         Collections.addAll(this.parameters, sqlFragment.getParameters());
         return this;
     }
-
+    public SqlBuilder insertToHead(SqlFragment sqlFragment) {
+        if (sqlFragment == null)
+            return this;
+        if (sqlFragment.toSql() == null)
+            return this;
+        sql.insert(0, sqlFragment.toSql());
+        if (sqlFragment.getParameters() == null)
+            return this;
+        Collections.addAll(this.parameters, sqlFragment.getParameters());
+        return this;
+    }
     public void setSql(String sql) {
         this.sql = new StringBuilder(sql);
     }

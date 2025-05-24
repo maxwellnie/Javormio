@@ -70,4 +70,10 @@ public interface BaseMapper<T>{
      * @throws ExecutionException 如果执行SQL中出现错误
      */
     int insertBatch(List<T> ts);
+    /**
+     * 获取该表数据总数
+     * @return long 该表数据总数
+     * @throws ExecutionException 如果执行SQL中出现错误
+     */
+    long count();
 }

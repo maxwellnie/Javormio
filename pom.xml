@@ -20,6 +20,7 @@
         <module>javormio-flexible-sql-spring</module>
         <module>javormio-flexible-sql-spring-boot-starter</module>
         <module>javormio-mapper</module>
+        <module>javormio-flexible-sql-extension</module>
     </modules>
 
     <properties>

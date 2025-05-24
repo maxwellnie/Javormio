@@ -2,15 +2,17 @@ package io.github.maxwellnie.javormio.flexible.sql.plugin.execution.query;
 
 import io.github.maxwellnie.javormio.common.java.api.JavormioException;
 import io.github.maxwellnie.javormio.core.execution.executor.parameter.ExecutableSql;
+import io.github.maxwellnie.javormio.core.translation.Dialect;
 import io.github.maxwellnie.javormio.core.translation.SqlParameter;
 import io.github.maxwellnie.javormio.core.translation.SqlType;
+import io.github.maxwellnie.javormio.core.translation.sql.SqlFragment;
 import io.github.maxwellnie.javormio.core.translation.table.BaseMetaTableInfo;
 import io.github.maxwellnie.javormio.core.translation.table.TableException;
 import io.github.maxwellnie.javormio.core.translation.table.column.ColumnInfo;
 import io.github.maxwellnie.javormio.flexible.sql.plugin.AliasHelper;
 import io.github.maxwellnie.javormio.flexible.sql.plugin.AliasTable;
 import io.github.maxwellnie.javormio.flexible.sql.plugin.FlexibleSqlContext;
-import io.github.maxwellnie.javormio.flexible.sql.plugin.SqlBuilder;
+import io.github.maxwellnie.javormio.core.translation.sql.SqlBuilder;
 import io.github.maxwellnie.javormio.flexible.sql.plugin.execution.Conditions;
 import io.github.maxwellnie.javormio.flexible.sql.plugin.expression.SqlExpressionSupport;
 import io.github.maxwellnie.javormio.flexible.sql.plugin.function.SqlFunctionColumn;
@@ -251,7 +253,7 @@ public class QueryBuilder<T> {
      * @param conditionConsumer
      * @return QueryBuilder
      */
-    public QueryBuilder<T> joinOn(BaseMetaTableInfo<T> table, Consumer<Conditions> conditionConsumer) {
+    public QueryBuilder<T> innerJoinOn(BaseMetaTableInfo<T> table, Consumer<Conditions> conditionConsumer) {
         fromToOnSql.append(" JOIN ").append(table.tableName).append(" ON");
         allColumns.addAll(Arrays.asList(table.getColumnInfos()));
         Conditions conditions = new Conditions(fromToOnSql, sqlExpressionSupport, columnAliasMap, tableAliasMap);
@@ -315,28 +317,12 @@ public class QueryBuilder<T> {
      * @param conditionConsumer
      * @return QueryBuilder
      */
-    public QueryBuilder<T> joinOn(BaseMetaTableInfo<T> table, String alias, Consumer<Conditions> conditionConsumer) {
+    public QueryBuilder<T> innerJoinOn(BaseMetaTableInfo<T> table, String alias, Consumer<Conditions> conditionConsumer) {
         tableAliasMap.put(table, alias);
         fromToOnSql.append(" JOIN ").append(table.tableName).append(" AS ").append(alias).append(" ON");
         allColumns.addAll(Arrays.asList(table.getColumnInfos()));
         Conditions conditions = new Conditions(fromToOnSql, sqlExpressionSupport, columnAliasMap, tableAliasMap);
         conditionConsumer.accept(conditions);
-        return this;
-    }
-
-    /**
-     * 使用JOIN WHERE模式的表关联，并指定关联表的别名
-     * <p>默认将关联表全部列进行查询</p>
-     *
-     * @param table
-     * @param alias
-     * @param conditionConsumer
-     * @return QueryBuilder
-     */
-    public QueryBuilder<T> join(BaseMetaTableInfo<T> table, String alias, Consumer<Conditions> conditionConsumer) {
-        fromToOnSql.append(" JOIN ").append(table.tableName).append(" AS ").append(alias);
-        allColumns.addAll(Arrays.asList(table.getColumnInfos()));
-        where(conditionConsumer);
         return this;
     }
 
@@ -475,11 +461,16 @@ public class QueryBuilder<T> {
      * @return ExecutableSql
      */
     public ExecutableSql toExecutableSql() {
+        Dialect dialect = flexibleSqlContext.getContext().getDialect();
         StringBuilder sqlBuilder = new StringBuilder();
+        SqlFragment sqlFragment = dialect.beforeSqlBuild(selectColumnSql, SqlType.SELECT);
+        if (sqlFragment != null)
+            sqlBuilder.append(sqlFragment.toSql());
         handleSelectColumn();
         sqlBuilder.append(selectColumnSql.toSql());
         sqlBuilder.append(fromToOnSql.toSql());
         sqlBuilder.append(whereToEndSql.toSql());
+
         ExecutableSql executableSql = new ExecutableSql();
         executableSql.setSql(sqlBuilder.toString());
         handleParameters(executableSql);

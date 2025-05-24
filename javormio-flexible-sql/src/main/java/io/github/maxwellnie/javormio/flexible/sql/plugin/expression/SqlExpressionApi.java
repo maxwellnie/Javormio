@@ -2,56 +2,56 @@ package io.github.maxwellnie.javormio.flexible.sql.plugin.expression;
 
 import io.github.maxwellnie.javormio.flexible.sql.plugin.table.ExpressionColumnInfo;
 
-public interface SqlExpressionApi<E, T> {
-    <E1, T1> Expression eq(ExpressionColumnInfo<E1, T1> expressionColumnInfo);
+public interface SqlExpressionApi<S extends SqlExpressionSupport, E, T> {
+    <E1, T1> Expression<S> eq(ExpressionColumnInfo<? extends SqlExpressionSupport, E1, T1> expressionColumnInfo);
 
-    Expression eq(T value);
+    Expression<S> eq(T value);
 
-    <E1, T1> Expression ne(ExpressionColumnInfo<E1, T1> expressionColumnInfo);
+    <E1, T1> Expression<S> ne(ExpressionColumnInfo<? extends SqlExpressionSupport, E1, T1> expressionColumnInfo);
 
-    Expression ne(T value);
+    Expression<S> ne(T value);
 
-    <E1, T1> Expression greater(ExpressionColumnInfo<E1, T1> expressionColumnInfo);
+    <E1, T1> Expression<S> greater(ExpressionColumnInfo<? extends SqlExpressionSupport, E1, T1> expressionColumnInfo);
 
-    Expression greater(T value);
+    Expression<S> greater(T value);
 
-    <E1, T1> Expression ge(ExpressionColumnInfo<E1, T1> expressionColumnInfo);
+    <E1, T1> Expression<S> ge(ExpressionColumnInfo<? extends SqlExpressionSupport, E1, T1> expressionColumnInfo);
 
-    Expression ge(T value);
+    Expression<S> ge(T value);
 
-    <E1, T1> Expression less(ExpressionColumnInfo<E1, T1> expressionColumnInfo);
+    <E1, T1> Expression<S> less(ExpressionColumnInfo<? extends SqlExpressionSupport, E1, T1> expressionColumnInfo);
 
-    Expression less(T value);
+    Expression<S> less(T value);
 
-    <E1, T1> Expression le(ExpressionColumnInfo<E1, T1> expressionColumnInfo);
+    <E1, T1> Expression<S> le(ExpressionColumnInfo<? extends SqlExpressionSupport, E1, T1> expressionColumnInfo);
 
-    Expression le(T value);
+    Expression<S> le(T value);
 
-    Expression between(T value1, T value2);
+    Expression<S> between(T value1, T value2);
 
-    Expression in(T[] values);
+    Expression<S> in(T[] values);
 
-    Expression notIn(T[] values);
+    Expression<S> notIn(T[] values);
 
-    Expression like(T value);
+    Expression<S> like(T value);
 
-    Expression leftLike(T value);
+    Expression<S> leftLike(T value);
 
-    Expression rightLike(T value);
+    Expression<S> rightLike(T value);
 
-    Expression notLike(T value);
+    Expression<S> notLike(T value);
 
-    Expression notLeftLike(T value);
+    Expression<S> notLeftLike(T value);
 
-    Expression notRightLike(T value);
+    Expression<S> notRightLike(T value);
 
-    Expression is(T value);
+    Expression<S> is(T value);
 
-    Expression isNot(T value);
+    Expression<S> isNot(T value);
 
-    Expression not(T value);
+    Expression<S> not(T value);
 
-    Expression isNull();
+    Expression<S> isNull();
 
-    Expression notNull();
+    Expression<S> notNull();
 }

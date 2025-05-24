@@ -22,12 +22,14 @@ public class JoinInfo<E1, E2> extends TableInfo<E2> {
      * 从表关联字段
      */
     private final String slaveKey;
+    private final String joinType;
 
-    public JoinInfo(String tableName, String defaultDataSourceName, Class<E2> mappingClass, Supplier<E2> instanceInvoker, JoinInfo<E2, ?>[] joinInfo, TableInfo<E1> masterTable, String masterKey, String slaveKey) {
+    public JoinInfo(String tableName, String defaultDataSourceName, Class<E2> mappingClass, Supplier<E2> instanceInvoker, JoinInfo<E2, ?>[] joinInfo, TableInfo<E1> masterTable, String masterKey, String slaveKey, String joinType) {
         super(tableName, defaultDataSourceName, mappingClass, instanceInvoker, joinInfo);
         this.masterTable = masterTable;
         this.masterKey = masterKey;
         this.slaveKey = slaveKey;
+        this.joinType = joinType;
     }
 
     public TableInfo<E1> getMasterTable() {
@@ -40,5 +42,9 @@ public class JoinInfo<E1, E2> extends TableInfo<E2> {
 
     public String getSlaveKey() {
         return slaveKey;
+    }
+
+    public String getJoinType() {
+        return joinType;
     }
 }
