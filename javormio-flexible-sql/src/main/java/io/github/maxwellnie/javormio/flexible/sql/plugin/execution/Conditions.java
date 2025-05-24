@@ -2,7 +2,7 @@ package io.github.maxwellnie.javormio.flexible.sql.plugin.execution;
 
 import io.github.maxwellnie.javormio.core.translation.table.BaseMetaTableInfo;
 import io.github.maxwellnie.javormio.core.translation.table.column.ColumnInfo;
-import io.github.maxwellnie.javormio.flexible.sql.plugin.SqlBuilder;
+import io.github.maxwellnie.javormio.core.translation.sql.SqlBuilder;
 import io.github.maxwellnie.javormio.flexible.sql.plugin.expression.Expression;
 import io.github.maxwellnie.javormio.flexible.sql.plugin.expression.SqlExpressionSupport;
 
@@ -11,31 +11,31 @@ import java.util.Map;
 /**
  * @author Maxwell Nie
  */
-public class Conditions {
+public class Conditions<S extends SqlExpressionSupport> {
     protected SqlBuilder conditionSql;
-    protected SqlExpressionSupport sqlExpressionSupport;
+    protected S sqlExpressionSupport;
     protected Map<ColumnInfo, String> columnAliasMap;
     protected Map<BaseMetaTableInfo, String> tableAliasMap;
 
-    public Conditions(SqlBuilder conditionSql, SqlExpressionSupport sqlExpressionSupport, Map<ColumnInfo, String> columnAliasMap, Map<BaseMetaTableInfo, String> tableAliasMap) {
+    public Conditions(SqlBuilder conditionSql, S sqlExpressionSupport, Map<ColumnInfo, String> columnAliasMap, Map<BaseMetaTableInfo, String> tableAliasMap) {
         this.conditionSql = conditionSql;
         this.sqlExpressionSupport = sqlExpressionSupport;
         this.columnAliasMap = columnAliasMap;
         this.tableAliasMap = tableAliasMap;
     }
 
-    public Conditions condition(Expression expression) {
+    public Conditions<S> condition(Expression<S> expression) {
         expression.applySql(sqlExpressionSupport, conditionSql, columnAliasMap, tableAliasMap);
         return this;
     }
 
-    public Conditions and(Expression expression) {
+    public Conditions<S> and(Expression<S> expression) {
         sqlExpressionSupport.and(conditionSql);
         expression.applySql(sqlExpressionSupport, conditionSql, columnAliasMap, tableAliasMap);
         return this;
     }
 
-    public Conditions or(Expression expression) {
+    public Conditions<S> or(Expression<S> expression) {
         sqlExpressionSupport.or(conditionSql);
         expression.applySql(sqlExpressionSupport, conditionSql, columnAliasMap, tableAliasMap);
         return this;
@@ -45,7 +45,7 @@ public class Conditions {
         return conditionSql;
     }
 
-    public SqlExpressionSupport getSqlExpressionSupport() {
+    public S getSqlExpressionSupport() {
         return sqlExpressionSupport;
     }
 

@@ -1,5 +1,6 @@
 package io.github.maxwellnie.javormio.core.translation.method.impl;
 
+import io.github.maxwellnie.javormio.common.java.api.JavormioException;
 import io.github.maxwellnie.javormio.common.java.reflect.MethodFeature;
 import io.github.maxwellnie.javormio.common.java.type.NullTypeHandler;
 import io.github.maxwellnie.javormio.common.java.type.TypeHandler;
@@ -29,8 +30,14 @@ public class NativeSelect implements SqlMethod<List<Map<String, Object>>>{
         daoMethodFeature  = new MethodFeature(null, Objects.hash(SqlOperation.class, "Select", String.class, Object[].class, Map.class));
     }
     protected final ResultSetConvertor<List<Map<String, Object>>> resultSetConvertor = new NResultSetConvertor();
+    protected final Context context;
+
+    public NativeSelect(Context context) {
+        this.context = context;
+    }
+
     @Override
-    public List<Map<String, Object>> invoke(String namespace, Context context, Object[] args, Map<String, Object> properties) throws Throwable {
+    public List<Map<String, Object>> invoke(Object[] args) throws JavormioException {
         SingleSqlExecutor singleSqlExecutor = context.getSqlExecutor(SingleSqlExecutor.class);
         StatementHelper statementHelper = context.getStatementHelper(daoMethodFeature);
         ExecutorParameters<?, List<Map<String, Object>>> executorParameters = new ExecutorParameters<>();

@@ -12,8 +12,8 @@ import io.github.maxwellnie.javormio.core.translation.SqlType;
 import io.github.maxwellnie.javormio.core.translation.table.column.ColumnInfo;
 import io.github.maxwellnie.javormio.core.translation.table.column.ColumnType;
 import io.github.maxwellnie.javormio.core.translation.table.primary.PrimaryInfo;
-import io.github.maxwellnie.javormio.flexible.sql.plugin.SqlBuilder;
-import io.github.maxwellnie.javormio.flexible.sql.plugin.execution.result.convertor.ExecutionResults;
+import io.github.maxwellnie.javormio.core.translation.sql.SqlBuilder;
+import io.github.maxwellnie.javormio.flexible.sql.plugin.execution.result.convertor.ResultContext;
 import io.github.maxwellnie.javormio.flexible.sql.plugin.execution.result.stream.EntityResultStream;
 import io.github.maxwellnie.javormio.flexible.sql.plugin.execution.result.stream.ExecutionResultStream;
 import io.github.maxwellnie.javormio.flexible.sql.plugin.execution.result.stream.ResultStream;
@@ -46,15 +46,15 @@ public class Query<T> {
     /**
      * 使用执行结果集流处理来处理结果
      *
-     * @return ResultStream<ExecutionResults> 结果流
+     * @return ResultStream<ResultContext> 结果流
      */
     @SuppressWarnings("unchecked")
-    public ResultStream<ExecutionResults> selectToResultStream() {
+    public ResultStream<ResultContext> selectToResultStream() {
         ExecutorParameters executorParameters = new ExecutorParameters(queryBuilder.flexibleSqlContext.getContext().getConnection(), executableSql, null, new PreparedStatementHelper(), "");
         SqlExecutor sqlExecutor = queryBuilder.flexibleSqlContext.getContext().getSqlExecutor(SingleSqlExecutor.class);
         executableSql = queryBuilder.toExecutableSql();
-        ExecutionResults executionResults = new ExecutionResults(new LinkedHashMap<>(), null, queryBuilder.allColumns, queryBuilder.columnAliasMap, sqlExecutor, executorParameters);
-        return new ExecutionResultStream(executionResults);
+        ResultContext resultContext = new ResultContext(new LinkedHashMap<>(), null, queryBuilder.allColumns, queryBuilder.columnAliasMap, sqlExecutor, executorParameters);
+        return new ExecutionResultStream(resultContext);
     }
 
     /**

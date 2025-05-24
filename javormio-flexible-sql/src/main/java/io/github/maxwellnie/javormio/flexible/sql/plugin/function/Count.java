@@ -3,7 +3,7 @@ package io.github.maxwellnie.javormio.flexible.sql.plugin.function;
 import io.github.maxwellnie.javormio.core.Context;
 import io.github.maxwellnie.javormio.core.translation.sql.SqlFragment;
 import io.github.maxwellnie.javormio.core.translation.table.column.ColumnInfo;
-import io.github.maxwellnie.javormio.flexible.sql.plugin.SqlBuilder;
+import io.github.maxwellnie.javormio.core.translation.sql.SqlBuilder;
 
 /**
  * @author Maxwell Nie

@@ -27,9 +27,9 @@ public class FMapConvertor implements ResultSetConvertor<List<Map<String, Object
     public List<Map<String, Object>> convert(Statement statement) throws SQLException, ResultParseException {
         ResultSet rs = statement.getResultSet();
         if (rs != null) {
-            ExecutionResults executionResults = resultStream.getExecutionResults();
-            List<ColumnInfo> columnInfos = executionResults.getBaseColumnInfos();
-            Map<ColumnInfo, String> columnAliases = executionResults.getColumnAliases();
+            ResultContext resultContext = resultStream.getExecutionResults();
+            List<ColumnInfo> columnInfos = resultContext.getBaseColumnInfos();
+            Map<ColumnInfo, String> columnAliases = resultContext.getColumnAliases();
             List<Map<String, Object>> list = new LinkedList<>();
             while (rs.next()) {
                 Map<String, Object> map = new LinkedHashMap<>();
@@ -37,7 +37,7 @@ public class FMapConvertor implements ResultSetConvertor<List<Map<String, Object
                     String columnName = columnAliases.get(columnInfo);
                     if (columnName == null)
                         columnName = columnInfo.getColumnName();
-                    Object value = columnInfo.getTypeHandler().getValue(rs, executionResults.getColumnIndex(columnInfo));
+                    Object value = columnInfo.getTypeHandler().getValue(rs, resultContext.getColumnIndex(columnInfo));
                     map.put(columnName, value);
                 }
                 list.add(map);

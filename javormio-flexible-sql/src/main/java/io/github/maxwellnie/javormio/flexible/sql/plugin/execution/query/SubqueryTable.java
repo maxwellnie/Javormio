@@ -4,7 +4,7 @@ import io.github.maxwellnie.javormio.core.translation.table.BaseMetaTableInfo;
 import io.github.maxwellnie.javormio.core.translation.table.column.ColumnInfo;
 import io.github.maxwellnie.javormio.core.translation.table.primary.KeyGenerator;
 import io.github.maxwellnie.javormio.core.translation.table.primary.PrimaryInfo;
-import io.github.maxwellnie.javormio.flexible.sql.plugin.SqlBuilder;
+import io.github.maxwellnie.javormio.core.translation.sql.SqlBuilder;
 
 import java.util.Arrays;
 import java.util.function.Supplier;

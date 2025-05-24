@@ -2,11 +2,12 @@ package io.github.maxwellnie.javormio.flexible.sql.plugin.expression.impl;
 
 import io.github.maxwellnie.javormio.core.translation.table.column.ColumnInfo;
 import io.github.maxwellnie.javormio.flexible.sql.plugin.expression.Expression;
+import io.github.maxwellnie.javormio.flexible.sql.plugin.expression.SqlExpressionSupport;
 
 /**
  * @author Maxwell Nie
  */
-public abstract class DoubleValueExpression<E, T> implements Expression {
+public abstract class DoubleValueExpression<S extends SqlExpressionSupport, E, T> implements Expression<S> {
     protected ColumnInfo<E, T> firstColumnInfo;
     protected T firstValue;
     protected T secondValue;

@@ -31,7 +31,7 @@ public class ExecutorParameters<T extends Statement, E> {
     /**
      * 命名空间
      */
-     String namespace;
+    String namespace;
     /**
      * 其他参数
      */

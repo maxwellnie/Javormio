@@ -1,18 +1,18 @@
 package io.github.maxwellnie.javormio.flexible.sql.plugin.execution.result.stream;
 
 import io.github.maxwellnie.javormio.core.execution.result.ResultParseException;
-import io.github.maxwellnie.javormio.flexible.sql.plugin.execution.result.convertor.ExecutionResults;
+import io.github.maxwellnie.javormio.flexible.sql.plugin.execution.result.convertor.ResultContext;
 
 /**
  * @author Maxwell Nie
  */
-public class ExecutionResultStream extends BaseResultStream<ExecutionResults> {
-    public ExecutionResultStream(ExecutionResults executionResults) {
-        super(executionResults);
+public class ExecutionResultStream extends BaseResultStream<ResultContext> {
+    public ExecutionResultStream(ResultContext resultContext) {
+        super(resultContext);
     }
 
     @Override
-    public ExecutionResults receive() throws ResultParseException {
+    public ResultContext receive() throws ResultParseException {
         return getExecutionResults();
     }
 }

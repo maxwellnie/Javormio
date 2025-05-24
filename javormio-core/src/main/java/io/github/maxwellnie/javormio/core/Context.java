@@ -10,6 +10,7 @@ import io.github.maxwellnie.javormio.core.api.dynamic.DynamicSql;
 import io.github.maxwellnie.javormio.core.execution.executor.SingleSqlExecutor;
 import io.github.maxwellnie.javormio.core.execution.executor.SqlExecutor;
 import io.github.maxwellnie.javormio.core.execution.statement.StatementHelper;
+import io.github.maxwellnie.javormio.core.translation.Dialect;
 import io.github.maxwellnie.javormio.core.translation.TableParser;
 import io.github.maxwellnie.javormio.core.translation.table.TableInfo;
 
@@ -50,7 +51,9 @@ public class Context {
     public<T extends SqlExecutor> T getSqlExecutor(Class<T> implClazz) {
         return (T) sqlExecutorPool.get(implClazz);
     }
-
+    public SqlExecutor getSqlExecutor(Object key) {
+        return sqlExecutorPool.get(key);
+    }
     public DynamicDataSource getDynamicMultipleDataSource() {
         return dynamicDataSource;
     }
@@ -117,7 +120,9 @@ public class Context {
         }
         map.put(key, value);
     }
-
+    public Dialect getDialect() {
+        return null;
+    }
     /**
      * 获取Getter方法名
      *

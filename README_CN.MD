@@ -310,8 +310,8 @@ public class Test {
                 .excludeColumns(tableUser.id)
                 .toSql()
                 .selectToResultSet()
-                .mapTo(User::new, (executionResults, user) -> {
-                    user.setName(executionResults.getColumnValue(tableUser.name));
+                .mapTo(User::new, (resultContext, user) -> {
+                    user.setName(resultContext.getColumnValue(tableUser.name));
                     return user;
                 })
                 .collect(Collectors.toSet());
@@ -409,8 +409,8 @@ ResultSetExecuteResult resultSetExecuteResult = QueryBuilder.from(tableUser, "a"
 - mapTo方法，使用如下代码，可将ResultSet映射为User
 
 ```java
-MapExecuteResult<User, Tool> userMapExecuteResult = QueryBuilder.from(tableUser, "a", context).toSql().selectToResultSet().mapTo(User::new, (executionResults, user) -> {
-    user.setName(executionResults.getColumnValue(tableUser.name));
+MapExecuteResult<User, Tool> userMapExecuteResult = QueryBuilder.from(tableUser, "a", context).toSql().selectToResultSet().mapTo(User::new, (resultContext, user) -> {
+    user.setName(resultContext.getColumnValue(tableUser.name));
     return user;
 });
 ```
@@ -418,8 +418,8 @@ MapExecuteResult<User, Tool> userMapExecuteResult = QueryBuilder.from(tableUser,
 - collect方法，对于映射好的对象，我们必须对其进行收集，可以使用Collector来指示这些对象的收集方式，比如：
 
 ```java
-Set<User> users = QueryBuilder.from(tableUser, "a", context).toSql().selectToResultSet().mapTo(User::new, (executionResults, user) -> {
-    user.setName(executionResults.getColumnValue(tableUser.name));
+Set<User> users = QueryBuilder.from(tableUser, "a", context).toSql().selectToResultSet().mapTo(User::new, (resultContext, user) -> {
+    user.setName(resultContext.getColumnValue(tableUser.name));
     return user;
 }).collect(Collectors.toSet());
 ```

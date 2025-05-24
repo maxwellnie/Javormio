@@ -1,5 +1,7 @@
 package io.github.maxwellnie.javormio.core.api;
 
+import io.github.maxwellnie.javormio.core.execution.result.ResultSetConvertor;
+
 import java.util.List;
 import java.util.Map;
 
@@ -7,7 +9,7 @@ import java.util.Map;
  * @author Maxwell Nie
  */
 public interface SqlOperation {
-    List<Map<String, Object>> select(String sql, Object... args);
+    <T> T select(String sql, ResultSetConvertor<T> convertor, Object... args);
     int insert(String sql, Object... args);
     int update(String sql, Object... args);
     int delete(String sql, Object... args);

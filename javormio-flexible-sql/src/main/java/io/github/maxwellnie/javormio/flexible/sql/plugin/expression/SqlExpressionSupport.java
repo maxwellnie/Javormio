@@ -4,7 +4,7 @@ import io.github.maxwellnie.javormio.common.annotation.document.ExtensionPoint;
 import io.github.maxwellnie.javormio.common.java.type.NullTypeHandler;
 import io.github.maxwellnie.javormio.common.java.type.TypeHandler;
 import io.github.maxwellnie.javormio.core.translation.SqlParameter;
-import io.github.maxwellnie.javormio.flexible.sql.plugin.SqlBuilder;
+import io.github.maxwellnie.javormio.core.translation.sql.SqlBuilder;
 
 
 @ExtensionPoint
