@@ -45,11 +45,11 @@ public class FlexibleSqlContext<S extends SqlExpressionSupport> {
         this.sqlFunctionSupport = sqlFunctionSupport;
     }
 
-    public SqlExpressionSupport getSqlExpressionSupport() {
+    public S getSqlExpressionSupport() {
         return sqlExpressionSupport;
     }
 
-    public void setSqlExpressionSupport(SqlExpressionSupport sqlExpressionSupport) {
+    public void setSqlExpressionSupport(S sqlExpressionSupport) {
         this.sqlExpressionSupport = sqlExpressionSupport;
     }
 
