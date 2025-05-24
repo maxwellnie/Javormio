@@ -4,12 +4,15 @@ import io.github.maxwellnie.javormio.common.annotation.table.Table;
 import io.github.maxwellnie.javormio.common.annotation.table.column.Column;
 import io.github.maxwellnie.javormio.common.annotation.table.column.PrimaryKey;
 import io.github.maxwellnie.javormio.core.translation.table.column.ColumnInfo;
+import io.github.maxwellnie.javormio.core.translation.table.column.ColumnType;
 import io.github.maxwellnie.javormio.flexible.sql.plugin.table.ClassName;
 import io.github.maxwellnie.javormio.flexible.sql.plugin.table.MetaColumn;
 import io.github.maxwellnie.javormio.flexible.sql.plugin.table.MetaTable;
 import io.github.maxwellnie.javormio.source.code.processor.CustomProcessor;
 import io.github.maxwellnie.javormio.source.code.processor.SPIPlugin;
+import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.Velocity;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
@@ -57,22 +60,37 @@ public class MetaTableHandler implements CustomProcessor {
             className1.name = className;
             metaTable.className = className1;
             metaTable.tableName =tableName;
-//            metaTable.packagePath = ;
+            metaTable.packagePath = packageName;
+            metaTable.defaultDataSourceName = tableAnnotation.defaultDataSourceName().isEmpty()
+                    ? "default"
+                    : tableAnnotation.defaultDataSourceName();
+            metaTable.imports = List.of(
+                    "io.github.maxwellnie.javormio.core.translation.table.BaseMetaTableInfo",
+                    "io.github.maxwellnie.javormio.common.java.reflect.property.MetaField",
+                    "io.github.maxwellnie.javormio.core.translation.table.column.ColumnInfo",
+                    "io.github.maxwellnie.javormio.core.translation.table.primary.PrimaryInfo"
+            );
             metaTable.metaColumns = typeElement.getEnclosedElements()
                     .stream()
                     .filter(e1 -> e1.getKind() == ElementKind.FIELD)
                     .map(e1 -> {
-                        PrimaryKey primaryKey = e1.getAnnotation(PrimaryKey.class);
                         MetaColumn metaColumn = new MetaColumn();
                         Column column = e1.getAnnotation(Column.class);
+                        PrimaryKey primaryKey = e1.getAnnotation(PrimaryKey.class);
+                        metaColumn.fieldName = e1.getSimpleName().toString();
                         if (column != null) {
-
+                            metaColumn.columnName = metaColumn.fieldName;
+                            metaColumn.typeHandlerClassName = column.typeHandler().getName();  ;
+                        metaColumn.columnType = ColumnType.NORMAL;
                         } else if (primaryKey != null) {
-                            metaColumn.fieldName  = e1.getSimpleName().toString();
-                        } else {
-                            Class<?> type = e1.asType().getClass();
-                            metaColumn.fieldName  = e1.getSimpleName().toString();
+                            metaColumn.columnName = column.value().isEmpty() ? metaColumn.fieldName : column.value();
+                            metaColumn.keyGeneratorClassName = primaryKey.typeHandler().getName();
+                            metaColumn.columnType = ColumnType.PRIMARY;
                         }
+                        metaColumn.typeName = e1.asType().toString();
+                        metaColumn.getterClassName = "get_"  + metaColumn.fieldName;
+                        metaColumn.setterClassName = "set_"  + metaColumn.fieldName;
+
                         return metaColumn;
                     })
                     .collect(Collectors.toList());
@@ -142,24 +160,28 @@ public class MetaTableHandler implements CustomProcessor {
                 }
             }*/
 
+
             VelocityContext context = new VelocityContext();
             context.put("metaTable",metaTable );
 
-
+            Template template = Velocity.getTemplate("MetaTable.java.vm");
+            String generatedPackageName = metaTable.packagePath + ".meta";
+            String generatedClassName = "Meta" + metaTable.className.name;
 
             // 5. 生成元数据类（示例），如果文件存在，删除然后重新生成
             try (Writer writer = processingEnv.getFiler()
-                    .createSourceFile("meta.TableMeta_" + element.getSimpleName())
+                    .createSourceFile(generatedPackageName+"."+generatedClassName)
                     .openWriter()) {
-                writer.write(String.format(
-                        "package meta;\n" +
-                                "public class TableMeta_%s {\n" +
-                                "    public static final String TABLE_NAME = \"%s\";\n" +
-                                "    // 可添加字段元数据解析\n" +
-                                "}",
-                        element.getSimpleName(),
-                        tableName
-                ));
+//                writer.write(String.format(
+//                        "package meta;\n" +
+//                                "public class TableMeta_%s {\n" +
+//                                "    public static final String TABLE_NAME = \"%s\";\n" +
+//                                "    // 可添加字段元数据解析\n" +
+//                                "}",
+//                        element.getSimpleName(),
+//                        tableName
+//                ));
+                template.merge(context, writer);
             } catch (IOException e) {
                 processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
                         "Failed to generate meta class: " + e.getMessage());
