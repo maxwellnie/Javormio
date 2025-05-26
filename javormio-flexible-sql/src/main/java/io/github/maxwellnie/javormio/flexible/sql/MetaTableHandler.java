@@ -3,8 +3,8 @@ package io.github.maxwellnie.javormio.flexible.sql;
 import io.github.maxwellnie.javormio.common.annotation.table.Table;
 import io.github.maxwellnie.javormio.common.annotation.table.column.Column;
 import io.github.maxwellnie.javormio.common.annotation.table.column.PrimaryKey;
-import io.github.maxwellnie.javormio.core.translation.table.column.ColumnInfo;
-import io.github.maxwellnie.javormio.core.translation.table.column.ColumnType;
+import io.github.maxwellnie.javormio.common.java.table.column.ColumnType;
+import io.github.maxwellnie.javormio.common.java.table.primary.KeyGenerator;
 import io.github.maxwellnie.javormio.flexible.sql.plugin.table.ClassName;
 import io.github.maxwellnie.javormio.flexible.sql.plugin.table.MetaColumn;
 import io.github.maxwellnie.javormio.flexible.sql.plugin.table.MetaTable;
@@ -22,6 +22,7 @@ import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -64,7 +65,7 @@ public class MetaTableHandler implements CustomProcessor {
             metaTable.defaultDataSourceName = tableAnnotation.defaultDataSourceName().isEmpty()
                     ? "default"
                     : tableAnnotation.defaultDataSourceName();
-            metaTable.imports = List.of(
+            metaTable.imports = Arrays.asList(
                     "io.github.maxwellnie.javormio.core.translation.table.BaseMetaTableInfo",
                     "io.github.maxwellnie.javormio.common.java.reflect.property.MetaField",
                     "io.github.maxwellnie.javormio.core.translation.table.column.ColumnInfo",
@@ -81,16 +82,20 @@ public class MetaTableHandler implements CustomProcessor {
                         if (column != null) {
                             metaColumn.columnName = metaColumn.fieldName;
                             metaColumn.typeHandlerClassName = column.typeHandler().getName();  ;
-                        metaColumn.columnType = ColumnType.NORMAL;
-                        } else if (primaryKey != null) {
-                            metaColumn.columnName = column.value().isEmpty() ? metaColumn.fieldName : column.value();
-                            metaColumn.keyGeneratorClassName = primaryKey.typeHandler().getName();
-                            metaColumn.columnType = ColumnType.PRIMARY;
+                            metaColumn.columnType = ColumnType.NORMAL;
+                        }
+                        if (primaryKey != null) {
+                            //需要验证是否是无键生成器
+                            Class<? extends KeyGenerator> keyGeneratorClass = primaryKey.keyGenerator();
+                            if (keyGeneratorClass != KeyGenerator.class)
+                                metaColumn.keyGeneratorClassName = keyGeneratorClass.getName();
+                            //掩码需要使用|运算符才不会在添加掩码时导致原掩码丢失
+                            metaColumn.columnType = metaColumn.columnType | ColumnType.PRIMARY;
                         }
                         metaColumn.typeName = e1.asType().toString();
-                        metaColumn.getterClassName = "get_"  + metaColumn.fieldName;
-                        metaColumn.setterClassName = "set_"  + metaColumn.fieldName;
-
+                        //加入_符号不符合Java命名规范
+                        metaColumn.getterClassName = "get"  + metaColumn.fieldName;
+                        metaColumn.setterClassName = "set"  + metaColumn.fieldName;
                         return metaColumn;
                     })
                     .collect(Collectors.toList());

@@ -6,13 +6,12 @@ import io.github.maxwellnie.javormio.core.execution.result.ResultParseException;
 import io.github.maxwellnie.javormio.core.execution.result.ResultSetConvertor;
 import io.github.maxwellnie.javormio.core.translation.SqlParameter;
 import io.github.maxwellnie.javormio.core.translation.SqlType;
-import io.github.maxwellnie.javormio.core.translation.table.primary.KeyGenerator;
+import io.github.maxwellnie.javormio.common.java.table.primary.KeyGenerator;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.List;
 
 /**
  * @author Maxwell Nie

@@ -1,9 +1,9 @@
 package io.github.maxwellnie.javormio.core.translation.table;
 
-import io.github.maxwellnie.javormio.core.translation.table.column.ColumnInfo;
-import io.github.maxwellnie.javormio.core.translation.table.primary.JoinInfo;
-import io.github.maxwellnie.javormio.core.translation.table.primary.KeyGenerator;
-import io.github.maxwellnie.javormio.core.translation.table.primary.PrimaryInfo;
+import io.github.maxwellnie.javormio.common.java.table.BaseMetaTableInfo;
+import io.github.maxwellnie.javormio.common.java.table.column.ColumnInfo;
+import io.github.maxwellnie.javormio.common.java.table.primary.KeyGenerator;
+import io.github.maxwellnie.javormio.common.java.table.primary.PrimaryInfo;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -15,7 +15,7 @@ import java.util.function.Supplier;
  *
  * @author Maxwell Nie
  */
-public class TableInfo<E> extends BaseMetaTableInfo<E>{
+public class TableInfo<E> extends BaseMetaTableInfo<E> {
     /**
      * 列信息映射，key为字段名，value为列信息
      */

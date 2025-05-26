@@ -7,7 +7,7 @@ import io.github.maxwellnie.javormio.core.execution.executor.parameter.ExecutorP
 import io.github.maxwellnie.javormio.core.execution.result.ResultSetConvertor;
 import io.github.maxwellnie.javormio.core.execution.statement.StatementHelper;
 import io.github.maxwellnie.javormio.core.translation.SqlType;
-import io.github.maxwellnie.javormio.core.translation.table.primary.KeyGenerator;
+import io.github.maxwellnie.javormio.common.java.table.primary.KeyGenerator;
 
 import java.sql.Connection;
 import java.sql.SQLException;

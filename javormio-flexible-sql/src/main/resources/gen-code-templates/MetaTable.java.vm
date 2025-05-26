@@ -1,9 +1,9 @@
 package ${metaTable.packagePath};
 
-import io.github.maxwellnie.javormio.core.translation.table.BaseMetaTableInfo;
+import io.github.maxwellnie.javormio.common.java.table.BaseMetaTableInfo;
 import io.github.maxwellnie.javormio.common.java.reflect.property.MetaField;
-import io.github.maxwellnie.javormio.core.translation.table.column.ColumnInfo;
-import io.github.maxwellnie.javormio.core.translation.table.primary.PrimaryInfo;
+import io.github.maxwellnie.javormio.common.java.table.column.ColumnInfo;
+import io.github.maxwellnie.javormio.common.java.table.primary.PrimaryInfo;
 import ${baseMetaPackage};
 #foreach($import in ${metaTable.imports})
 import $import;

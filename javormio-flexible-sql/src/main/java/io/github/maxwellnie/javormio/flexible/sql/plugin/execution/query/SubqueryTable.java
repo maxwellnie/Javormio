@@ -1,9 +1,9 @@
 package io.github.maxwellnie.javormio.flexible.sql.plugin.execution.query;
 
-import io.github.maxwellnie.javormio.core.translation.table.BaseMetaTableInfo;
-import io.github.maxwellnie.javormio.core.translation.table.column.ColumnInfo;
-import io.github.maxwellnie.javormio.core.translation.table.primary.KeyGenerator;
-import io.github.maxwellnie.javormio.core.translation.table.primary.PrimaryInfo;
+import io.github.maxwellnie.javormio.common.java.table.BaseMetaTableInfo;
+import io.github.maxwellnie.javormio.common.java.table.column.ColumnInfo;
+import io.github.maxwellnie.javormio.common.java.table.primary.KeyGenerator;
+import io.github.maxwellnie.javormio.common.java.table.primary.PrimaryInfo;
 import io.github.maxwellnie.javormio.core.translation.sql.SqlBuilder;
 
 import java.util.Arrays;

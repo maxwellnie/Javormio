@@ -1,4 +1,4 @@
-package io.github.maxwellnie.javormio.core.translation.table.primary;
+package io.github.maxwellnie.javormio.common.java.table.primary;
 
 /**
  * @author Maxwell Nie

@@ -3,7 +3,7 @@ package io.github.maxwellnie.javormio.flexible.sql.plugin.execution.result.conve
 import io.github.maxwellnie.javormio.core.execution.executor.SqlExecutor;
 import io.github.maxwellnie.javormio.core.execution.executor.parameter.ExecutorParameters;
 import io.github.maxwellnie.javormio.core.execution.result.ResultParseException;
-import io.github.maxwellnie.javormio.core.translation.table.column.ColumnInfo;
+import io.github.maxwellnie.javormio.common.java.table.column.ColumnInfo;
 import io.github.maxwellnie.javormio.flexible.sql.plugin.expression.SqlExpressionSupport;
 import io.github.maxwellnie.javormio.flexible.sql.plugin.table.ExpressionColumnInfo;
 

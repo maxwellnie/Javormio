@@ -1,6 +1,6 @@
-package io.github.maxwellnie.javormio.core.translation.table.primary;
+package io.github.maxwellnie.javormio.common.java.table.primary;
 
-import io.github.maxwellnie.javormio.core.translation.table.column.ColumnInfo;
+import io.github.maxwellnie.javormio.common.java.table.column.ColumnInfo;
 
 /**
  * 主键信息

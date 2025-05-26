@@ -3,7 +3,7 @@ package io.github.maxwellnie.javormio.flexible.sql.plugin.function;
 import io.github.maxwellnie.javormio.AbstractColumnExpression;
 import io.github.maxwellnie.javormio.common.java.reflect.property.MetaField;
 import io.github.maxwellnie.javormio.core.Context;
-import io.github.maxwellnie.javormio.core.translation.table.column.ColumnInfo;
+import io.github.maxwellnie.javormio.common.java.table.column.ColumnInfo;
 import io.github.maxwellnie.javormio.flexible.sql.plugin.expression.SqlExpressionSupport;
 import io.github.maxwellnie.javormio.flexible.sql.plugin.table.ExpressionColumnInfo;
 

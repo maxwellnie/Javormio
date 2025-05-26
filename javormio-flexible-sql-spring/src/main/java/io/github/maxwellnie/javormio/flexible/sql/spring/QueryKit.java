@@ -1,6 +1,6 @@
 package io.github.maxwellnie.javormio.flexible.sql.spring;
 
-import io.github.maxwellnie.javormio.core.translation.table.BaseMetaTableInfo;
+import io.github.maxwellnie.javormio.common.java.table.BaseMetaTableInfo;
 import io.github.maxwellnie.javormio.flexible.sql.plugin.AliasTable;
 import io.github.maxwellnie.javormio.flexible.sql.plugin.FlexibleSqlContext;
 import io.github.maxwellnie.javormio.flexible.sql.plugin.execution.query.QueryBuilder;

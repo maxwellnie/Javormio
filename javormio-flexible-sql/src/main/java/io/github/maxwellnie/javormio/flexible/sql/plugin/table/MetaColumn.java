@@ -1,6 +1,6 @@
 package io.github.maxwellnie.javormio.flexible.sql.plugin.table;
 
-import io.github.maxwellnie.javormio.core.translation.table.column.ColumnType;
+import io.github.maxwellnie.javormio.common.java.table.column.ColumnType;
 
 /**
  * @author Maxwell Nie

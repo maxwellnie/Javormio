@@ -1,8 +1,8 @@
-package io.github.maxwellnie.javormio.core.translation.table.column;
+package io.github.maxwellnie.javormio.common.java.table.column;
 
 import io.github.maxwellnie.javormio.common.java.reflect.property.MetaField;
 import io.github.maxwellnie.javormio.common.java.type.TypeHandler;
-import io.github.maxwellnie.javormio.core.translation.table.BaseMetaTableInfo;
+import io.github.maxwellnie.javormio.common.java.table.BaseMetaTableInfo;
 
 /**
  * 列信息

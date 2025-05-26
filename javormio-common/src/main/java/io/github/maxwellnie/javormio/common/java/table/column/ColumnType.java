@@ -1,4 +1,4 @@
-package io.github.maxwellnie.javormio.core.translation.table.column;
+package io.github.maxwellnie.javormio.common.java.table.column;
 
 /**
  * @author Maxwell Nie

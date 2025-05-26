@@ -1,14 +1,12 @@
-package io.github.maxwellnie.javormio.core.translation.table.primary;
+package io.github.maxwellnie.javormio.common.java.table.primary;
 
 import io.github.maxwellnie.javormio.common.java.api.BugException;
-import io.github.maxwellnie.javormio.common.java.api.JavormioException;
 import io.github.maxwellnie.javormio.common.java.proxy.MethodInvocationException;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 
 /**

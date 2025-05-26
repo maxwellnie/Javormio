@@ -1,4 +1,4 @@
-package io.github.maxwellnie.javormio.core.translation.table;
+package io.github.maxwellnie.javormio.common.java.table;
 
 import io.github.maxwellnie.javormio.common.java.api.JavormioException;
 

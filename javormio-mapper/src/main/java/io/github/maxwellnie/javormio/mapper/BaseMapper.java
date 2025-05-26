@@ -1,7 +1,7 @@
 package io.github.maxwellnie.javormio.mapper;
 
 import io.github.maxwellnie.javormio.core.execution.ExecutionException;
-import io.github.maxwellnie.javormio.core.translation.table.primary.PrimaryException;
+import io.github.maxwellnie.javormio.common.java.table.primary.PrimaryException;
 
 import java.io.Serializable;
 import java.util.List;

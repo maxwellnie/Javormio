@@ -8,8 +8,8 @@ import io.github.maxwellnie.javormio.core.translation.SqlType;
 import io.github.maxwellnie.javormio.core.translation.sql.SqlBuilder;
 import io.github.maxwellnie.javormio.core.translation.sql.SqlFragment;
 import io.github.maxwellnie.javormio.core.translation.table.TableInfo;
-import io.github.maxwellnie.javormio.core.translation.table.column.ColumnInfo;
-import io.github.maxwellnie.javormio.core.translation.table.primary.JoinInfo;
+import io.github.maxwellnie.javormio.common.java.table.column.ColumnInfo;
+import io.github.maxwellnie.javormio.core.translation.table.JoinInfo;
 
 import java.util.*;
 

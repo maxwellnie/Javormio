@@ -1,6 +1,5 @@
-package io.github.maxwellnie.javormio.core.translation.table.primary;
+package io.github.maxwellnie.javormio.core.translation.table;
 
-import io.github.maxwellnie.javormio.core.translation.table.TableInfo;
 
 import java.util.function.Supplier;
 

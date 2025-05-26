@@ -1,7 +1,7 @@
 package io.github.maxwellnie.javormio.flexible.sql.plugin;
 
-import io.github.maxwellnie.javormio.core.translation.table.BaseMetaTableInfo;
-import io.github.maxwellnie.javormio.core.translation.table.column.ColumnInfo;
+import io.github.maxwellnie.javormio.common.java.table.BaseMetaTableInfo;
+import io.github.maxwellnie.javormio.common.java.table.column.ColumnInfo;
 import io.github.maxwellnie.javormio.flexible.sql.plugin.table.ExpressionColumnInfo;
 
 import java.util.LinkedHashMap;

@@ -1,8 +1,8 @@
-package io.github.maxwellnie.javormio.core.translation.table;
+package io.github.maxwellnie.javormio.common.java.table;
 
-import io.github.maxwellnie.javormio.core.translation.table.column.ColumnInfo;
-import io.github.maxwellnie.javormio.core.translation.table.primary.KeyGenerator;
-import io.github.maxwellnie.javormio.core.translation.table.primary.PrimaryInfo;
+import io.github.maxwellnie.javormio.common.java.table.column.ColumnInfo;
+import io.github.maxwellnie.javormio.common.java.table.primary.KeyGenerator;
+import io.github.maxwellnie.javormio.common.java.table.primary.PrimaryInfo;
 
 import java.util.function.Supplier;
 

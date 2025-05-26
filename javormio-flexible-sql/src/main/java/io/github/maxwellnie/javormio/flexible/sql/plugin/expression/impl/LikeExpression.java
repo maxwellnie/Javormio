@@ -1,6 +1,6 @@
 package io.github.maxwellnie.javormio.flexible.sql.plugin.expression.impl;
 
-import io.github.maxwellnie.javormio.core.translation.table.column.ColumnInfo;
+import io.github.maxwellnie.javormio.common.java.table.column.ColumnInfo;
 import io.github.maxwellnie.javormio.flexible.sql.plugin.expression.SqlExpressionSupport;
 
 /**
