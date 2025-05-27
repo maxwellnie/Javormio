@@ -22,6 +22,7 @@ import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -32,6 +33,8 @@ import java.util.stream.Collectors;
  */
 @SPIPlugin(Table.class)
 public class MetaTableHandler implements CustomProcessor {
+
+
 
     @Override
     public void process(Set<? extends Element> elements, ProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
@@ -65,12 +68,13 @@ public class MetaTableHandler implements CustomProcessor {
             metaTable.defaultDataSourceName = tableAnnotation.defaultDataSourceName().isEmpty()
                     ? "default"
                     : tableAnnotation.defaultDataSourceName();
-            metaTable.imports = Arrays.asList(
-                    "io.github.maxwellnie.javormio.core.translation.table.BaseMetaTableInfo",
-                    "io.github.maxwellnie.javormio.common.java.reflect.property.MetaField",
-                    "io.github.maxwellnie.javormio.core.translation.table.column.ColumnInfo",
-                    "io.github.maxwellnie.javormio.core.translation.table.primary.PrimaryInfo"
-            );
+            metaTable.imports = new ArrayList<>(getDefaultImports());
+            /*
+            * 如果需要添加别的依赖，则添加到if中
+            * */
+//            if (){
+//                metaTable.imports.add();
+//            }
             metaTable.metaColumns = typeElement.getEnclosedElements()
                     .stream()
                     .filter(e1 -> e1.getKind() == ElementKind.FIELD)
@@ -101,71 +105,11 @@ public class MetaTableHandler implements CustomProcessor {
                     .collect(Collectors.toList());
 //            metaTable.defaultDataSourceName = tableAnnotation.defaultDataSourceName();
 
-/*
-            String path = "io.github.maxwellnie.javormio.flexible.sql.plugin.meta."+typeElement.getQualifiedName().toString();
-            try {
-                processingEnv.getFiler().createSourceFile(path);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            // 然后生成属性,写入文件
-            List<? extends Element> fields = typeElement.getEnclosedElements();
-            for (Element field : fields) {
-                if (field.getKind() != ElementKind.FIELD) continue;
-
-                String fieldName = field.getSimpleName().toString();
-                String fieldType = field.asType().toString();
-            }
-            //，最后根据名字生成set，get方法。
-
-            //根据类建立元数据
-            //最后给velocity中添加元数据
-            *
-             * io.github.xx.aa.User
-             * meta.io.github.xx.aa=>判断是否存在这个文件夹，没有就创建
-             * （MetaUser）put=>meta.io.github.xx.aa文件夹
-             * HashSet
-             * hashSet.add(user.class);
-             * if(hashset.contains(user.class))
-             * MetaUser
-            //ReflectionUtils
-            //meta_user.java
-               package meta;
-               public class MetaUser extend BaseMetaTableInfo{
-                   public String tableName ="tb_user";
-                   public MetaColumnInfo userId = new MetaColumnInfo{
-                         String name = "";
-                         Class<?> type = io.github.xx.aa.User.class;
-                         Class<?> typeHandler = null;
-                         Method getter = ReflectionUtils.getMethod(io.github.xx.aa.User.class, "userId");
-                   };
-               }
-                public interface Meta{
-                    meta.io.github.xx.aa.MetaUser io_github_xx_aa_MetaUser = new meta.io.github.xx.aa.MetaUser();
-                }
-*/
-            // 2. 类型转换
-
 
             List<? extends Element> fields = element.getEnclosedElements()
                     .stream()
                     .filter(e1 -> e1.getKind() == ElementKind.FIELD)
                     .collect(Collectors.toList());
-/*            for (Element field : fields) {
-                ColumnInfo columnInfo = new ColumnInfo();
-                Column column = field.getAnnotation(Column.class);
-                PrimaryKey primaryKey = field.getAnnotation(PrimaryKey.class);
-                if (column != null) {
-
-                } else if (primaryKey != null) {
-                    columnInfo.setColumnName(field.getSimpleName().toString());
-                } else {
-                    Class<?> type = field.asType().getClass();
-                    columnInfo.setColumnName(field.getSimpleName().toString());
-                }
-            }*/
-
-
             VelocityContext context = new VelocityContext();
             context.put("metaTable",metaTable );
 
@@ -177,15 +121,7 @@ public class MetaTableHandler implements CustomProcessor {
             try (Writer writer = processingEnv.getFiler()
                     .createSourceFile(generatedPackageName+"."+generatedClassName)
                     .openWriter()) {
-//                writer.write(String.format(
-//                        "package meta;\n" +
-//                                "public class TableMeta_%s {\n" +
-//                                "    public static final String TABLE_NAME = \"%s\";\n" +
-//                                "    // 可添加字段元数据解析\n" +
-//                                "}",
-//                        element.getSimpleName(),
-//                        tableName
-//                ));
+
                 template.merge(context, writer);
             } catch (IOException e) {
                 processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
@@ -201,5 +137,13 @@ public class MetaTableHandler implements CustomProcessor {
                 }
             }
         }
+    }
+    private List<String> getDefaultImports(){
+        return Arrays.asList(
+                "io.github.maxwellnie.javormio.common.java.table.BaseMetaTableInfo",
+                "io.github.maxwellnie.javormio.common.java.reflect.property.MetaField",
+                "io.github.maxwellnie.javormio.common.java.table.column.ColumnInfo",
+                "io.github.maxwellnie.javormio.common.java.table.primary.PrimaryInfo"
+        );
     }
 }
