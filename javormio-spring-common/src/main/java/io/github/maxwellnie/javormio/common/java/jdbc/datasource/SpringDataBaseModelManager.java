@@ -1,6 +1,5 @@
 package io.github.maxwellnie.javormio.common.java.jdbc.datasource;
 
-import javax.sql.DataSource;
 import java.sql.Connection;
 import java.util.Map;
 
@@ -8,7 +7,7 @@ import java.util.Map;
  * @author Maxwell Nie
  */
 public class SpringDataBaseModelManager extends DefaultDataBaseModelManager {
-    public SpringDataBaseModelManager(String defaultDataSourceName, Map<Object, DataSource> dataSources) {
+    public SpringDataBaseModelManager(String defaultDataSourceName, Map<Object, DataBaseModel> dataSources) {
         super(defaultDataSourceName, dataSources);
     }
 
@@ -18,6 +17,6 @@ public class SpringDataBaseModelManager extends DefaultDataBaseModelManager {
 
     @Override
     public Connection getConnection() {
-        return new SpringConnectionWrapper(getCurrentDataSource());
+        return new SpringConnectionWrapper(getCurrentDataSource().getDataSource());
     }
 }
