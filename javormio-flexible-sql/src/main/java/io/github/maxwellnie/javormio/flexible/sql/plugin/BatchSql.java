@@ -1,6 +1,6 @@
 package io.github.maxwellnie.javormio.flexible.sql.plugin;
 
-import io.github.maxwellnie.javormio.core.translation.SqlParameter;
+import io.github.maxwellnie.javormio.common.java.sql.SqlParameter;
 
 /**
  * 批量SQL

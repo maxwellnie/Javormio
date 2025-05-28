@@ -12,8 +12,8 @@ import io.github.maxwellnie.javormio.core.execution.executor.parameter.ExecutorP
 import io.github.maxwellnie.javormio.core.execution.result.ResultParseException;
 import io.github.maxwellnie.javormio.core.execution.result.ResultSetConvertor;
 import io.github.maxwellnie.javormio.core.execution.statement.StatementHelper;
-import io.github.maxwellnie.javormio.core.translation.SqlParameter;
-import io.github.maxwellnie.javormio.core.translation.SqlType;
+import io.github.maxwellnie.javormio.common.java.sql.SqlParameter;
+import io.github.maxwellnie.javormio.common.java.sql.SqlType;
 import io.github.maxwellnie.javormio.core.translation.method.SqlMethod;
 
 import java.sql.ResultSet;

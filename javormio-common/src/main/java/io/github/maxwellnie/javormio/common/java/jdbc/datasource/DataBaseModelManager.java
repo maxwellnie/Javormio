@@ -1,8 +1,8 @@
 package io.github.maxwellnie.javormio.common.java.jdbc.datasource;
 
 import io.github.maxwellnie.javormio.common.java.api.Registry;
+import io.github.maxwellnie.javormio.common.java.sql.dialect.Dialect;
 
-import javax.sql.DataSource;
 import java.sql.Connection;
 import java.util.Collection;
 
@@ -11,21 +11,21 @@ import java.util.Collection;
  *
  * @author Maxwell Nie
  */
-public interface DynamicDataSource extends Registry<Object, DataSource>{
+public interface DataBaseModelManager extends Registry<Object, DataBaseModel>{
 
     /**
      * 获取当前使用的数据源
      *
-     * @return DataSource
+     * @return DataBaseModel
      */
-    DataSource getCurrentDataSource();
+    DataBaseModel getCurrentDataSource();
 
     /**
      * 获取默认的数据源
      *
-     * @return DataSource
+     * @return DataBaseModel
      */
-    DataSource getDefaultDataSource();
+    DataBaseModel getDefaultDataSource();
 
     /**
      * 设置当前使用的数据源
@@ -49,7 +49,13 @@ public interface DynamicDataSource extends Registry<Object, DataSource>{
     /**
      * 获取所有的数据源
      *
-     * @return Collection<DataSource>
+     * @return Collection<DataBaseModel>
      */
-    Collection<DataSource> getDataSources();
+    Collection<DataBaseModel> getDataSources();
+    /**
+     * 获取Dialect
+     *
+     * @return Dialect
+     */
+    Dialect getDialect();
 }

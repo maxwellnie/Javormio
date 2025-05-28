@@ -1,6 +1,7 @@
 package io.github.maxwellnie.javormio.core.translation.method.impl;
 
 import io.github.maxwellnie.javormio.common.java.reflect.MethodFeature;
+import io.github.maxwellnie.javormio.common.java.table.BaseMetaTableInfo;
 import io.github.maxwellnie.javormio.core.Context;
 import io.github.maxwellnie.javormio.core.execution.result.ResultSetConvertor;
 import io.github.maxwellnie.javormio.core.execution.statement.StatementHelper;
@@ -14,7 +15,7 @@ public class MapperContext<T, R> {
     protected String namespace;
     protected MethodFeature methodFeature;
     protected ResultSetConvertor<R> convertor;
-    protected TableInfo<T> tableInfo;
+    protected BaseMetaTableInfo<T> tableInfo;
     protected StatementHelper statementHelper;
 
     public Context getContext() {
@@ -33,7 +34,7 @@ public class MapperContext<T, R> {
         return convertor;
     }
 
-    public TableInfo<T> getTableInfo() {
+    public BaseMetaTableInfo<T> getTableInfo() {
         return tableInfo;
     }
 

@@ -1,6 +1,5 @@
-package io.github.maxwellnie.javormio.core.translation.sql;
+package io.github.maxwellnie.javormio.common.java.sql;
 
-import io.github.maxwellnie.javormio.core.translation.SqlParameter;
 
 /**
  * @author Maxwell Nie

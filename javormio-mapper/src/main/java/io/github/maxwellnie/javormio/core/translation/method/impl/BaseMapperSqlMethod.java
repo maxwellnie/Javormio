@@ -6,7 +6,7 @@ import io.github.maxwellnie.javormio.core.execution.executor.SqlExecutor;
 import io.github.maxwellnie.javormio.core.execution.executor.parameter.ExecutableSql;
 import io.github.maxwellnie.javormio.core.execution.executor.parameter.ExecutorParameters;
 import io.github.maxwellnie.javormio.core.translation.method.SqlMethod;
-import io.github.maxwellnie.javormio.core.translation.sql.SqlFragment;
+import io.github.maxwellnie.javormio.common.java.sql.SqlFragment;
 
 /**
  * @author Maxwell Nie

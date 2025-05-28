@@ -8,7 +8,7 @@ import io.github.maxwellnie.javormio.core.execution.executor.parameter.ExecutorP
 import io.github.maxwellnie.javormio.core.execution.result.ResultSetConvertor;
 import io.github.maxwellnie.javormio.core.execution.result.ValueResultSetConvertor;
 import io.github.maxwellnie.javormio.core.execution.statement.PreparedStatementHelper;
-import io.github.maxwellnie.javormio.core.translation.SqlType;
+import io.github.maxwellnie.javormio.common.java.sql.SqlType;
 import io.github.maxwellnie.javormio.common.java.table.column.ColumnInfo;
 import io.github.maxwellnie.javormio.common.java.table.column.ColumnType;
 import io.github.maxwellnie.javormio.common.java.table.primary.PrimaryInfo;
@@ -50,9 +50,9 @@ public class Query<T> {
      */
     @SuppressWarnings("unchecked")
     public ResultStream<ResultContext> selectToResultStream() {
-        ExecutorParameters executorParameters = new ExecutorParameters(queryBuilder.flexibleSqlContext.getContext().getConnection(), executableSql, null, new PreparedStatementHelper(), "");
+        ExecutorParameters executorParameters = new ExecutorParameters(queryBuilder.flexibleSqlContext.getContext().getConnection(), executableSql, null, queryBuilder.flexibleSqlContext.getContext().getStatementHelper(Query.class), "");
         SqlExecutor sqlExecutor = queryBuilder.flexibleSqlContext.getContext().getSqlExecutor(SingleSqlExecutor.class);
-        executableSql = queryBuilder.toExecutableSql();
+        executableSql = queryBuilder.toExecutableSql(false);
         ResultContext resultContext = new ResultContext(new LinkedHashMap<>(), null, queryBuilder.allColumns, queryBuilder.columnAliasMap, sqlExecutor, executorParameters);
         return new ExecutionResultStream(resultContext);
     }
@@ -88,7 +88,7 @@ public class Query<T> {
         SqlFunctionSupport sqlFunctionSupport = queryBuilder.flexibleSqlContext.getSqlFunctionSupport();
         SqlBuilder selectColumnSql = queryBuilder.selectColumnSql;
         SqlBuilder fromToOnSql = queryBuilder.fromToOnSql;
-        SqlBuilder whereToEndSql = queryBuilder.whereToEndSql;
+        SqlBuilder whereToEndSql = queryBuilder.whereToLimitSql;
         StringBuilder sqlBuilder = new StringBuilder();
         selectColumnSql.append("SELECT ");
         List<PrimaryInfo> primaryInfos = new LinkedList<>();

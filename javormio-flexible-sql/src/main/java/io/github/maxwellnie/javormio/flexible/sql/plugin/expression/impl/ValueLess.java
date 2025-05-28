@@ -1,12 +1,12 @@
 package io.github.maxwellnie.javormio.flexible.sql.plugin.expression.impl;
 
+import io.github.maxwellnie.javormio.common.java.table.BaseMetaTableInfo;
+import io.github.maxwellnie.javormio.common.java.table.column.ColumnInfo;
 import io.github.maxwellnie.javormio.common.java.type.TypeHandler;
-import io.github.maxwellnie.javormio.core.translation.table.BaseMetaTableInfo;
-import io.github.maxwellnie.javormio.core.translation.table.column.ColumnInfo;
+import io.github.maxwellnie.javormio.core.translation.name.ColumnNameHandler;
 import io.github.maxwellnie.javormio.core.translation.sql.SqlBuilder;
-import io.github.maxwellnie.javormio.flexible.sql.plugin.expression.ColumnNameHandler;
 import io.github.maxwellnie.javormio.flexible.sql.plugin.expression.SqlExpressionSupport;
-
+import io.github.maxwellnie.javormio.common.java.sql.ColumnEscapeKit;
 import java.util.Map;
 
 /**
@@ -18,8 +18,8 @@ public class ValueLess<S  extends SqlExpressionSupport, E, T> extends SingleValu
     }
 
     @Override
-    public void applySql(S sqlExpressionSupport, SqlBuilder sqlBuilder, Map<ColumnInfo, String> columnAliases, Map<BaseMetaTableInfo, String> tableAliases) {
-        String columnName = ColumnNameHandler.getColumnName(firstColumnInfo, columnAliases, tableAliases);
+    public void applySql(S sqlExpressionSupport, SqlBuilder sqlBuilder, Map<ColumnInfo, String> columnAliases, Map<BaseMetaTableInfo, String> tableAliases, ColumnEscapeKit columnEscapeKit) {
+        String columnName = ColumnNameHandler.getColumnName(firstColumnInfo, columnAliases, tableAliases, columnEscapeKit);
         TypeHandler<T> typeHandler = firstColumnInfo.getTypeHandler();
         sqlExpressionSupport.less(sqlBuilder, columnName, value, typeHandler, false);
     }

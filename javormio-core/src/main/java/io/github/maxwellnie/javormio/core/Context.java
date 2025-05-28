@@ -1,7 +1,7 @@
 package io.github.maxwellnie.javormio.core;
 
 import io.github.maxwellnie.javormio.common.annotation.document.ExtensionPoint;
-import io.github.maxwellnie.javormio.common.java.jdbc.datasource.DynamicDataSource;
+import io.github.maxwellnie.javormio.common.java.jdbc.datasource.DataBaseModelManager;
 import io.github.maxwellnie.javormio.common.java.jdbc.transaction.TransactionObject;
 import io.github.maxwellnie.javormio.common.java.reflect.method.SerializableFunction;
 import io.github.maxwellnie.javormio.common.java.type.*;
@@ -10,7 +10,7 @@ import io.github.maxwellnie.javormio.core.api.dynamic.DynamicSql;
 import io.github.maxwellnie.javormio.core.execution.executor.SingleSqlExecutor;
 import io.github.maxwellnie.javormio.core.execution.executor.SqlExecutor;
 import io.github.maxwellnie.javormio.core.execution.statement.StatementHelper;
-import io.github.maxwellnie.javormio.core.translation.Dialect;
+import io.github.maxwellnie.javormio.common.java.sql.dialect.Dialect;
 import io.github.maxwellnie.javormio.core.translation.TableParser;
 import io.github.maxwellnie.javormio.core.translation.table.TableInfo;
 
@@ -46,7 +46,7 @@ public class Context {
     {
         sqlExecutorPool.put(SingleSqlExecutor.class, new SingleSqlExecutor());
     }
-    protected DynamicDataSource dynamicDataSource;
+    protected DataBaseModelManager dataBaseModelManager;
     @SuppressWarnings("unchecked")
     public<T extends SqlExecutor> T getSqlExecutor(Class<T> implClazz) {
         return (T) sqlExecutorPool.get(implClazz);
@@ -54,8 +54,8 @@ public class Context {
     public SqlExecutor getSqlExecutor(Object key) {
         return sqlExecutorPool.get(key);
     }
-    public DynamicDataSource getDynamicMultipleDataSource() {
-        return dynamicDataSource;
+    public DataBaseModelManager getDynamicMultipleDataSource() {
+        return dataBaseModelManager;
     }
     public Connection getConnection() {
         return getDynamicMultipleDataSource().getConnection();

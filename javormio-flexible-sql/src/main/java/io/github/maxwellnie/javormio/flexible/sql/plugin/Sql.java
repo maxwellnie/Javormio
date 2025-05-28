@@ -1,7 +1,7 @@
 package io.github.maxwellnie.javormio.flexible.sql.plugin;
 
-import io.github.maxwellnie.javormio.core.translation.SqlParameter;
-import io.github.maxwellnie.javormio.core.translation.sql.SqlFragment;
+import io.github.maxwellnie.javormio.common.java.sql.SqlParameter;
+import io.github.maxwellnie.javormio.common.java.sql.SqlFragment;
 
 /**
  * @author Maxwell Nie

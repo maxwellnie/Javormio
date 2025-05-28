@@ -1,4 +1,4 @@
-package io.github.maxwellnie.javormio.core.translation;
+package io.github.maxwellnie.javormio.common.java.sql;
 
 import io.github.maxwellnie.javormio.common.java.type.TypeHandler;
 

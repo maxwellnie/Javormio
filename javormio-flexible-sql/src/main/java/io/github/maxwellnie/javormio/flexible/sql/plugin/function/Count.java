@@ -1,7 +1,7 @@
 package io.github.maxwellnie.javormio.flexible.sql.plugin.function;
 
 import io.github.maxwellnie.javormio.core.Context;
-import io.github.maxwellnie.javormio.core.translation.sql.SqlFragment;
+import io.github.maxwellnie.javormio.common.java.sql.SqlFragment;
 import io.github.maxwellnie.javormio.common.java.table.column.ColumnInfo;
 import io.github.maxwellnie.javormio.core.translation.sql.SqlBuilder;
 

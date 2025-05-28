@@ -1,11 +1,11 @@
 package io.github.maxwellnie.javormio.flexible.sql.plugin.execution.query;
 
 import io.github.maxwellnie.javormio.common.java.api.JavormioException;
+import io.github.maxwellnie.javormio.common.java.sql.ansi.DMLKit;
+import io.github.maxwellnie.javormio.common.java.type.TypeHandler;
 import io.github.maxwellnie.javormio.core.execution.executor.parameter.ExecutableSql;
-import io.github.maxwellnie.javormio.core.translation.Dialect;
-import io.github.maxwellnie.javormio.core.translation.SqlParameter;
-import io.github.maxwellnie.javormio.core.translation.SqlType;
-import io.github.maxwellnie.javormio.core.translation.sql.SqlFragment;
+import io.github.maxwellnie.javormio.common.java.sql.SqlParameter;
+import io.github.maxwellnie.javormio.common.java.sql.SqlType;
 import io.github.maxwellnie.javormio.common.java.table.BaseMetaTableInfo;
 import io.github.maxwellnie.javormio.common.java.table.TableException;
 import io.github.maxwellnie.javormio.common.java.table.column.ColumnInfo;
@@ -32,13 +32,15 @@ public class QueryBuilder<T> {
     protected BaseMetaTableInfo<T> table;
     protected SqlBuilder selectColumnSql;
     protected SqlBuilder fromToOnSql;
-    protected SqlBuilder whereToEndSql;
+    protected SqlBuilder whereToLimitSql;
+    protected SqlBuilder limitToEndSql;
     protected SqlExpressionSupport sqlExpressionSupport;
     protected List<ColumnInfo> allColumns = new LinkedList<>();
     protected LinkedHashMap<ColumnInfo, String> columnAliasMap = new LinkedHashMap<>();
     protected LinkedHashMap<BaseMetaTableInfo, String> tableAliasMap = new LinkedHashMap<>();
     protected FlexibleSqlContext flexibleSqlContext;
-
+    protected long limit = -1;
+    protected long offset = -1;
     protected QueryBuilder() {
     }
 
@@ -59,10 +61,11 @@ public class QueryBuilder<T> {
         queryBuilder.flexibleSqlContext = context;
         queryBuilder.selectColumnSql = sqlBuilderFactory.get();
         queryBuilder.fromToOnSql = sqlBuilderFactory.get();
-        queryBuilder.whereToEndSql = sqlBuilderFactory.get();
+        queryBuilder.whereToLimitSql = sqlBuilderFactory.get();
         queryBuilder.selectColumnSql.append(sqlBuilderFactory.get());
         queryBuilder.fromToOnSql.append(sqlBuilderFactory.get());
-        queryBuilder.whereToEndSql.append(sqlBuilderFactory.get());
+        queryBuilder.whereToLimitSql.append(sqlBuilderFactory.get());
+        queryBuilder.limitToEndSql = sqlBuilderFactory.get();
         queryBuilder.sqlExpressionSupport = context.getSqlExpressionSupport();
         queryBuilder.allColumns.addAll(Arrays.asList(table.getColumnInfos()));
         queryBuilder.fromToOnSql.append(" FROM ").append(table.tableName);
@@ -126,7 +129,8 @@ public class QueryBuilder<T> {
         queryBuilder.flexibleSqlContext = context;
         queryBuilder.selectColumnSql.append(sqlBuilderFactory.get());
         queryBuilder.fromToOnSql.append(sqlBuilderFactory.get());
-        queryBuilder.whereToEndSql.append(sqlBuilderFactory.get());
+        queryBuilder.whereToLimitSql.append(sqlBuilderFactory.get());
+        queryBuilder.limitToEndSql = sqlBuilderFactory.get();
         queryBuilder.sqlExpressionSupport = context.getSqlExpressionSupport();
         queryBuilder.allColumns.addAll(Arrays.asList(subqueryTable.getColumnInfos()));
         queryBuilder.fromToOnSql.append(" FROM ").append(subqueryTable.getSqlInstance());
@@ -238,9 +242,9 @@ public class QueryBuilder<T> {
      * @return QueryBuilder
      */
     public QueryBuilder<T> where(Consumer<Conditions> conditionConsumer) {
-        if (whereToEndSql.getSqlStringBuilder().length() == 0)
-            whereToEndSql.append(" WHERE");
-        Conditions conditions = new Conditions(whereToEndSql, sqlExpressionSupport, columnAliasMap, tableAliasMap);
+        if (whereToLimitSql.getSqlStringBuilder().length() == 0)
+            whereToLimitSql.append(" WHERE");
+        Conditions conditions = new Conditions(whereToLimitSql, sqlExpressionSupport, columnAliasMap, tableAliasMap);
         conditionConsumer.accept(conditions);
         return this;
     }
@@ -367,14 +371,14 @@ public class QueryBuilder<T> {
      * @return QueryBuilder
      */
     public QueryBuilder<T> groupBy(ExpressionColumnInfo... columnInfos) {
-        whereToEndSql.append(" GROUP BY ");
+        whereToLimitSql.append(" GROUP BY ");
         for (int i = 0; i < columnInfos.length; i++) {
             if (i != 0)
-                whereToEndSql.append(",");
+                whereToLimitSql.append(",");
             String columnName = columnAliasMap.get(columnInfos[i].getColumnInfo());
             if (columnName == null)
                 columnName = columnInfos[i].getColumnInfo().getColumnName();
-            whereToEndSql.append(columnName);
+            whereToLimitSql.append(columnName);
         }
         return this;
     }
@@ -388,8 +392,8 @@ public class QueryBuilder<T> {
      */
     public QueryBuilder<T> groupBy(Consumer<Conditions> havingConditions, ExpressionColumnInfo... columnInfos) {
         groupBy(columnInfos);
-        whereToEndSql.append(" HAVING");
-        Conditions conditions = new Conditions(whereToEndSql, sqlExpressionSupport, columnAliasMap, tableAliasMap);
+        whereToLimitSql.append(" HAVING");
+        Conditions conditions = new Conditions(whereToLimitSql, sqlExpressionSupport, columnAliasMap, tableAliasMap);
         havingConditions.accept(conditions);
         return this;
     }
@@ -401,14 +405,14 @@ public class QueryBuilder<T> {
      * @return QueryBuilder
      */
     public QueryBuilder<T> orderBy(ExpressionColumnInfo... columnInfos) {
-        whereToEndSql.append(" ORDER BY ");
+        whereToLimitSql.append(" ORDER BY ");
         for (int i = 0; i < columnInfos.length; i++) {
             if (i != 0)
-                whereToEndSql.append(",");
+                whereToLimitSql.append(",");
             String columnName = columnAliasMap.get(columnInfos[i].getColumnInfo());
             if (columnName == null)
                 columnName = columnInfos[i].getColumnInfo().getColumnName();
-            whereToEndSql.append(columnName);
+            whereToLimitSql.append(columnName);
         }
         return this;
     }
@@ -422,11 +426,11 @@ public class QueryBuilder<T> {
     public QueryBuilder<T> sort(boolean... asc) {
         for (int i = 0; i < asc.length; i++) {
             if (i != 0)
-                whereToEndSql.append(",");
+                whereToLimitSql.append(",");
             if (asc[i])
-                whereToEndSql.append(" ASC");
+                whereToLimitSql.append(" ASC");
             else
-                whereToEndSql.append(" DESC");
+                whereToLimitSql.append(" DESC");
         }
         return this;
     }
@@ -439,10 +443,8 @@ public class QueryBuilder<T> {
      * @return QueryBuilder
      */
     public QueryBuilder<T> limit(long limit, long offset) {
-        whereToEndSql.append(" LIMIT ?", new SqlParameter(limit, flexibleSqlContext.getContext().getTypeHandler(Long.class)));
-        if (offset > 0) {
-            whereToEndSql.append(" OFFSET ?", new SqlParameter(offset, flexibleSqlContext.getContext().getTypeHandler(Long.class)));
-        }
+        this.limit  = limit;
+        this.offset = offset;
         return this;
     }
 
@@ -460,17 +462,19 @@ public class QueryBuilder<T> {
      *
      * @return ExecutableSql
      */
-    public ExecutableSql toExecutableSql() {
-        Dialect dialect = flexibleSqlContext.getContext().getDialect();
+    public ExecutableSql toExecutableSql(boolean preventPaging) {
         StringBuilder sqlBuilder = new StringBuilder();
-        SqlFragment sqlFragment = dialect.beforeSqlBuild(selectColumnSql, SqlType.SELECT);
-        if (sqlFragment != null)
-            sqlBuilder.append(sqlFragment.toSql());
         handleSelectColumn();
         sqlBuilder.append(selectColumnSql.toSql());
         sqlBuilder.append(fromToOnSql.toSql());
-        sqlBuilder.append(whereToEndSql.toSql());
-
+        sqlBuilder.append(whereToLimitSql.toSql());
+        if (limit != -1 && offset != -1 && !preventPaging){
+            DMLKit dmlKit = flexibleSqlContext.getContext().getDialect().getDMLKit();
+            sqlBuilder = dmlKit.pageBuild(sqlBuilder, offset, limit, true);
+            TypeHandler<Long> longTypeHandler = flexibleSqlContext.getContext().getTypeHandler(Long.class);
+            whereToLimitSql.append(new SqlParameter(limit, longTypeHandler))
+                    .append(new SqlParameter(offset, longTypeHandler));
+        }
         ExecutableSql executableSql = new ExecutableSql();
         executableSql.setSql(sqlBuilder.toString());
         handleParameters(executableSql);
@@ -480,30 +484,32 @@ public class QueryBuilder<T> {
 
     void handleParameters(ExecutableSql executableSql) {
         List<SqlParameter[]> parametersList = new LinkedList<>();
-        int length = selectColumnSql.getParameterList().size() + fromToOnSql.getParameterList().size() + whereToEndSql.getParameterList().size();
+        int length = selectColumnSql.getParameterList().size() + fromToOnSql.getParameterList().size() + whereToLimitSql.getParameterList().size();
         SqlParameter[] parameters = new SqlParameter[length];
         int i = 0;
-        for (SqlParameter sqlParameter : selectColumnSql.getParameterList()) {
-            parameters[i++] = sqlParameter;
-        }
-        i = 0;
-        for (SqlParameter sqlParameter : fromToOnSql.getParameterList()) {
-            parameters[i++] = sqlParameter;
-        }
-        i = 0;
-        for (SqlParameter sqlParameter : whereToEndSql.getParameterList()) {
-            parameters[i++] = sqlParameter;
-        }
+        i = setParameters(parameters, i, selectColumnSql);
+        i = setParameters(parameters, i, fromToOnSql);
+        i = setParameters(parameters, i, whereToLimitSql);
+        setParameters(parameters, i, limitToEndSql);
         parametersList.add(parameters);
         executableSql.setParametersList(parametersList);
     }
-
+    int setParameters(SqlParameter[] parameters, int index, SqlBuilder sqlBuilder) {
+        for (SqlParameter sqlParameter : sqlBuilder.getParameterList()) {
+            parameters[index++] = sqlParameter;
+        }
+        return index;
+    }
     void handleSelectColumn() {
         selectColumnSql.append("SELECT ");
         for (int i = 0; i < allColumns.size(); i++) {
             if (i != 0)
                 selectColumnSql.append(",");
-            selectColumnSql.append(allColumns.get(i).getColumnName());
+            ColumnInfo<?,?> columnInfo = allColumns.get(i);
+            String tableName = tableAliasMap.get(columnInfo.getTable());
+            if (tableName == null)
+                tableName = columnInfo.getTable().tableName;
+            selectColumnSql.append(tableName).append(".").append(columnInfo.getColumnName());
             if (columnAliasMap.containsKey(allColumns.get(i))) {
                 selectColumnSql.append(" AS ").append(columnAliasMap.get(allColumns.get(i)));
             }
@@ -516,7 +522,7 @@ public class QueryBuilder<T> {
      * @return SubqueryTable
      */
     public SubqueryTable<T, T> toSubqueryTable() {
-        ExecutableSql executableSql = toExecutableSql();
+        ExecutableSql executableSql = toExecutableSql(false);
         SqlBuilder sqlInstance = new SqlBuilder();
         sqlInstance.append(executableSql.getSql(), executableSql.getParametersList().get(0));
         return SubqueryTable.from(table, sqlInstance);

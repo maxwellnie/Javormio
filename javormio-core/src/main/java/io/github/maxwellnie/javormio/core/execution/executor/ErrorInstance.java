@@ -1,6 +1,6 @@
 package io.github.maxwellnie.javormio.core.execution.executor;
 
-import io.github.maxwellnie.javormio.core.translation.SqlParameter;
+import io.github.maxwellnie.javormio.common.java.sql.SqlParameter;
 
 import java.sql.SQLException;
 import java.util.List;

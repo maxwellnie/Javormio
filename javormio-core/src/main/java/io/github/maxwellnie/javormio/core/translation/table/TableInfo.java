@@ -1,13 +1,14 @@
 package io.github.maxwellnie.javormio.core.translation.table;
 
+import io.github.maxwellnie.javormio.common.java.reflect.TypeGraph;
+import io.github.maxwellnie.javormio.common.java.reflect.TypeGraphHolder;
 import io.github.maxwellnie.javormio.common.java.table.BaseMetaTableInfo;
 import io.github.maxwellnie.javormio.common.java.table.column.ColumnInfo;
+import io.github.maxwellnie.javormio.common.java.table.column.ColumnType;
 import io.github.maxwellnie.javormio.common.java.table.primary.KeyGenerator;
 import io.github.maxwellnie.javormio.common.java.table.primary.PrimaryInfo;
 
 import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.function.Supplier;
 
 /**
@@ -15,52 +16,22 @@ import java.util.function.Supplier;
  *
  * @author Maxwell Nie
  */
-public class TableInfo<E> extends BaseMetaTableInfo<E> {
-    /**
-     * 列信息映射，key为字段名，value为列信息
-     */
-    private final Map<String, ColumnInfo<E, ?>> columnInfoMapping;
-    /**
-     * 列信息逆向映射，key为列名，value为列信息
-     */
-    private final Map<String, ColumnInfo<E, ?>> columnInfoInverseMapping;
+public class TableInfo<E> extends BaseMetaTableInfo<E> implements TypeGraphHolder {
 
-    /**
-     * 关联信息
-     */
-    private final JoinInfo<E, ?>[] joinInfo;
     private final PrimaryInfo<E, ?>[] primaryInfos;
     private final KeyGenerator<E, ?>[] keyGenerators;
+    private final ColumnInfo<E, ?>[] columnInfos;
     @SuppressWarnings("unchecked")
-    public TableInfo(String tableName, String defaultDataSourceName, Class<E> mappingClass, Supplier<E> instanceInvoker, JoinInfo<E, ?>[] joinInfo) {
+    public TableInfo(String tableName, String defaultDataSourceName, Class<E> mappingClass, Supplier<E> instanceInvoker, ColumnInfo<E, ?>[] columnInfos) {
         super(tableName, defaultDataSourceName, mappingClass, instanceInvoker);
-        this.columnInfoMapping = new LinkedHashMap<>();
-        this.columnInfoInverseMapping = new LinkedHashMap<>();
-        for (ColumnInfo<E, ?> columnInfo : this.getColumnInfos()){
-            columnInfoMapping.put(columnInfo.getColumnName(), columnInfo);
-            columnInfoInverseMapping.put(columnInfo.getMetaField().getName(), columnInfo);
-        }
-        this.joinInfo = joinInfo;
-        this.primaryInfos = (PrimaryInfo<E, ?>[]) this.columnInfoMapping.values().stream().filter(c->c instanceof PrimaryInfo).toArray();
-        this.keyGenerators = (KeyGenerator<E, ?>[]) Arrays.stream(this.primaryInfos).map(PrimaryInfo::getKeyGenerator).toArray();
-    }
-
-
-    public Map<String, ColumnInfo<E, ?>> getColumnInfoMapping() {
-        return columnInfoMapping;
-    }
-
-    public Map<String, ColumnInfo<E, ?>> getColumnInfoInverseMapping() {
-        return columnInfoInverseMapping;
-    }
-
-    public JoinInfo<E, ?>[] getJoinInfo() {
-        return joinInfo;
+        this.columnInfos = columnInfos;
+        this.primaryInfos = Arrays.stream(columnInfos).filter(c->(c.getColumnType()& ColumnType.PRIMARY)!=0).map(c->(PrimaryInfo<E, ?>)c).toArray(PrimaryInfo[]::new);
+        this.keyGenerators = Arrays.stream(primaryInfos).filter(c->c.getKeyGenerator()!=null).map(PrimaryInfo::getKeyGenerator).toArray(KeyGenerator[]::new);
     }
 
     @Override
     public ColumnInfo<E, ?>[] getColumnInfos() {
-        return columnInfoMapping.values().toArray(new ColumnInfo[0]);
+        return columnInfos;
     }
 
     @Override
@@ -71,5 +42,10 @@ public class TableInfo<E> extends BaseMetaTableInfo<E> {
     @Override
     public KeyGenerator<E, ?>[] getAllKeyGenerators() {
         return keyGenerators;
+    }
+
+    @Override
+    public TypeGraph getTypeGraph() {
+        return null;
     }
 }

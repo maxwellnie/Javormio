@@ -1,6 +1,7 @@
 package io.github.maxwellnie.javormio.common.java.jdbc.datasource;
 
-import javax.sql.DataSource;
+import io.github.maxwellnie.javormio.common.java.sql.dialect.Dialect;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -11,30 +12,30 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author Maxwell Nie
  */
-public class DefaultDynamicDataSource implements DynamicDataSource {
+public class DefaultDataBaseModelManager implements DataBaseModelManager {
     private final ThreadLocal<String> currentDataSourceName;
-    private final Map<Object, DataSource> dataSources;
+    private final Map<Object, DataBaseModel> dataSources;
     private final String defaultDataSourceName;
 
-    public DefaultDynamicDataSource(final String defaultDataSourceName, final Map<Object, DataSource> dataSources) {
+    public DefaultDataBaseModelManager(final String defaultDataSourceName, final Map<Object, DataBaseModel> dataSources) {
         this.currentDataSourceName = ThreadLocal.withInitial(() -> defaultDataSourceName);
         this.dataSources = dataSources;
         this.defaultDataSourceName = defaultDataSourceName;
     }
 
-    public DefaultDynamicDataSource(String defaultDataSourceName) {
+    public DefaultDataBaseModelManager(String defaultDataSourceName) {
         this.defaultDataSourceName = defaultDataSourceName;
         this.currentDataSourceName = ThreadLocal.withInitial(() -> defaultDataSourceName);
         this.dataSources = new ConcurrentHashMap<>();
     }
 
     @Override
-    public DataSource getCurrentDataSource() {
+    public DataBaseModel getCurrentDataSource() {
         return this.dataSources.get(this.currentDataSourceName.get());
     }
 
     @Override
-    public DataSource getDefaultDataSource() {
+    public DataBaseModel getDefaultDataSource() {
         return this.dataSources.get(this.defaultDataSourceName);
     }
 
@@ -49,24 +50,29 @@ public class DefaultDynamicDataSource implements DynamicDataSource {
     }
 
     @Override
-    public Collection<DataSource> getDataSources() {
+    public Collection<DataBaseModel> getDataSources() {
         return Collections.unmodifiableCollection(this.dataSources.values());
     }
 
     @Override
-    public void register(Object key, DataSource object) {
+    public Dialect getDialect() {
+        return null;
+    }
+
+    @Override
+    public void register(Object key, DataBaseModel object) {
         this.dataSources.put(key, object);
     }
 
     @Override
-    public DataSource get(Object key) {
+    public DataBaseModel get(Object key) {
         return this.dataSources.get(key);
     }
 
     @Override
     public Connection getConnection() {
         try {
-            return dataSources.get(currentDataSourceName.get()).getConnection();
+            return dataSources.get(currentDataSourceName.get()).getDataSource().getConnection();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

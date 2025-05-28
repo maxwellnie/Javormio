@@ -1,6 +1,7 @@
 package io.github.maxwellnie.javormio.core.translation.sql;
 
-import io.github.maxwellnie.javormio.core.translation.SqlParameter;
+import io.github.maxwellnie.javormio.common.java.sql.SqlFragment;
+import io.github.maxwellnie.javormio.common.java.sql.SqlParameter;
 
 import java.util.Collections;
 import java.util.LinkedList;

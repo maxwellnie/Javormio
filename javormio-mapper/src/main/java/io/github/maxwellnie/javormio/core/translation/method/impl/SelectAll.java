@@ -1,15 +1,14 @@
 package io.github.maxwellnie.javormio.core.translation.method.impl;
 
+import io.github.maxwellnie.javormio.common.java.table.BaseMetaTableInfo;
 import io.github.maxwellnie.javormio.core.execution.executor.SqlExecutor;
 import io.github.maxwellnie.javormio.core.execution.executor.parameter.ExecutableSql;
 import io.github.maxwellnie.javormio.core.execution.executor.parameter.ExecutorParameters;
-import io.github.maxwellnie.javormio.core.translation.Dialect;
-import io.github.maxwellnie.javormio.core.translation.SqlType;
+import io.github.maxwellnie.javormio.common.java.sql.dialect.Dialect;
+import io.github.maxwellnie.javormio.common.java.sql.SqlType;
 import io.github.maxwellnie.javormio.core.translation.sql.SqlBuilder;
-import io.github.maxwellnie.javormio.core.translation.sql.SqlFragment;
-import io.github.maxwellnie.javormio.core.translation.table.TableInfo;
+import io.github.maxwellnie.javormio.common.java.sql.SqlFragment;
 import io.github.maxwellnie.javormio.common.java.table.column.ColumnInfo;
-import io.github.maxwellnie.javormio.core.translation.table.JoinInfo;
 
 import java.util.*;
 
@@ -50,27 +49,13 @@ public class SelectAll<T> extends BaseMapperSqlMethod<T, List<T>> {
     @Override
     protected SqlFragment getSqlFragment(Object[] args) {
         Dialect dialect = this.mapperContext.context.getDialect();
-        TableInfo<T> tableInfo = this.mapperContext.getTableInfo();
-        JoinInfo<T,?>[] joinInfos = tableInfo.getJoinInfo();
+        BaseMetaTableInfo<T> tableInfo = this.mapperContext.getTableInfo();
         LinkedHashSet<String> columns = new LinkedHashSet<>();
         for (ColumnInfo<T,?> columnInfo : tableInfo.getColumnInfos()){
             columns.add(columnInfo.getColumnName());
         }
-        if (joinInfos != null){
-            for (JoinInfo<T,?> joinInfo : joinInfos){
-                for (ColumnInfo<?,?> joinColumnInfo : joinInfo.getColumnInfos()){
-                    columns.add(joinColumnInfo.getColumnName());
-                }
-            }
-        }
         SqlBuilder sqlBuilder = new SqlBuilder();
-        SqlFragment beforeSqlFragment = dialect.beforeSqlBuild(null, Dialect.SELECT_FRAGMENT);
-        sqlBuilder.append(beforeSqlFragment);
         selectToColumnFragment(sqlBuilder, columns);
-        fromToEnd(sqlBuilder, tableInfo, joinInfos);
-        SqlFragment afterSqlFragment = dialect.afterSqlBuild(sqlBuilder, Dialect.SELECT_FRAGMENT);
-        if (afterSqlFragment != null)
-            return afterSqlFragment;
         return sqlBuilder;
     }
 
@@ -80,25 +65,6 @@ public class SelectAll<T> extends BaseMapperSqlMethod<T, List<T>> {
         while (iterator.hasNext()) {
             sqlBuilder.append(iterator.next());
             if (iterator.hasNext()) sqlBuilder.append(", ");
-        }
-    }
-    protected void fromToEnd(SqlBuilder sqlBuilder, TableInfo<T> tableInfo, JoinInfo<T,?>[] joinInfos){
-        sqlBuilder.append(" FROM ")
-                .append(tableInfo.tableName);
-        if (joinInfos != null){
-            for (JoinInfo<T,?> joinInfo : joinInfos){
-                sqlBuilder.append(" ")
-                        .append(joinInfo.getJoinType())
-                        .append(joinInfo.tableName)
-                        .append(" ON ")
-                        .append(tableInfo.tableName)
-                        .append(".")
-                        .append(tableInfo.getColumnInfoMapping().get(joinInfo.getMasterKey()).getColumnName())
-                        .append(" = ")
-                        .append(joinInfo.tableName)
-                        .append(".")
-                        .append(joinInfo.getColumnInfoMapping().get(joinInfo.getSlaveKey()).getColumnName());
-            }
         }
     }
 }

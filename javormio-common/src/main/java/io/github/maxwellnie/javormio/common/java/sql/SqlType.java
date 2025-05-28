@@ -1,4 +1,4 @@
-package io.github.maxwellnie.javormio.core.translation;
+package io.github.maxwellnie.javormio.common.java.sql;
 
 /**
  * SQL的类型：插入、更新、删除、查询、批量操作

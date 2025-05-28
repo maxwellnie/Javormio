@@ -2,6 +2,7 @@ package io.github.maxwellnie.javormio.core.translation;
 
 
 import io.github.maxwellnie.javormio.common.java.api.Resource;
+import io.github.maxwellnie.javormio.common.java.sql.SqlType;
 
 /**
  * sql资源

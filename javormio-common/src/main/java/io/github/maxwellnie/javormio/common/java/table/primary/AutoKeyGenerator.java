@@ -1,6 +1,6 @@
 package io.github.maxwellnie.javormio.common.java.table.primary;
 
-import io.github.maxwellnie.javormio.common.java.api.BugException;
+import io.github.maxwellnie.javormio.common.java.api.InternalBugException;
 import io.github.maxwellnie.javormio.common.java.proxy.MethodInvocationException;
 
 import java.sql.ResultSet;
@@ -50,7 +50,7 @@ public class AutoKeyGenerator<E> implements KeyGenerator<E, Integer>{
                 generatedKeys[i++] = resultSet.getInt(1);
             }
             if (i != ts.size()){
-                throw new BugException("Bug: The number of inserted rows does not match the number of inserted objects.");
+                throw new InternalBugException("Bug: The number of inserted rows does not match the number of inserted objects.");
             }else {
                 for (int j = 0; j < ts.size(); j++) {
                     E target = ts.get(j);

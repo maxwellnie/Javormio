@@ -9,4 +9,5 @@ public interface ColumnType {
     int FOREIGN = 3;
     int UNIQUE = 4;
     int NORMAL = 5;
+    int ESCAPING = 6;
 }

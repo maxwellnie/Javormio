@@ -1,5 +1,6 @@
 package io.github.maxwellnie.javormio.flexible.sql.plugin.execution.result.convertor;
 
+import io.github.maxwellnie.javormio.common.java.type.TypeHandler;
 import io.github.maxwellnie.javormio.core.execution.executor.SqlExecutor;
 import io.github.maxwellnie.javormio.core.execution.executor.parameter.ExecutorParameters;
 import io.github.maxwellnie.javormio.core.execution.result.ResultParseException;
@@ -56,7 +57,13 @@ public class ResultContext {
             throw new ResultParseException(e);
         }
     }
-
+    public <T> T getColumnValue(int index, TypeHandler<T> handler) throws ResultParseException {
+        try {
+            return handler.getValue(resultSet, index);
+        } catch (SQLException e) {
+            throw new ResultParseException(e);
+        }
+    }
     public <E, T> T getColumnValue(ExpressionColumnInfo<? extends SqlExpressionSupport,E, T> expressionColumnInfo) throws ResultParseException {
         return getColumnValue(expressionColumnInfo.getColumnInfo());
     }
