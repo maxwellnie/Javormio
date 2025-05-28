@@ -21,6 +21,8 @@ public class CoreProcessor extends AbstractProcessor {
     private final Set<String> supportedOptions;
     private SourceVersion supportedSourceVersion;
     private Exception exception;
+    private final String lineSeparator = System.lineSeparator();
+    private final StringBuilder infos = new StringBuilder();
 
     public CoreProcessor() {
         elementHandlersMap = new HashMap<>();
@@ -60,7 +62,8 @@ public class CoreProcessor extends AbstractProcessor {
      * @throws InvocationTargetException
      * @throws NoSuchMethodException
      */
-    private void installExtensionSPIPlugin(String classNames) throws ClassNotFoundException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+    private void installExtensionSPIPlugin(String classNames) throws ClassNotFoundException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, LibraryInitializationException {
+        HashSet<String> libraryNames = new HashSet<>();
         for (String className : classNames.split(",")) {
             if (className != null) {
                 Class<?> clazz = Class.forName(className);
@@ -69,6 +72,20 @@ public class CoreProcessor extends AbstractProcessor {
                     SourceVersion pluginSupportedSourceVersion = spiPlugin.sourceVersion();
                     if (pluginSupportedSourceVersion.compareTo(supportedSourceVersion) <= 0){
                         List<CustomProcessor> customProcessors = elementHandlersMap.computeIfAbsent(spiPlugin.value().getName(), k -> new LinkedList<>());
+                        if (clazz.isAnnotationPresent(Libraries.class)){
+                            Libraries  libraries = clazz.getAnnotation(Libraries.class);
+                            for (Class<? extends Library> libraryClass : libraries.value()) {
+                                Library library = libraryClass.getConstructor().newInstance();
+                                if (!libraryNames.contains(library.getName())){
+                                    libraryNames.add(library.getName());
+                                    library.init();
+                                }else
+                                    infos.append(
+                                            new Info(clazz.getName(),
+                                                    "Library \"" + library.getName() + "\" has been registered")
+                                    ).append(lineSeparator);
+                            }
+                        }
                         CustomProcessor customProcessor = (CustomProcessor) clazz.getConstructor().newInstance();
                         customProcessors.add(customProcessor);
                     }
@@ -76,6 +93,12 @@ public class CoreProcessor extends AbstractProcessor {
             }
         }
     }
+    /**
+     * 获取异常链
+     *
+     * @param throwable
+     * @return String
+     */
     private String getExceptionChain(Throwable throwable) {
         StringBuilder sb = new StringBuilder();
         while (throwable != null) {
@@ -97,12 +120,13 @@ public class CoreProcessor extends AbstractProcessor {
             processingEnv.getMessager().printMessage(
                     Diagnostic.Kind.ERROR,
                     "Processing failed: " + exception.getMessage() +
-                            "\nStackTrace: " + sw.toString() +
-                            "\nCauseChain: " + getExceptionChain(exception),
+                            lineSeparator +"StackTrace: " + sw +
+                            lineSeparator +"CauseChain: " + getExceptionChain(exception),
                     null
             );
         }
-
+        if (infos.length() > 0)
+            processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING, infos.toString(), null);
         for (TypeElement annotation : annotations) {
             List<CustomProcessor> customProcessors = this.elementHandlersMap.get(annotation.getQualifiedName().toString());
             if (customProcessors != null) {

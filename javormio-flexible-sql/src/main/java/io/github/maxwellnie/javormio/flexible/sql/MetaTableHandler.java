@@ -9,6 +9,7 @@ import io.github.maxwellnie.javormio.flexible.sql.plugin.table.ClassName;
 import io.github.maxwellnie.javormio.flexible.sql.plugin.table.MetaColumn;
 import io.github.maxwellnie.javormio.flexible.sql.plugin.table.MetaTable;
 import io.github.maxwellnie.javormio.source.code.processor.CustomProcessor;
+import io.github.maxwellnie.javormio.source.code.processor.Libraries;
 import io.github.maxwellnie.javormio.source.code.processor.SPIPlugin;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -21,20 +22,17 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
  * @author Maxwell Nie
  */
 @SPIPlugin(Table.class)
+@Libraries(VelocityLibrary.class)
 public class MetaTableHandler implements CustomProcessor {
-
-
 
     @Override
     public void process(Set<? extends Element> elements, ProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
@@ -78,25 +76,25 @@ public class MetaTableHandler implements CustomProcessor {
             metaTable.metaColumns = typeElement.getEnclosedElements()
                     .stream()
                     .filter(e1 -> e1.getKind() == ElementKind.FIELD)
-                    .map(e1 -> {
+                    .map(tableClass -> {
                         MetaColumn metaColumn = new MetaColumn();
-                        Column column = e1.getAnnotation(Column.class);
-                        PrimaryKey primaryKey = e1.getAnnotation(PrimaryKey.class);
-                        metaColumn.fieldName = e1.getSimpleName().toString();
+                        Column column = tableClass.getAnnotation(Column.class);
+                        PrimaryKey primaryKey = tableClass.getAnnotation(PrimaryKey.class);
+                        metaColumn.fieldName = tableClass.getSimpleName().toString();
                         if (column != null) {
                             metaColumn.columnName = metaColumn.fieldName;
                             metaColumn.typeHandlerClassName = column.typeHandler().getName();  ;
                             metaColumn.columnType = ColumnType.NORMAL;
                         }
                         if (primaryKey != null) {
-                            //需要验证是否是无键生成器
+                            //需要验证是否无主键生成器
                             Class<? extends KeyGenerator> keyGeneratorClass = primaryKey.keyGenerator();
                             if (keyGeneratorClass != KeyGenerator.class)
                                 metaColumn.keyGeneratorClassName = keyGeneratorClass.getName();
                             //掩码需要使用|运算符才不会在添加掩码时导致原掩码丢失
                             metaColumn.columnType = metaColumn.columnType | ColumnType.PRIMARY;
                         }
-                        metaColumn.typeName = e1.asType().toString();
+                        metaColumn.typeName = tableClass.asType().toString();
                         //加入_符号不符合Java命名规范
                         metaColumn.getterClassName = "get"  + metaColumn.fieldName;
                         metaColumn.setterClassName = "set"  + metaColumn.fieldName;
@@ -113,7 +111,7 @@ public class MetaTableHandler implements CustomProcessor {
             VelocityContext context = new VelocityContext();
             context.put("metaTable",metaTable );
 
-            Template template = Velocity.getTemplate("MetaTable.java.vm");
+            Template template = Velocity.getTemplate("classpath:gen-code-templates/MetaTable.java.vm");
             String generatedPackageName = metaTable.packagePath + ".meta";
             String generatedClassName = "Meta" + metaTable.className.name;
 
