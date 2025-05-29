@@ -35,9 +35,9 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>io.github.maxwellnie.javormio</groupId>
-            <artifactId>javormio-source-code-processor</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <groupId>io.github.maxwellnie</groupId>
+            <artifactId>source-code-processor</artifactId>
+            <version>0.0.beta</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
