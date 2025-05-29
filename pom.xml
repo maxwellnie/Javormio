@@ -12,7 +12,6 @@
         <module>javormio-core</module>
         <module>JavormioTester</module>
         <module>javormio-common</module>
-        <module>source-code-processor</module>
         <module>javormio-flexible-sql</module>
         <module>javormio-spring-common</module>
         <module>javormio-transaction-jta</module>
